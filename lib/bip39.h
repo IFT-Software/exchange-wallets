@@ -9,38 +9,37 @@
 #include "util.h"
 #include "crypto.h"
 
-class SeedGenerator {
+class SeedGenerator
+{
 
-  private:
+private:
+  // random 16 bytes in hexadecimal format
+  uint8_t bytes[16];
 
-    //random 16 bytes in hexadecimal format
-    uint8_t bytes[16];
+  // binary representation of bytes
+  std::bitset<128> entropy;
 
-    //binary representation of bytes
-    std::bitset<128> entropy;
+  // TODO checksum bitset?
+  std::string checksum;
+  std::string mnemonic;
+  std::string passphrase;
+  std::string seed;
 
-    //TODO checksum bitset?
-    std::string checksum;
-    std::string mnemonic;
-    std::string passphrase;
-    std::string seed;
+  std::string GenerateChecksum();
+  std::string GenerateMnemonic();
 
-    std::bitset<128> GenerateEntropy();
-    std::string GenerateChecksum();
-    std::string GenerateMnemonic();
-    
-
-  public:
-    SeedGenerator();
-    SeedGenerator(std::string passphrase);
-    std::string GenerateSeed();
-    std::string GenerateSeed(std::string passphrase);
-    std::string GetSeed();
-    std::bitset<128> GetEntropy();
-    std::string GetEntropyStr();
-    std::string GetChecksum();
-    std::string GetMnemonic();
-
+public:
+  SeedGenerator();
+  SeedGenerator(std::string passphrase);
+  std::bitset<128> GenerateEntropy();
+  std::string GenerateSeed();
+  std::string GenerateSeed(std::string passphrase);
+  std::string GenerateSeedFromEntropy(std::bitset<128> entropy);
+  std::string GetSeed();
+  std::bitset<128> GetEntropy();
+  std::string GetEntropyStr();
+  std::string GetChecksum();
+  std::string GetMnemonic();
 };
 
 #endif
