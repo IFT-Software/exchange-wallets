@@ -26,17 +26,46 @@ namespace Util
     }
   }
 
-  static std::string BytesToString(uint8_t *bytes, size_t len)
+  static std::string BytesToHex(uint8_t *bytes, size_t len)
   {
     std::stringstream ss;
     ss << std::hex << std::setfill('0');
-    // std::cout << "hey1" << std::endl;
-    for (size_t i = 0; i < len; i++)
+    for (int i = 0; i < len; i++)
     {
-      ss << std::hex << std::setw(2) << (uint32_t)bytes[i];
+      ss << std::hex << std::setw(2) << (uint64_t)bytes[i];
     }
-    // std::cout << "hey" << std::endl;
     return ss.str();
+  }
+
+  template <std::size_t N>
+  static std::string BytesToHex(std::array<uint8_t, N> &bytes)
+  {
+    return BytesToHex(bytes.begin(), bytes.size());
+  }
+
+  template <std::size_t N>
+  static void BinToBytes(std::bitset<N> &bin, uint8_t *bytes)
+  {
+    std::bitset<128> mask(0);
+    mask.flip();
+
+    for (size_t i = 0; i < bin.size() / 8; i++)
+    {
+      uint8_t byte = 0;
+      for (size_t j = 0; j < 8; j++)
+      {
+        byte <<= 1;
+        byte ^= bin[(bin.size() - 1) - (i * 8 + j)];
+      }
+
+      bytes[i] = byte;
+    }
+  }
+
+  template <std::size_t N, std::size_t M>
+  static void BinToBytes(std::bitset<N> &bin, std::array<uint8_t, M> &bytes)
+  {
+    return BinToBytes(bin, bytes.begin());
   }
 
   static std::string HexToBin(std::string &hexStr)
@@ -149,38 +178,6 @@ namespace Util
       f.close(); // close the file object.
     }
     return words;
-  }
-
-  static std::string BytesToHex(uint8_t *bytes, size_t len)
-  {
-    std::stringstream ss;
-    ss << std::hex << std::setfill('0');
-    for (int i = 0; i < len; i++)
-    {
-      ss << std::hex << std::setw(2) << (uint64_t)bytes[i];
-    }
-    return ss.str();
-  }
-
-  template <size_t bits>
-  static void BinToBytes(std::bitset<bits> &bin, uint8_t *bytes)
-  {
-    std::bitset<128> mask(0);
-    mask.flip();
-
-    for (size_t i = 0; i < bin.size() / 8; i++)
-    {
-      uint8_t byte = 0;
-      for (size_t j = 0; j < 8; j++)
-      {
-        byte <<= 1;
-        byte ^= bin[(bin.size() - 1) - (i * 8 + j)];
-      }
-
-      // uint8_t byte = (uint8_t)(std::bitset<8>(((bin >> (8 * i)) & mask).to_string()).to_ulong());
-      bytes[i] = byte;
-      // std::cout << std::hex << setfill('0') << setw(2) << (uint64_t) byte
-    }
   }
 
 }

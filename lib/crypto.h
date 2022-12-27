@@ -51,6 +51,7 @@ namespace Crypto
 
     std::copy(hash, hash + hash_len, res);
   }
+
 }
 
 #endif

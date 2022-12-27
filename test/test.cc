@@ -11,15 +11,17 @@ TEST(HelloTest, BasicAssertions)
 
 std::bitset<128> entropy1("00101101100101001101101110000001011000110011100100010100110111011111110010000100011101110010111111010100101000001001000001000000");
 std::string seed1 = "24d5e9febf08a91daa5243a25b2d4ec0f09549b195539c188bcabacd7aeec689c933c942a55e4e0eec6524e017c8b31e5cd9ea3f87b29aea126202b2a25055d3";
-uint8_t seed1_b[] = {0x24, 0xd5, 0xe9, 0xfe, 0xbf, 0x08, 0xa9, 0x1d,
-                     0xaa, 0x52, 0x43, 0xa2, 0x5b, 0x2d, 0x4e, 0xc0,
-                     0xf0, 0x95, 0x49, 0xb1, 0x95, 0x53, 0x9c, 0x18,
-                     0x8b, 0xca, 0xba, 0xcd, 0x7a, 0xee, 0xc6, 0x89,
-                     0xc9, 0x33, 0xc9, 0x42, 0xa5, 0x5e, 0x4e, 0x0e,
-                     0xec, 0x65, 0x24, 0xe0, 0x17, 0xc8, 0xb3, 0x1e,
-                     0x5c, 0xd9, 0xea, 0x3f, 0x87, 0xb2, 0x9a, 0xea,
-                     0x12, 0x62, 0x02, 0xb2, 0xa2, 0x50, 0x55, 0xd3};
+std::array<uint8_t, 64> seed1_b = {0x24, 0xd5, 0xe9, 0xfe, 0xbf, 0x08, 0xa9, 0x1d,
+                                   0xaa, 0x52, 0x43, 0xa2, 0x5b, 0x2d, 0x4e, 0xc0,
+                                   0xf0, 0x95, 0x49, 0xb1, 0x95, 0x53, 0x9c, 0x18,
+                                   0x8b, 0xca, 0xba, 0xcd, 0x7a, 0xee, 0xc6, 0x89,
+                                   0xc9, 0x33, 0xc9, 0x42, 0xa5, 0x5e, 0x4e, 0x0e,
+                                   0xec, 0x65, 0x24, 0xe0, 0x17, 0xc8, 0xb3, 0x1e,
+                                   0x5c, 0xd9, 0xea, 0x3f, 0x87, 0xb2, 0x9a, 0xea,
+                                   0x12, 0x62, 0x02, 0xb2, 0xa2, 0x50, 0x55, 0xd3};
 std::string prv1 = "7539c474d72a9cc9c89c67265bd8a5d4e37234b3a926e986ddff7cd02bc98510";
+std::string wif1 = "L19aitXT5ryXvRHeRAgPAQaZ2ggjxD8Gs6hqDX8zodDRdAUwkaeN";
+bool net1 = 1;
 
 std::bitset<128> entropy2("01110100111101010001011101101000100110010101100110001010011100111001010111100001000110110000100110100110010100111011010010010111");
 std::string seed2 = "43076aea18722554d3993bde416cf3cd43f08bcb04715f7e43b9130898af7d5b0312db488ebd6e8a14604da8c98eb8dbab792d3a1005d4c2b6d654d3598cd6c5";
@@ -83,8 +85,8 @@ BIP32 bip32 = BIP32();
 TEST(BIP32Test, PrivKeyFromSeed)
 {
   bip32.GeneratePrivKey(seed1_b);
-  std::cout << "real value: " << bip32.GetPrivKeyStr() << std::endl;
-  std::cout << "exp value: " << prv1;
+  // std::cout << "real value: " << bip32.GetPrivKeyStr() << std::endl;
+  // std::cout << "exp value: " << prv1;
   EXPECT_STREQ(bip32.GetPrivKeyStr().c_str(), prv1.c_str());
 
   // bip32.GeneratePrivKey(seed2_b);
@@ -96,6 +98,11 @@ TEST(BIP32Test, PrivKeyFromSeed)
   // bip32.GeneratePrivKey(seed4_b);
   // EXPECT_EQ(bip32.GetPrivKeyStr(), prv4);
 }
+
+// TEST(BIP32Test, WIFFromSeed)
+// {
+//   bip32.GenerateWIF(net1, seed1_b);
+// }
 
 int main(int argc, char **argv)
 {

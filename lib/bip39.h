@@ -5,6 +5,7 @@
 #include <stdexcept>
 #include <bitset>
 #include <climits>
+#include <array>
 
 #include "util.h"
 #include "crypto.h"
@@ -15,8 +16,8 @@ class BIP39
 private:
   // random 16 bytes in hexadecimal format
 
-  uint8_t bytes_[16];
-  uint8_t seed_[64];
+  std::array<uint8_t, 16> bytes_;
+  std::array<uint8_t, 64> seed_;
 
   // binary representation of bytes
   // why bitset?
@@ -34,12 +35,12 @@ public:
   BIP39();
   BIP39(std::string passphrase);
   std::bitset<128> GenerateEntropy();
-  uint8_t *GenerateSeed();
-  uint8_t *GenerateSeed(std::string passphrase);
-  uint8_t *GenerateSeedFromEntropy(std::bitset<128> entropy);
+  std::array<uint8_t, 64> GenerateSeed();
+  std::array<uint8_t, 64> GenerateSeed(std::string passphrase);
+  std::array<uint8_t, 64> GenerateSeedFromEntropy(std::bitset<128> entropy);
 
   std::bitset<128> GetEntropy();
-  uint8_t *GetSeed();
+  std::array<uint8_t, 64> GetSeed();
   std::bitset<4> GetChecksum();
   std::string GetMnemonic();
 

@@ -26,7 +26,7 @@ std::string BIP39::GetMnemonic()
   return mnemonic_;
 }
 
-uint8_t *BIP39::GetSeed()
+std::array<uint8_t, 64> BIP39::GetSeed()
 {
   return seed_;
 }
@@ -38,7 +38,7 @@ std::string BIP39::GetEntropyStr()
 
 std::string BIP39::GetSeedStr()
 {
-  return Util::BytesToString(seed_, 64);
+  return Util::BytesToHex(seed_.begin(), seed_.size());
 }
 
 std::string BIP39::GetChecksumStr()
@@ -48,12 +48,12 @@ std::string BIP39::GetChecksumStr()
 
 std::bitset<128> BIP39::GenerateEntropy()
 {
-  int res = RAND_bytes(bytes_, sizeof(bytes_));
+  int res = RAND_bytes(bytes_.begin(), bytes_.size());
   if (res != 1)
   {
     throw std::runtime_error("cannot generate entropy");
   }
-  std::string hex_bytes = Util::BytesToHex(bytes_, 16);
+  std::string hex_bytes = Util::BytesToHex(bytes_.begin(), bytes_.size());
   entropy_ = std::bitset<128>(Util::HexToBin(hex_bytes));
 
   return entropy_;
@@ -64,9 +64,9 @@ std::bitset<4> BIP39::GenerateChecksum()
   int checksum_size = (entropy_).size() / 32; // 1 bit checksum for every 32 bits of entropy
 
   uint8_t hex_sha256_bytes[32];
-  Crypto::SHA256(bytes_, 16, hex_sha256_bytes);
+  Crypto::SHA256(bytes_.begin(), bytes_.size(), hex_sha256_bytes);
 
-  std::string hex_sha256 = Util::BytesToString(hex_sha256_bytes, 32);
+  std::string hex_sha256 = Util::BytesToHex(hex_sha256_bytes, 32);
   std::string bin_sha256 = Util::HexToBin(hex_sha256);
 
   // std::string checksum_str = bin_sha256.substr(0, checksum_size);
@@ -107,7 +107,7 @@ std::string BIP39::GenerateMnemonic()
   return mnemonic;
 }
 
-uint8_t *BIP39::GenerateSeed()
+std::array<uint8_t, 64> BIP39::GenerateSeed()
 {
   this->GenerateEntropy();
   this->GenerateChecksum();
@@ -117,19 +117,19 @@ uint8_t *BIP39::GenerateSeed()
   int iterations = 2048;
   int keylength = 64;
 
-  Crypto::PBKDF2_HMAC_SHA512(this->GetMnemonic().c_str(), (uint8_t *)salt.c_str(), salt.size(), iterations, keylength, seed_);
+  Crypto::PBKDF2_HMAC_SHA512(this->GetMnemonic().c_str(), (uint8_t *)salt.c_str(), salt.size(), iterations, keylength, seed_.begin());
   return seed_;
 }
 
-uint8_t *BIP39::GenerateSeed(std::string passphrase)
+std::array<uint8_t, 64> BIP39::GenerateSeed(std::string passphrase)
 {
   passphrase_ = passphrase;
   return GenerateSeed();
 }
 
-uint8_t *BIP39::GenerateSeedFromEntropy(std::bitset<128> entropy)
+std::array<uint8_t, 64> BIP39::GenerateSeedFromEntropy(std::bitset<128> entropy)
 {
-  Util::BinToBytes(entropy, bytes_);
+  Util::BinToBytes(entropy, bytes_.begin());
   entropy_ = entropy;
   this->GenerateChecksum();
   this->GenerateMnemonic();
@@ -138,7 +138,7 @@ uint8_t *BIP39::GenerateSeedFromEntropy(std::bitset<128> entropy)
   int iterations = 2048;
   int keylength = 64;
 
-  Crypto::PBKDF2_HMAC_SHA512(this->GetMnemonic().c_str(), (uint8_t *)salt.c_str(), salt.size(), iterations, keylength, seed_);
+  Crypto::PBKDF2_HMAC_SHA512(this->GetMnemonic().c_str(), (uint8_t *)salt.c_str(), salt.size(), iterations, keylength, seed_.begin());
 
   // std::string seed = Util::BytesToString(seed_bytes, 64);
   // this->seed = seed_bytes;
