@@ -20,6 +20,11 @@ std::array<uint8_t, 32> BIP32::GetPrivKey()
 //   return wif_;
 // }
 
+// std::array<uint8_t, 4> GetChecksum()
+// {
+//   return checksum_;
+// }
+
 std::string BIP32::GetPrivKeyStr()
 {
   return Util::BytesToHex(m_priv_key_.begin(), 32);
@@ -77,25 +82,40 @@ std::array<uint8_t, 32> BIP32::GeneratePrivKey(std::array<uint8_t, 64> &seed)
   return m_priv_key_;
 }
 
-// uint8_t *BIP32::GenerateWIF(int net)
-// {
-//   uint8_t *prefix;
-//   uint8_t suffix[] = {0x01};
+std::string BIP32::GenerateWIF(int net)
+{
+  uint8_t prefix;
+  uint8_t suffix = {0x01};
 
-//   if (net)
-//   {
-//     prefix[0] = {0x80};
-//   }
-//   else
-//   {
-//     prefix[0] = {0xEF};
-//   };
+  // net = 1 mainnet, net = 0 testnet
+  if (net)
+  {
+    prefix = 0x80;
+  }
+  else
+  {
+    prefix = 0xEF;
+  };
 
-//   uint8_t *extended = new uint8_t[34];
-//   std::copy(prefix, prefix + 1, extended);
-//   std::copy(m_priv_key_, m_ext_priv_key_ + 32, extended + 1);
+  std::array<uint8_t, 1 + 32 + 1> extended;
+  extended[0] = prefix;
+  std::copy(m_priv_key_.begin(), m_priv_key_.end(), extended.begin() + 1);
+  extended[33] = suffix;
 
-//   uint8_t *checksum = GenerateChecksum(extended);
+  std::array<uint8_t, 4> checksum = GenerateChecksum(extended);
+  // std::cout << "Priv Key: " << Util::BytesToHex(m_priv_key_) << std::endl;
+  // std::cout << "Extended: " << Util::BytesToHex(extended) << std::endl;
+  // std::cout << "Checksum: " << Util::BytesToHex(checksum) << std::endl;
+  std::array<uint8_t, 34 + 4> extended_checksum;
+  std::copy(extended.begin(), extended.end(), extended_checksum.begin());
+  std::copy(checksum.begin(), checksum.end(), extended_checksum.begin() + extended.size());
 
-//   uint8_t *extended_checksum = new uint8_t[38];
-// }
+  Crypto::CodecMapping mapping(Crypto::kAlphaMap, Crypto::kBase58Map);
+  return Crypto::Base58Encode(std::vector<uint8_t>(extended_checksum.begin(), extended_checksum.end()), mapping);
+}
+
+std::string BIP32::GenerateWIF(int net, std::array<uint8_t, 64> seed)
+{
+  m_priv_key_ = GeneratePrivKey(seed);
+  return GenerateWIF(net);
+}

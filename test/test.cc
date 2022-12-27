@@ -99,10 +99,12 @@ TEST(BIP32Test, PrivKeyFromSeed)
   // EXPECT_EQ(bip32.GetPrivKeyStr(), prv4);
 }
 
-// TEST(BIP32Test, WIFFromSeed)
-// {
-//   bip32.GenerateWIF(net1, seed1_b);
-// }
+TEST(BIP32Test, WIFFromSeed)
+{
+  // std::cout << "real: " << bip32.GenerateWIF(net1, seed1_b) << std::endl;
+  // std::cout << "expected: " << wif1 << std::endl;
+  EXPECT_STREQ(bip32.GenerateWIF(net1, seed1_b).c_str(), wif1.c_str());
+}
 
 int main(int argc, char **argv)
 {
