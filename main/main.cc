@@ -27,10 +27,11 @@ int main(int argc, char **argv)
   BIP32 *bip32 = new BIP32();
   // std::cout << "privkey: " << std::endl;
   // std::cout << "privkey: " << Util::BytesToHex(bip32->GeneratePrivKey(seed).begin(), 32) << std::endl;
-  std::cout << "real: " << bip32->GenerateWIF(1, seed) << std::endl;
+  bip32->GeneratePrivKey(seed);
+  std::cout << "priv: " << bip32->GetPrivKeyStr() << std::endl;
   // std::cout << "real: " << bip32->GenerateWIF(1, seed) << std::endl;
-  std::cout << "expected: " << wif1 << std::endl;
+  bip32->GeneratePubKey();
+  std::cout << "pub: " << bip32->GetPubKeyStr() << std::endl;
   
-  secp256k1_context* ctx = secp256k1_context_create(SECP256K1_CONTEXT_NONE);
   return 0;
 }

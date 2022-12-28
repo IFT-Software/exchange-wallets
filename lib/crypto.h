@@ -105,7 +105,6 @@ namespace Crypto
       result.push_back(mapping.BaseMapping[digits[digitslen - 1 - i]]);
     return result;
   }
-
 }
 
 #endif
