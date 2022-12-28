@@ -29,7 +29,8 @@ int main(int argc, char **argv)
   bip32->GeneratePrivKey(seed);
   std::cout << "priv: " << bip32->GetPrivKeyStr() << std::endl;
   // std::cout << "real: " << bip32->GenerateWIF(1, seed) << std::endl;
-  bip32->GeneratePubKey();
+  std::array<uint8_t, 32> priv_key = bip32->GetPrivKey();
+  bip32->GeneratePubKey(priv_key);
   std::cout << "pub: " << bip32->GetPubKeyStr() << std::endl;
 
   return 0;

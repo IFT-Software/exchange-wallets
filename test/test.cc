@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 #include "lib/bip39.h"
 #include "lib/bip32.h"
+#include <array>
 
 TEST(HelloTest, BasicAssertions)
 {
@@ -21,6 +22,8 @@ std::array<uint8_t, 64> seed1_b = {0x24, 0xd5, 0xe9, 0xfe, 0xbf, 0x08, 0xa9, 0x1
                                    0x12, 0x62, 0x02, 0xb2, 0xa2, 0x50, 0x55, 0xd3};
 std::string prv1 = "7539c474d72a9cc9c89c67265bd8a5d4e37234b3a926e986ddff7cd02bc98510";
 std::string wif1 = "L19aitXT5ryXvRHeRAgPAQaZ2ggjxD8Gs6hqDX8zodDRdAUwkaeN";
+std::string pub1 = "024db2bc47838541eee14b8db5efde29c5201724021ecbf7ef6d9387e6b5ca2978";
+std::string pub_hashed1 = "f66a4fd55d468bd049579660b57504da32f8a924";
 bool net1 = 1;
 
 std::bitset<128> entropy2("01110100111101010001011101101000100110010101100110001010011100111001010111100001000110110000100110100110010100111011010010010111");
@@ -104,6 +107,18 @@ TEST(BIP32Test, WIFFromSeed)
   // std::cout << "real: " << bip32.GenerateWIF(net1, seed1_b) << std::endl;
   // std::cout << "expected: " << wif1 << std::endl;
   EXPECT_STREQ(bip32.GenerateWIF(net1, seed1_b).c_str(), wif1.c_str());
+}
+
+TEST(BIP32Test, PubFromPriv)
+{
+  bip32.GeneratePrivKey(seed1_b);
+  std::array<uint8_t, 32> priv_key = bip32.GetPrivKey();
+  bip32.GeneratePubKey(priv_key);
+  EXPECT_STREQ(bip32.GetPubKeyStr().c_str(), pub1.c_str());
+}
+
+TEST(CryptoTest, RIPEMD160)
+{
 }
 
 int main(int argc, char **argv)

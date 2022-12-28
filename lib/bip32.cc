@@ -17,8 +17,14 @@ std::array<uint8_t, 32> BIP32::GetPrivKey()
   return m_priv_key_;
 }
 
-std::array<uint8_t, 65> BIP32::GetPubKey() {
-  return m_pub_key_;
+std::array<uint8_t, 33> BIP32::GetPubKey()
+{
+  return m_pub_key_c;
+}
+
+std::array<uint8_t, 65> BIP32::GetPubKeyUncomp()
+{
+  return m_pub_key_unc;
 }
 
 // uint8_t *BIP32::GetWIF()
@@ -36,8 +42,14 @@ std::string BIP32::GetPrivKeyStr()
   return Util::BytesToHex(m_priv_key_);
 }
 
-std::string BIP32::GetPubKeyStr() {
-  return Util::BytesToHex(m_pub_key_);
+std::string BIP32::GetPubKeyStr()
+{
+  return Util::BytesToHex(m_pub_key_c);
+}
+
+std::string BIP32::GetPubKeyUncompStr()
+{
+  return Util::BytesToHex(m_pub_key_unc);
 }
 
 // std::string BIP32::GetWIFStr()
@@ -128,12 +140,14 @@ std::string BIP32::GenerateWIF(int net, std::array<uint8_t, 64> seed)
   return GenerateWIF(net);
 }
 
-std::array<uint8_t, 65> BIP32::GeneratePubKey() {
-  secp256k1_context* ctx = secp256k1_context_create(SECP256K1_CONTEXT_NONE);
+std::array<uint8_t, 33> BIP32::GeneratePubKey(std::array<uint8_t, 32> &priv_key)
+{
+  secp256k1_context *ctx = secp256k1_context_create(SECP256K1_CONTEXT_NONE);
   secp256k1_pubkey pubkey;
   unsigned char seckey[32];
 
-  if (secp256k1_ec_seckey_verify(ctx, m_priv_key_.begin())) {
+  if (secp256k1_ec_seckey_verify(ctx, m_priv_key_.begin()))
+  {
     std::cout << "verified" << std::endl;
   }
 
@@ -142,10 +156,41 @@ std::array<uint8_t, 65> BIP32::GeneratePubKey() {
   // std::cout << "return_val" << return_val << std::endl;
   // std::cout << "pub raw " << Util::BytesToHex(pubkey.data, 64) << std::endl;
 
-  size_t size = m_pub_key_.size();
+  size_t size_c = m_pub_key_c.size();
   // std::array<uint8_t, 65> output;
-  return_val = secp256k1_ec_pubkey_serialize(ctx, m_pub_key_.begin(), &size, &pubkey, SECP256K1_EC_COMPRESSED);
+  return_val = secp256k1_ec_pubkey_serialize(ctx, m_pub_key_c.begin(), &size_c, &pubkey, SECP256K1_EC_COMPRESSED);
   assert(return_val);
 
-  return m_pub_key_;
+  size_t size_unc = m_pub_key_unc.size();
+  // std::array<uint8_t, 65> output;
+  return_val = secp256k1_ec_pubkey_serialize(ctx, m_pub_key_unc.begin(), &size_unc, &pubkey, SECP256K1_EC_UNCOMPRESSED);
+  assert(return_val);
+
+  return m_pub_key_c;
+}
+
+std::array<uint8_t, 33> BIP32::GeneratePubKey()
+{
+  m_pub_key_c = GeneratePubKey(m_priv_key_);
+  return m_pub_key_c;
+}
+
+std::array<uint8_t, 20> BIP32::GeneratePubKeyHash(std::array<uint8_t, 33> &pub_key)
+{
+  std::array<uint8_t, 32> res_sha256;
+  std::array<uint8_t, 20> res_ripmd160;
+  Crypto::SHA256(pub_key.begin(), pub_key.size(), res_sha256.begin());
+  Crypto::RIPEMD160(res_sha256.begin(), 32, res_ripmd160.begin());
+
+  return res_ripmd160;
+}
+
+std::array<uint8_t, 20> BIP32::GeneratePubKeyHash(std::array<uint8_t, 65> &pub_key)
+{
+  std::array<uint8_t, 32> res_sha256;
+  std::array<uint8_t, 20> res_ripmd160;
+  Crypto::SHA256(pub_key.begin(), pub_key.size(), res_sha256.begin());
+  Crypto::RIPEMD160(res_sha256.begin(), 32, res_ripmd160.begin());
+
+  return res_ripmd160;
 }
