@@ -3,8 +3,6 @@
 
 #include <bitset>
 #include <climits>
-#include <openssl/evp.h>
-#include <openssl/bio.h>
 #include <string>
 #include <cstdlib>
 #include <iostream>
@@ -13,24 +11,18 @@
 #include <vector>
 #include <cmath>
 #include <fstream>
+#include <openssl/evp.h>
+#include <openssl/bio.h>
+#include <secp256k1.h>
 
 namespace Util
 {
-
-  static void PickSubArray(uint8_t arr[], uint8_t sub_arr[], int i, int j)
-  {
-    int ind = 0;
-    for (int k = i; k <= j; k++, ind++)
-    {
-      sub_arr[ind] = arr[k];
-    }
-  }
 
   static std::string BytesToHex(uint8_t *bytes, size_t len)
   {
     std::stringstream ss;
     ss << std::hex << std::setfill('0');
-    for (int i = 0; i < len; i++)
+    for (size_t i = 0; i < len; i++)
     {
       ss << std::hex << std::setw(2) << (uint64_t)bytes[i];
     }
@@ -141,7 +133,7 @@ namespace Util
     std::string partition = "";
     std::vector<uint64_t> result;
 
-    for (int i = 0; i < str.size(); i++)
+    for (size_t i = 0; i < str.size(); i++)
     {
       partition += str[i];
       if (((i + 1) % k) == 0)
@@ -153,7 +145,7 @@ namespace Util
 
     if (partition != "")
     {
-      for (int i = partition.size(); i < k; i++)
+      for (size_t i = partition.size(); i < k; i++)
       {
         partition.push_back(filler);
       }

@@ -25,3 +25,11 @@ openssl_repositories()
 
 load("//openssl:openssl_setup.bzl", "openssl_setup")
 openssl_setup()
+
+http_archive(
+    name = "libsecp256k1",
+    sha256 = "6ece280c0e6ea9d861051077c28a25b7f48800c43a4098a800b7d3b0c124e406",
+    build_file = "//libsecp256k1:BUILD.libsecp256k1.bazel",
+    strip_prefix = "secp256k1-0.2.0",
+    url = "https://github.com/bitcoin-core/secp256k1/archive/refs/tags/v0.2.0.zip"
+)

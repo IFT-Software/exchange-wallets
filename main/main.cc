@@ -3,6 +3,8 @@
 
 #include "lib/bip39.h"
 #include "lib/bip32.h"
+#include <secp256k1.h>
+
 
 int main(int argc, char **argv)
 {
@@ -28,6 +30,7 @@ int main(int argc, char **argv)
   std::cout << "real: " << bip32->GenerateWIF(1, seed) << std::endl;
   // std::cout << "real: " << bip32->GenerateWIF(1, seed) << std::endl;
   std::cout << "expected: " << wif1 << std::endl;
-
+  
+  secp256k1_context* ctx = secp256k1_context_create(SECP256K1_CONTEXT_NONE);
   return 0;
 }

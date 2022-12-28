@@ -5,6 +5,7 @@ cc_library(
   data = ["wordlist.txt"],
   deps = [
     "@openssl//:openssl",
+    "@libsecp256k1//:libsecp256k1"
   ],
   visibility = ["//visibility:public"],
 )
