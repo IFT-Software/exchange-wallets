@@ -1,4 +1,6 @@
 #include "bip32.h"
+#include "util.h"
+#include <cstddef>
 
 BIP32::BIP32()
 {
@@ -15,6 +17,10 @@ std::array<uint8_t, 32> BIP32::GetPrivKey()
   return m_priv_key_;
 }
 
+std::array<uint8_t, 65> BIP32::GetPubKey() {
+  return m_pub_key_;
+}
+
 // uint8_t *BIP32::GetWIF()
 // {
 //   return wif_;
@@ -27,7 +33,11 @@ std::array<uint8_t, 32> BIP32::GetPrivKey()
 
 std::string BIP32::GetPrivKeyStr()
 {
-  return Util::BytesToHex(m_priv_key_.begin(), 32);
+  return Util::BytesToHex(m_priv_key_);
+}
+
+std::string BIP32::GetPubKeyStr() {
+  return Util::BytesToHex(m_pub_key_);
 }
 
 // std::string BIP32::GetWIFStr()
@@ -72,13 +82,11 @@ std::array<uint8_t, 32> BIP32::GeneratePrivKey(std::array<uint8_t, 64> &seed)
 
   Crypto::HMAC_SHA512(key, seed.begin(), 64, result);
   // std::cout << "hey2" << std::endl;
-  std::cout << "HMAC Result: " << Util::BytesToHex(result, 64) << std::endl;
+  // std::cout << "HMAC Result: " << Util::BytesToHex(result, 64) << std::endl;
 
   std::copy(result, result + 32, m_priv_key_.begin());
   std::copy(result + 32, result + 64, chain_code_.begin());
 
-  // Util::PickSubArray(result, this->m_priv_key, 0, 31);
-  // Util::PickSubArray(result, this->m_pub_key, 32, 63);
   return m_priv_key_;
 }
 
@@ -118,4 +126,26 @@ std::string BIP32::GenerateWIF(int net, std::array<uint8_t, 64> seed)
 {
   m_priv_key_ = GeneratePrivKey(seed);
   return GenerateWIF(net);
+}
+
+std::array<uint8_t, 65> BIP32::GeneratePubKey() {
+  secp256k1_context* ctx = secp256k1_context_create(SECP256K1_CONTEXT_NONE);
+  secp256k1_pubkey pubkey;
+  unsigned char seckey[32];
+
+  if (secp256k1_ec_seckey_verify(ctx, m_priv_key_.begin())) {
+    std::cout << "verified" << std::endl;
+  }
+
+  int return_val = secp256k1_ec_pubkey_create(ctx, &pubkey, m_priv_key_.begin());
+  assert(return_val);
+  // std::cout << "return_val" << return_val << std::endl;
+  // std::cout << "pub raw " << Util::BytesToHex(pubkey.data, 64) << std::endl;
+
+  size_t size = m_pub_key_.size();
+  // std::array<uint8_t, 65> output;
+  return_val = secp256k1_ec_pubkey_serialize(ctx, m_pub_key_.begin(), &size, &pubkey, SECP256K1_EC_COMPRESSED);
+  assert(return_val);
+
+  return m_pub_key_;
 }

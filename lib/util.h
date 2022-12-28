@@ -1,6 +1,7 @@
 #ifndef LIB_UTIL_H
 #define LIB_UTIL_H
 
+#include <array>
 #include <bitset>
 #include <climits>
 #include <string>
