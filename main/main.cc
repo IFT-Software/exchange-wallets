@@ -5,7 +5,6 @@
 #include "lib/bip32.h"
 #include <secp256k1.h>
 
-
 int main(int argc, char **argv)
 {
   // std::string seed = "54ce95e2378ca7096e775f2c254d10f9a92b548e9378ac54297def659ae8d599dafc23dbae5f0e1130c3bd6e64cefffd6dc8cde38f2ba35811e480cd7246e675";
@@ -30,7 +29,6 @@ int main(int argc, char **argv)
   std::cout << "real: " << bip32->GenerateWIF(1, seed) << std::endl;
   // std::cout << "real: " << bip32->GenerateWIF(1, seed) << std::endl;
   std::cout << "expected: " << wif1 << std::endl;
-  
-  secp256k1_context* ctx = secp256k1_context_create(SECP256K1_CONTEXT_NONE);
+
   return 0;
 }

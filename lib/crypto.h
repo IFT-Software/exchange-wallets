@@ -106,6 +106,20 @@ namespace Crypto
     return result;
   }
 
+  static void RIPEMD160(const uint8_t *data, size_t data_len, uint8_t *res)
+  {
+    uint32_t hash_len = 20;
+    uint8_t hash[hash_len];
+
+    EVP_MD_CTX *mdctx = EVP_MD_CTX_new();
+    EVP_DigestInit_ex(mdctx, EVP_sha256(), NULL);
+    EVP_DigestUpdate(mdctx, data, data_len);
+    EVP_DigestFinal_ex(mdctx, hash, &hash_len);
+    EVP_MD_CTX_free(mdctx);
+
+    std::copy(hash, hash + hash_len, res);
+  }
+
 }
 
 #endif
