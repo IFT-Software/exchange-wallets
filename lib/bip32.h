@@ -5,10 +5,12 @@
 
 #include <array>
 #include <cassert>
+#include <iostream>
 #include <string>
 
-#include "bip39.h"
-#include "crypto.h"
+#include "lib/bip39.h"
+#include "util/crypto.h"
+#include "util/util.h"
 
 class BIP32 {
  private:

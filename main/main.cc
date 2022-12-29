@@ -1,10 +1,12 @@
 #include <secp256k1.h>
 
+#include <array>
 #include <iostream>
 #include <string>
 
 #include "lib/bip32.h"
 #include "lib/bip39.h"
+#include "util/util.h"
 
 int main(int argc, char** argv) {
   // std::string seed =
@@ -26,15 +28,17 @@ int main(int argc, char** argv) {
   // std::cout << "privkey: " << std::endl;
   // std::cout << "privkey: " << Util::BytesToHex(bip32->GeneratePrivKey(seed).begin(), 32) <<
   // std::endl;
-  bip32->GeneratePrivKey(seed);
-  bip32->GeneratePubKey();
-  bip32->GeneratePubKeyHash();
-  std::cout << "priv: " << bip32->GetPrivKeyStr() << std::endl;
+  // bip32->GeneratePrivKey(seed);
+  // bip32->GeneratePubKey();
+  // bip32->GeneratePubKeyHash();
+  // std::cout << "priv: " << bip32->GetPrivKeyStr() << std::endl;
+  std::array<uint8_t, 32> p_key = bip32->GeneratePrivKey(seed);
+  std::cout << "priv: " << util::BytesToHex(p_key) << std::endl;
   // std::cout << "real: " << bip32->GenerateWIF(1, seed) << std::endl;
   // std::array<uint8_t, 32> priv_key = bip32->GetPrivKey();
   // bip32->GeneratePubKey(priv_key);
-  std::cout << "pub: " << bip32->GetPubKeyStr() << std::endl;
-  std::cout << "pub hashed: " << bip32->GetPubKeyHashedStr() << std::endl;
+  // std::cout << "pub: " << bip32->GetPubKeyStr() << std::endl;
+  // std::cout << "pub hashed: " << bip32->GetPubKeyHashedStr() << std::endl;
 
   return 0;
 }

@@ -1,28 +1,24 @@
-#include "bip32.h"
-
-#include <cstddef>
-
-#include "util.h"
+#include "lib/bip32.h"
 
 BIP32::BIP32() { GeneratePrivKey(); }
 BIP32::BIP32(std::array<uint8_t, 64>& seed) { GeneratePrivKey(seed); }
 
 const std::array<uint8_t, 32> BIP32::GetPrivKey() { return m_priv_key_; }
-const std::string BIP32::GetWIF() { return wif_; }
 const std::array<uint8_t, 33> BIP32::GetPubKey() { return m_pub_key_c; }
 const std::array<uint8_t, 65> BIP32::GetPubKeyUncomp() { return m_pub_key_unc; }
 const std::array<uint8_t, 20> BIP32::GetPubKeyHashed() { return m_pub_key_hashed; }
 
-const std::string BIP32::GetPrivKeyStr() { return Util::BytesToHex(m_priv_key_); }
-const std::string BIP32::GetPubKeyStr() { return Util::BytesToHex(m_pub_key_c); }
-const std::string BIP32::GetPubKeyUncompStr() { return Util::BytesToHex(m_pub_key_unc); }
-const std::string BIP32::GetPubKeyHashedStr() { return Util::BytesToHex(m_pub_key_hashed); }
+const std::string BIP32::GetWIF() { return wif_; }
+const std::string BIP32::GetPrivKeyStr() { return util::BytesToHex(m_priv_key_); }
+const std::string BIP32::GetPubKeyStr() { return util::BytesToHex(m_pub_key_c); }
+const std::string BIP32::GetPubKeyUncompStr() { return util::BytesToHex(m_pub_key_unc); }
+const std::string BIP32::GetPubKeyHashedStr() { return util::BytesToHex(m_pub_key_hashed); }
 
 const std::array<uint8_t, 4> BIP32::GenerateChecksum(std::array<uint8_t, 34>& extended) {
   std::array<uint8_t, 32> res;
   std::array<uint8_t, 4> checksum;
-  Crypto::SHA256(extended.begin(), 1 + 32 + 1, res.begin());
-  Crypto::SHA256(res.begin(), res.size(), res.begin());
+  util::crypto::SHA256(extended.begin(), 1 + 32 + 1, res.begin());
+  util::crypto::SHA256(res.begin(), res.size(), res.begin());
 
   std::copy(res.begin(), res.begin() + 4, checksum.begin());
   return checksum;
@@ -30,11 +26,11 @@ const std::array<uint8_t, 4> BIP32::GenerateChecksum(std::array<uint8_t, 34>& ex
 
 const std::array<uint8_t, 32> BIP32::GeneratePrivKey() {
   BIP39* seed_generator = new BIP39();
-  const std::string key = "Bitcoin seed";
+  std::string key = "Bitcoin seed";
   std::array<uint8_t, 64> data = seed_generator->GetSeed();
 
   std::array<uint8_t, 64> result;
-  Crypto::HMAC_SHA512(key, data.begin(), data.size(), result.begin());
+  util::crypto::HMAC_SHA512(key, data.begin(), data.size(), result.begin());
 
   std::copy(result.begin(), result.begin() + 32, m_priv_key_.begin());
   std::copy(result.begin() + 32, result.end(), chain_code_.begin());
@@ -46,7 +42,7 @@ const std::array<uint8_t, 32> BIP32::GeneratePrivKey(std::array<uint8_t, 64>& se
   std::string key = "Bitcoin seed";
 
   std::array<uint8_t, 64> result;
-  Crypto::HMAC_SHA512(key, seed.begin(), 64, result.begin());
+  util::crypto::HMAC_SHA512(key, seed.begin(), 64, result.begin());
 
   std::copy(result.begin(), result.begin() + 32, m_priv_key_.begin());
   std::copy(result.begin() + 32, result.end(), chain_code_.begin());
@@ -80,8 +76,8 @@ const std::string BIP32::GenerateWIF(const int& net, std::array<uint8_t, 32>& pr
   std::copy(extended.begin(), extended.end(), extended_checksum.begin());
   std::copy(checksum.begin(), checksum.end(), extended_checksum.begin() + extended.size());
 
-  Crypto::CodecMapping mapping(Crypto::kAlphaMap, Crypto::kBase58Map);
-  return Crypto::Base58Encode(
+  util::crypto::CodecMapping mapping(util::crypto::kAlphaMap, util::crypto::kBase58Map);
+  return util::crypto::Base58Encode(
       std::vector<uint8_t>(extended_checksum.begin(), extended_checksum.end()), mapping);
 }
 
@@ -147,8 +143,8 @@ const std::array<uint8_t, 20> BIP32::GeneratePubKeyHash() {
 const std::array<uint8_t, 20> BIP32::GeneratePubKeyHash(std::array<uint8_t, 33>& pub_key) {
   std::array<uint8_t, 32> res_sha256;
   std::array<uint8_t, 20> res_ripemd160;
-  Crypto::SHA256(pub_key.begin(), pub_key.size(), res_sha256.begin());
-  Crypto::RIPEMD160(res_sha256.begin(), res_sha256.size(), res_ripemd160.begin());
+  util::crypto::SHA256(pub_key.begin(), pub_key.size(), res_sha256.begin());
+  util::crypto::RIPEMD160(res_sha256.begin(), res_sha256.size(), res_ripemd160.begin());
 
   return res_ripemd160;
 }
@@ -156,8 +152,8 @@ const std::array<uint8_t, 20> BIP32::GeneratePubKeyHash(std::array<uint8_t, 33>&
 const std::array<uint8_t, 20> BIP32::GeneratePubKeyHash(std::array<uint8_t, 65>& pub_key) {
   std::array<uint8_t, 32> res_sha256;
   std::array<uint8_t, 20> res_ripemd160;
-  Crypto::SHA256(pub_key.begin(), pub_key.size(), res_sha256.begin());
-  Crypto::RIPEMD160(res_sha256.begin(), res_sha256.size(), res_ripemd160.begin());
+  util::crypto::SHA256(pub_key.begin(), pub_key.size(), res_sha256.begin());
+  util::crypto::RIPEMD160(res_sha256.begin(), res_sha256.size(), res_ripemd160.begin());
 
   return res_ripemd160;
 }

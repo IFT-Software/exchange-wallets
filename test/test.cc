@@ -25,6 +25,7 @@ std::string prv1 = "7539c474d72a9cc9c89c67265bd8a5d4e37234b3a926e986ddff7cd02bc9
 std::string wif1 = "L19aitXT5ryXvRHeRAgPAQaZ2ggjxD8Gs6hqDX8zodDRdAUwkaeN";
 std::string pub1 = "024db2bc47838541eee14b8db5efde29c5201724021ecbf7ef6d9387e6b5ca2978";
 std::string pub_hashed1 = "f66a4fd55d468bd049579660b57504da32f8a924";
+std::string address1 = "1PTvasHrVnkoK3Y8RL2zsLHNgTXSev2mDQ";
 bool net1 = 1;
 
 std::bitset<128> entropy2(

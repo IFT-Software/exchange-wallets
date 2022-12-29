@@ -1,10 +1,10 @@
 cc_library(
   name = "lib",
-  srcs = glob(["*.cc"]),
-  hdrs = glob(["*.h"]),
+  srcs = ["bip32.cc", "bip39.cc"],
+  hdrs = ["bip32.h", "bip39.h"],
   data = ["wordlist.txt"],
   deps = [
-    "@openssl//:openssl",
+    "//util",
     "@libsecp256k1//:libsecp256k1"
   ],
   visibility = ["//visibility:public"],
