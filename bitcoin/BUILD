@@ -1,7 +1,7 @@
 cc_library(
-  name = "lib",
-  srcs = ["bip32.cc", "bip39.cc"],
-  hdrs = ["bip32.h", "bip39.h"],
+  name = "bitcoin",
+  srcs = [],
+  hdrs = ["crypto.h", "bip39.h"],
   data = ["wordlist.txt"],
   deps = [
     "//util",

@@ -1,8 +1,8 @@
 #include <array>
 
+#include "bitcoin/bip39.h"
+#include "bitcoin/crypto.h"
 #include "gtest/gtest.h"
-#include "lib/bip32.h"
-#include "lib/bip39.h"
 
 TEST(HelloTest, BasicAssertions) {
   // Expect two strings not to be equal.
@@ -21,7 +21,7 @@ std::array<uint8_t, 64> seed1_b = {
     0xf0, 0x95, 0x49, 0xb1, 0x95, 0x53, 0x9c, 0x18, 0x8b, 0xca, 0xba, 0xcd, 0x7a, 0xee, 0xc6, 0x89,
     0xc9, 0x33, 0xc9, 0x42, 0xa5, 0x5e, 0x4e, 0x0e, 0xec, 0x65, 0x24, 0xe0, 0x17, 0xc8, 0xb3, 0x1e,
     0x5c, 0xd9, 0xea, 0x3f, 0x87, 0xb2, 0x9a, 0xea, 0x12, 0x62, 0x02, 0xb2, 0xa2, 0x50, 0x55, 0xd3};
-std::string prv1 = "7539c474d72a9cc9c89c67265bd8a5d4e37234b3a926e986ddff7cd02bc98510";
+std::string priv1 = "7539c474d72a9cc9c89c67265bd8a5d4e37234b3a926e986ddff7cd02bc98510";
 std::string wif1 = "L19aitXT5ryXvRHeRAgPAQaZ2ggjxD8Gs6hqDX8zodDRdAUwkaeN";
 std::string pub1 = "024db2bc47838541eee14b8db5efde29c5201724021ecbf7ef6d9387e6b5ca2978";
 std::string pub_hashed1 = "f66a4fd55d468bd049579660b57504da32f8a924";
@@ -84,42 +84,44 @@ std::string seed8 =
     "e785b4e18db9b2ffaf2c16a6285d89604f";
 std::string prv8 = "7e0301c957c85276db827babff7d512fe0d03e387c3f154de8507980f1d24f68";
 
-BIP39 seed_generator = BIP39();
-
 TEST(BIP39Test, SeedFromEntropy) {
-  seed_generator.GenerateSeedFromEntropy(entropy1);
-  EXPECT_STREQ(seed1.c_str(), seed_generator.GetSeedStr().c_str());
+  std::string seed_str =
+      util::BytesToHex(bitcoin::bip39::GenerateSeedFromEntropy(entropy1, "").begin(), 64);
+  //   seed_generator.GenerateSeedFromEntropy(entropy1);
+  EXPECT_STREQ(seed1.c_str(), seed_str.c_str());
 
-  seed_generator.GenerateSeedFromEntropy(entropy2);
-  EXPECT_STREQ(seed2.c_str(), seed_generator.GetSeedStr().c_str());
+  seed_str = util::BytesToHex(bitcoin::bip39::GenerateSeedFromEntropy(entropy2, "").begin(), 64);
+  EXPECT_STREQ(seed2.c_str(), seed_str.c_str());
 
-  seed_generator.GenerateSeedFromEntropy(entropy3);
-  EXPECT_STREQ(seed3.c_str(), seed_generator.GetSeedStr().c_str());
+  seed_str = util::BytesToHex(bitcoin::bip39::GenerateSeedFromEntropy(entropy3, "").begin(), 64);
+  EXPECT_STREQ(seed3.c_str(), seed_str.c_str());
 
-  seed_generator.GenerateSeedFromEntropy(entropy4);
-  EXPECT_STREQ(seed4.c_str(), seed_generator.GetSeedStr().c_str());
+  seed_str = util::BytesToHex(bitcoin::bip39::GenerateSeedFromEntropy(entropy4, "").begin(), 64);
+  EXPECT_STREQ(seed4.c_str(), seed_str.c_str());
 
-  seed_generator.GenerateSeedFromEntropy(entropy5);
-  EXPECT_STREQ(seed5.c_str(), seed_generator.GetSeedStr().c_str());
+  seed_str = util::BytesToHex(bitcoin::bip39::GenerateSeedFromEntropy(entropy5, "").begin(), 64);
+  EXPECT_STREQ(seed5.c_str(), seed_str.c_str());
 
-  seed_generator.GenerateSeedFromEntropy(entropy6);
-  EXPECT_STREQ(seed6.c_str(), seed_generator.GetSeedStr().c_str());
+  seed_str = util::BytesToHex(bitcoin::bip39::GenerateSeedFromEntropy(entropy6, "").begin(), 64);
+  EXPECT_STREQ(seed6.c_str(), seed_str.c_str());
 
-  seed_generator.GenerateSeedFromEntropy(entropy7);
-  EXPECT_STREQ(seed7.c_str(), seed_generator.GetSeedStr().c_str());
+  seed_str = util::BytesToHex(bitcoin::bip39::GenerateSeedFromEntropy(entropy7, "").begin(), 64);
+  EXPECT_STREQ(seed7.c_str(), seed_str.c_str());
 
-  seed_generator.GenerateSeedFromEntropy(entropy8);
-  EXPECT_STREQ(seed8.c_str(), seed_generator.GetSeedStr().c_str());
+  seed_str = util::BytesToHex(bitcoin::bip39::GenerateSeedFromEntropy(entropy8, "").begin(), 64);
+  EXPECT_STREQ(seed8.c_str(), seed_str.c_str());
 }
 
-BIP32 m_bip32 = BIP32();
+// BIP32 m_bip32 = BIP32();
 
 TEST(BIP32Test, PrivKeyFromSeed) {
-  m_bip32.GeneratePrivKey(seed1_b);
+  //   bip32::GeneratePrivKey(seed1_b);
 
   // std::cout << "real value: " << bip32.GetPrivKeyStr() << std::endl;
   // std::cout << "exp value: " << prv1;
-  EXPECT_STREQ(m_bip32.GetPrivKeyStr().c_str(), prv1.c_str());
+  std::array<uint8_t, 32> priv_key = bitcoin::crypto::GeneratePrivKey(seed1_b);
+  std::string priv_key_string = util::BytesToHex(priv_key);
+  EXPECT_STREQ(priv_key_string.c_str(), priv1.c_str());
 
   // bip32.GeneratePrivKey(seed2_b);
   // EXPECT_EQ(bip32.GetPrivKeyStr(), prv2);
@@ -134,18 +136,24 @@ TEST(BIP32Test, PrivKeyFromSeed) {
 TEST(BIP32Test, WIFFromSeed) {
   // std::cout << "real: " << bip32.GenerateWIF(net1, seed1_b) << std::endl;
   // std::cout << "expected: " << wif1 << std::endl;
-  m_bip32.GenerateWIF(net1);
-  EXPECT_STREQ(m_bip32.GetWIF().c_str(), wif1.c_str());
+  std::array<uint8_t, 32> priv_key = bitcoin::crypto::GeneratePrivKey(seed1_b);
+  std::string wif = bitcoin::crypto::GenerateWIF(net1, priv_key);
+  EXPECT_STREQ(wif.c_str(), wif1.c_str());
 }
 
 TEST(BIP32Test, PubFromPriv) {
-  m_bip32.GeneratePubKey();
-  EXPECT_STREQ(m_bip32.GetPubKeyStr().c_str(), pub1.c_str());
+  std::array<uint8_t, 32> priv_key = bitcoin::crypto::GeneratePrivKey(seed1_b);
+  std::array<uint8_t, 33> pub_key = bitcoin::crypto::GeneratePubKey(priv_key);
+  std::string pub_key_str = util::BytesToHex(pub_key);
+  EXPECT_STREQ(pub_key_str.c_str(), pub1.c_str());
 }
 
 TEST(CryptoTest, RIPEMD160) {
-  m_bip32.GeneratePubKeyHash();
-  EXPECT_STREQ(m_bip32.GetPubKeyHashedStr().c_str(), pub_hashed1.c_str());
+  std::array<uint8_t, 32> priv_key = bitcoin::crypto::GeneratePrivKey(seed1_b);
+  std::array<uint8_t, 33> pub_key = bitcoin::crypto::GeneratePubKey(priv_key);
+  std::array<uint8_t, 20> pub_key_hash = bitcoin::crypto::GeneratePubKeyHash(pub_key);
+  std::string pub_key_hash_str = util::BytesToHex(pub_key_hash);
+  EXPECT_STREQ(pub_key_hash_str.c_str(), pub_hashed1.c_str());
 }
 
 int main(int argc, char** argv) {

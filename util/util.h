@@ -16,7 +16,7 @@
 namespace util {
 namespace {
 
-[[maybe_unused]] std::string BytesToHex(uint8_t* bytes, size_t len) {
+[[maybe_unused]] std::string BytesToHex(const uint8_t* bytes, size_t len) {
   std::stringstream ss;
   ss << std::hex << std::setfill('0');
   for (size_t i = 0; i < len; i++) {
@@ -31,7 +31,7 @@ template <std::size_t N>
 }
 
 template <std::size_t N>
-[[maybe_unused]] void BinToBytes(std::bitset<N>& bin, uint8_t* bytes) {
+[[maybe_unused]] void BinToBytes(const std::bitset<N>& bin, uint8_t* bytes) {
   std::bitset<128> mask(0);
   mask.flip();
 
@@ -47,11 +47,11 @@ template <std::size_t N>
 }
 
 template <std::size_t N, std::size_t M>
-[[maybe_unused]] void BinToBytes(std::bitset<N>& bin, std::array<uint8_t, M>& bytes) {
+[[maybe_unused]] void BinToBytes(const std::bitset<N>& bin, std::array<uint8_t, M>& bytes) {
   return BinToBytes(bin, bytes.begin());
 }
 
-[[maybe_unused]] std::string HexToBin(std::string& hexStr) {
+[[maybe_unused]] std::string HexToBin(const std::string& hexStr) {
   std::string binStr = "";
   for (size_t i = 0; i < hexStr.length(); i++) {
     switch (hexStr[i]) {
@@ -138,7 +138,7 @@ template <std::size_t N, std::size_t M>
   return result;
 }
 
-[[maybe_unused]] std::vector<std::string> MakeWordList(std::string file_name) {
+[[maybe_unused]] std::vector<std::string> MakeWordList(const std::string& file_name) {
   std::vector<std::string> words;
   std::ifstream f;
 

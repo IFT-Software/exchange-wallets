@@ -4,8 +4,8 @@
 #include <iostream>
 #include <string>
 
-#include "lib/bip32.h"
-#include "lib/bip39.h"
+#include "bitcoin/bip39.h"
+#include "bitcoin/crypto.h"
 #include "util/util.h"
 
 int main(int argc, char** argv) {
@@ -17,14 +17,16 @@ int main(int argc, char** argv) {
                                   0x33, 0xc9, 0x42, 0xa5, 0x5e, 0x4e, 0x0e, 0xec, 0x65, 0x24, 0xe0,
                                   0x17, 0xc8, 0xb3, 0x1e, 0x5c, 0xd9, 0xea, 0x3f, 0x87, 0xb2, 0x9a,
                                   0xea, 0x12, 0x62, 0x02, 0xb2, 0xa2, 0x50, 0x55, 0xd3};
+  std::cout << "1" << std::endl;
   std::string wif1 = "L19aitXT5ryXvRHeRAgPAQaZ2ggjxD8Gs6hqDX8zodDRdAUwkaeN";
-
-  BIP39* seedGenerator = new BIP39();
+  // BIP39* seedGenerator = new BIP39();
+  std::cout << "2" << std::endl;
   // std::string seed = seedGenerator->GetSeed();
   // std::cout << "Seed: " << Util::BytesToHex(seed.begin(), 64) << std::endl;
   // std::cout << "Mnemonic: " << seedGenerator->GetMnemonic() << std::endl;
   // BIP32 *bip32 = new BIP32(seed);
-  BIP32* bip32 = new BIP32();
+  // BIP32* bip32 = new BIP32();
+  std::cout << "3" << std::endl;
   // std::cout << "privkey: " << std::endl;
   // std::cout << "privkey: " << Util::BytesToHex(bip32->GeneratePrivKey(seed).begin(), 32) <<
   // std::endl;
@@ -32,8 +34,8 @@ int main(int argc, char** argv) {
   // bip32->GeneratePubKey();
   // bip32->GeneratePubKeyHash();
   // std::cout << "priv: " << bip32->GetPrivKeyStr() << std::endl;
-  std::array<uint8_t, 32> p_key = bip32->GeneratePrivKey(seed);
-  std::cout << "priv: " << util::BytesToHex(p_key) << std::endl;
+  // std::array<uint8_t, 32> p_key = bip32->GeneratePrivKey(seed);
+  // std::cout << "priv: " << util::BytesToHex(p_key) << std::endl;
   // std::cout << "real: " << bip32->GenerateWIF(1, seed) << std::endl;
   // std::array<uint8_t, 32> priv_key = bip32->GetPrivKey();
   // bip32->GeneratePubKey(priv_key);
