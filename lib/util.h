@@ -1,73 +1,63 @@
 #ifndef LIB_UTIL_H
 #define LIB_UTIL_H
 
+#include <openssl/bio.h>
+#include <openssl/evp.h>
+#include <secp256k1.h>
+
 #include <array>
 #include <bitset>
 #include <climits>
-#include <string>
+#include <cmath>
 #include <cstdlib>
+#include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <sstream>
-#include <iomanip>
+#include <string>
 #include <vector>
-#include <cmath>
-#include <fstream>
-#include <openssl/evp.h>
-#include <openssl/bio.h>
-#include <secp256k1.h>
 
-namespace Util
-{
+namespace Util {
 
-  static std::string BytesToHex(uint8_t *bytes, size_t len)
-  {
-    std::stringstream ss;
-    ss << std::hex << std::setfill('0');
-    for (size_t i = 0; i < len; i++)
-    {
-      ss << std::hex << std::setw(2) << (uint64_t)bytes[i];
+static std::string BytesToHex(uint8_t* bytes, size_t len) {
+  std::stringstream ss;
+  ss << std::hex << std::setfill('0');
+  for (size_t i = 0; i < len; i++) {
+    ss << std::hex << std::setw(2) << (uint64_t)bytes[i];
+  }
+  return ss.str();
+}
+
+template <std::size_t N>
+static std::string BytesToHex(std::array<uint8_t, N>& bytes) {
+  return BytesToHex(bytes.begin(), bytes.size());
+}
+
+template <std::size_t N>
+static void BinToBytes(std::bitset<N>& bin, uint8_t* bytes) {
+  std::bitset<128> mask(0);
+  mask.flip();
+
+  for (size_t i = 0; i < bin.size() / 8; i++) {
+    uint8_t byte = 0;
+    for (size_t j = 0; j < 8; j++) {
+      byte <<= 1;
+      byte ^= bin[(bin.size() - 1) - (i * 8 + j)];
     }
-    return ss.str();
+
+    bytes[i] = byte;
   }
+}
 
-  template <std::size_t N>
-  static std::string BytesToHex(std::array<uint8_t, N> &bytes)
-  {
-    return BytesToHex(bytes.begin(), bytes.size());
-  }
+template <std::size_t N, std::size_t M>
+static void BinToBytes(std::bitset<N>& bin, std::array<uint8_t, M>& bytes) {
+  return BinToBytes(bin, bytes.begin());
+}
 
-  template <std::size_t N>
-  static void BinToBytes(std::bitset<N> &bin, uint8_t *bytes)
-  {
-    std::bitset<128> mask(0);
-    mask.flip();
-
-    for (size_t i = 0; i < bin.size() / 8; i++)
-    {
-      uint8_t byte = 0;
-      for (size_t j = 0; j < 8; j++)
-      {
-        byte <<= 1;
-        byte ^= bin[(bin.size() - 1) - (i * 8 + j)];
-      }
-
-      bytes[i] = byte;
-    }
-  }
-
-  template <std::size_t N, std::size_t M>
-  static void BinToBytes(std::bitset<N> &bin, std::array<uint8_t, M> &bytes)
-  {
-    return BinToBytes(bin, bytes.begin());
-  }
-
-  static std::string HexToBin(std::string &hexStr)
-  {
-    std::string binStr = "";
-    for (size_t i = 0; i < hexStr.length(); i++)
-    {
-      switch (hexStr[i])
-      {
+static std::string HexToBin(std::string& hexStr) {
+  std::string binStr = "";
+  for (size_t i = 0; i < hexStr.length(); i++) {
+    switch (hexStr[i]) {
       case '0':
         binStr += "0000";
         break;
@@ -124,55 +114,50 @@ namespace Util
         break;
       default:
         break;
-      }
     }
-    return binStr;
   }
-
-  static std::vector<uint64_t> UnpackBitStr(const std::string &str, const size_t k, const char filler)
-  {
-    std::string partition = "";
-    std::vector<uint64_t> result;
-
-    for (size_t i = 0; i < str.size(); i++)
-    {
-      partition += str[i];
-      if (((i + 1) % k) == 0)
-      {
-        result.push_back(std::bitset<64>(partition).to_ullong());
-        partition.clear();
-      }
-    }
-
-    if (partition != "")
-    {
-      for (size_t i = partition.size(); i < k; i++)
-      {
-        partition.push_back(filler);
-      }
-      result.push_back(std::bitset<64>(partition).to_ullong());
-    }
-    return result;
-  }
-
-  static std::vector<std::string> MakeWordList(std::string file_name)
-  {
-    std::vector<std::string> words;
-    std::ifstream f;
-
-    f.open(file_name, std::ifstream::in); // open a file to perform read operation using file object
-    if (f.is_open())
-    { // checking whether the file is open
-      std::string tp;
-      while (getline(f, tp))
-      {                      // read data from file object and put it into string.
-        words.push_back(tp); // print the data of the string
-      }
-      f.close(); // close the file object.
-    }
-    return words;
-  }
-
+  return binStr;
 }
+
+static std::vector<uint64_t> UnpackBitStr(const std::string& str,
+                                          const size_t k, const char filler) {
+  std::string partition = "";
+  std::vector<uint64_t> result;
+
+  for (size_t i = 0; i < str.size(); i++) {
+    partition += str[i];
+    if (((i + 1) % k) == 0) {
+      result.push_back(std::bitset<64>(partition).to_ullong());
+      partition.clear();
+    }
+  }
+
+  if (partition != "") {
+    for (size_t i = partition.size(); i < k; i++) {
+      partition.push_back(filler);
+    }
+    result.push_back(std::bitset<64>(partition).to_ullong());
+  }
+  return result;
+}
+
+static std::vector<std::string> MakeWordList(std::string file_name) {
+  std::vector<std::string> words;
+  std::ifstream f;
+
+  f.open(file_name, std::ifstream::in);  // open a file to perform read
+                                         // operation using file object
+  if (f.is_open()) {                     // checking whether the file is open
+    std::string tp;
+    while (
+        getline(f, tp)) {  // read data from file object and put it into string.
+      words.push_back(tp);  // print the data of the string
+    }
+    f.close();  // close the file object.
+  }
+  return words;
+}
+
+}  // namespace Util
 
 #endif

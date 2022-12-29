@@ -2,18 +2,17 @@
 #define LIB_SEED_H
 
 #include <openssl/rand.h>
-#include <stdexcept>
+
+#include <array>
 #include <bitset>
 #include <climits>
-#include <array>
+#include <stdexcept>
 
-#include "util.h"
 #include "crypto.h"
+#include "util.h"
 
-class BIP39
-{
-
-private:
+class BIP39 {
+ private:
   // random 16 bytes in hexadecimal format
 
   std::array<uint8_t, 16> bytes_;
@@ -28,25 +27,25 @@ private:
   std::string mnemonic_;
   std::string passphrase_;
 
-  std::bitset<4> GenerateChecksum();
-  std::string GenerateMnemonic();
+  const std::bitset<4> GenerateChecksum();
+  const std::string GenerateMnemonic();
 
-public:
+ public:
   BIP39();
   BIP39(std::string passphrase);
-  std::bitset<128> GenerateEntropy();
-  std::array<uint8_t, 64> GenerateSeed();
-  std::array<uint8_t, 64> GenerateSeed(std::string passphrase);
-  std::array<uint8_t, 64> GenerateSeedFromEntropy(std::bitset<128> entropy);
+  const std::bitset<128> GenerateEntropy();
+  const std::array<uint8_t, 64> GenerateSeed();
+  const std::array<uint8_t, 64> GenerateSeed(std::string& passphrase);
+  const std::array<uint8_t, 64> GenerateSeedFromEntropy(
+      std::bitset<128>& entropy);
 
-  std::bitset<128> GetEntropy();
-  std::array<uint8_t, 64> GetSeed();
-  std::bitset<4> GetChecksum();
-  std::string GetMnemonic();
-
-  std::string GetEntropyStr();
-  std::string GetSeedStr();
-  std::string GetChecksumStr();
+  const std::bitset<128> GetEntropy();
+  const std::array<uint8_t, 64> GetSeed();
+  const std::bitset<4> GetChecksum();
+  const std::string GetMnemonic();
+  const std::string GetEntropyStr();
+  const std::string GetSeedStr();
+  const std::string GetChecksumStr();
 };
 
 #endif
