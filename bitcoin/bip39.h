@@ -12,6 +12,7 @@
 #include <stdexcept>
 #include <string>
 
+#include "absl/strings/str_join.h"
 #include "util/crypto.h"
 #include "util/util.h"
 
@@ -28,13 +29,13 @@ template <size_t N>
   return true;
 }
 
-[[maybe_unused]] const std::bitset<128> GenerateEntropy(std::array<uint8_t, 16>& bytes) {
+[[maybe_unused]] std::bitset<128> GenerateEntropy(std::array<uint8_t, 16>& bytes) {
   std::string hex_bytes = util::BytesToHex(bytes);
   return std::bitset<128>(util::HexToBin(hex_bytes));
 }
 
-[[maybe_unused]] const std::bitset<4> GenerateChecksum(std::array<uint8_t, 16>& bytes,
-                                                       const std::bitset<128>& entropy) {
+[[maybe_unused]] std::bitset<4> GenerateChecksum(std::array<uint8_t, 16>& bytes,
+                                                 const std::bitset<128>& entropy) {
   int checksum_size = (entropy).size() / 32;  // 1 bit checksum for every 32 bits of entropy
 
   std::array<uint8_t, 32> hex_sha256_bytes;
@@ -47,33 +48,25 @@ template <size_t N>
   return std::bitset<4>(bin_sha256.substr(0, checksum_size));
 }
 
-[[maybe_unused]] const std::string GenerateMnemonic(const std::bitset<128>& entropy,
-                                                    const std::bitset<4>& checksum) {
-  std::string combined = entropy.to_string() + checksum.to_string();
+[[maybe_unused]] std::string GenerateMnemonic(const std::bitset<128>& entropy,
+                                              const std::bitset<4>& checksum) {
+  const std::string combined = entropy.to_string() + checksum.to_string();
 
-  std::vector<uint64_t> int_list = util::UnpackBitStr(combined, 11, 0);
+  const std::vector<uint64_t> int_list = util::UnpackBitStr(combined, 11, 0);
+  const std::vector<std::string> wordlist = util::MakeWordList("bitcoin/wordlist.txt");
 
-  std::vector<std::string> wordlist;
-  std::vector<std::string> words;
-  std::string mnemonic = "";
-
-  wordlist = util::MakeWordList("bitcoin/wordlist.txt");
+  std::vector<std::string> mnemonic_list;
   for (uint64_t i : int_list) {
-    std::string s = wordlist[i];
-    if (!s.empty() && s[s.length() - 1] == '\n') {
-      s.erase(s.length() - 1);
-    }
-    mnemonic += s + " ";
+    mnemonic_list.push_back(wordlist[i]);
   }
-  if (!mnemonic.empty()) {
-    mnemonic.erase(mnemonic.length() - 1);
-  }
-  // std::cout << mnemonic << std::endl;
+
+  const std::string mnemonic = absl::StrJoin(mnemonic_list, " ");
+
   return mnemonic;
 }
 
-[[maybe_unused]] const std::array<uint8_t, 64> GenerateSeed(std::string& mnemonic,
-                                                            std::string& passphrase) {
+[[maybe_unused]] std::array<uint8_t, 64> GenerateSeed(std::string& mnemonic,
+                                                      std::string& passphrase) {
   std::array<uint8_t, 64> seed;
   const std::string salt = "mnemonic" + passphrase;
   // const uint8_t* salt = (uint8_t*) ((this->mnemonic +
@@ -87,8 +80,8 @@ template <size_t N>
   return seed;
 }
 
-[[maybe_unused]] const std::array<uint8_t, 64> GenerateSeedFromEntropy(
-    const std::bitset<128>& entropy, const std::string& passphrase) {
+[[maybe_unused]] std::array<uint8_t, 64> GenerateSeedFromEntropy(const std::bitset<128>& entropy,
+                                                                 const std::string& passphrase) {
   std::array<uint8_t, 16> bytes;
   util::BinToBytes(entropy, bytes.begin());
 

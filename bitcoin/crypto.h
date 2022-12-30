@@ -18,7 +18,7 @@ namespace bitcoin {
 namespace crypto {
 namespace {
 
-[[maybe_unused]] const std::array<uint8_t, 64> GenerateExtPrivKey(std::array<uint8_t, 64>& seed) {
+[[maybe_unused]] std::array<uint8_t, 64> GenerateExtPrivKey(std::array<uint8_t, 64>& seed) {
   std::array<uint8_t, 64> extended_priv_key;
   const std::string key = "Bitcoin seed";
 
@@ -30,7 +30,7 @@ namespace {
   return extended_priv_key;
 }
 
-[[maybe_unused]] const std::array<uint8_t, 32> GeneratePrivKey(std::array<uint8_t, 64>& seed) {
+[[maybe_unused]] std::array<uint8_t, 32> GeneratePrivKey(std::array<uint8_t, 64>& seed) {
   std::array<uint8_t, 64> extended_prv_key = GenerateExtPrivKey(seed);
 
   std::array<uint8_t, 32> prv_key;
@@ -48,7 +48,7 @@ namespace {
   return chain_code;
 }
 
-[[maybe_unused]] const std::array<uint8_t, 4> GenerateChecksum(std::array<uint8_t, 34>& extended) {
+[[maybe_unused]] std::array<uint8_t, 4> GenerateChecksum(std::array<uint8_t, 34>& extended) {
   std::array<uint8_t, 32> res;
   std::array<uint8_t, 4> checksum;
   util::crypto::SHA256(extended.begin(), 1 + 32 + 1, res.begin());
@@ -58,7 +58,7 @@ namespace {
   return checksum;
 }
 
-[[maybe_unused]] const std::string GenerateWIF(const int& net, std::array<uint8_t, 32>& priv_key) {
+[[maybe_unused]] std::string GenerateWIF(const int& net, std::array<uint8_t, 32>& priv_key) {
   uint8_t prefix;
   uint8_t suffix = {0x01};
 
@@ -96,7 +96,7 @@ namespace {
 //   return m_pub_key_unc;
 // }
 
-[[maybe_unused]] const std::array<uint8_t, 33> GeneratePubKey(std::array<uint8_t, 32>& priv_key) {
+[[maybe_unused]] std::array<uint8_t, 33> GeneratePubKey(std::array<uint8_t, 32>& priv_key) {
   secp256k1_context* ctx = secp256k1_context_create(SECP256K1_CONTEXT_NONE);
   secp256k1_pubkey pubkey;
 
@@ -117,8 +117,7 @@ namespace {
   return pub_key;
 }
 
-[[maybe_unused]] const std::array<uint8_t, 65> GeneratePubKeyUncomp(
-    std::array<uint8_t, 32>& priv_key) {
+[[maybe_unused]] std::array<uint8_t, 65> GeneratePubKeyUncomp(std::array<uint8_t, 32>& priv_key) {
   secp256k1_context* ctx = secp256k1_context_create(SECP256K1_CONTEXT_NONE);
   secp256k1_pubkey pubkey;
 
@@ -139,8 +138,7 @@ namespace {
   return pub_key;
 }
 
-[[maybe_unused]] const std::array<uint8_t, 20> GeneratePubKeyHash(
-    std::array<uint8_t, 33>& pub_key) {
+[[maybe_unused]] std::array<uint8_t, 20> GeneratePubKeyHash(std::array<uint8_t, 33>& pub_key) {
   std::array<uint8_t, 32> res_sha256;
   std::array<uint8_t, 20> res_ripemd160;
   util::crypto::SHA256(pub_key.begin(), pub_key.size(), res_sha256.begin());
@@ -149,8 +147,7 @@ namespace {
   return res_ripemd160;
 }
 
-[[maybe_unused]] const std::array<uint8_t, 20> GeneratePubKeyHash(
-    std::array<uint8_t, 65>& pub_key) {
+[[maybe_unused]] std::array<uint8_t, 20> GeneratePubKeyHash(std::array<uint8_t, 65>& pub_key) {
   std::array<uint8_t, 32> res_sha256;
   std::array<uint8_t, 20> res_ripemd160;
   util::crypto::SHA256(pub_key.begin(), pub_key.size(), res_sha256.begin());
