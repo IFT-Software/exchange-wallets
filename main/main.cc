@@ -7,6 +7,7 @@
 
 #include "bitcoin/bip39.h"
 #include "bitcoin/crypto.h"
+#include "bitcoin/privkey.h"
 #include "bitcoin/pubkey.h"
 #include "util/util.h"
 
@@ -55,6 +56,15 @@ int main(int argc, char** argv) {
   if (pk2.IsUncompressed()) {
     std::cout << "This key is a uncompressed pub key" << std::endl;
   }
+
+  std::string priv1_hex = "7539c474d72a9cc9c89c67265bd8a5d4e37234b3a926e986ddff7cd02bc98510";
+  std::string priv1_bin = util::HexToBin(priv1_hex);
+
+  std::array<uint8_t, 32> priv1_bytes;
+  util::BinToBytes(std::bitset<32 * 8>(priv1_bin), priv1_bytes);
+
+  PrivKey pvk2 = PrivKey(priv1_bytes);
+  std::cout << "priv: " << pvk2.hex() << std::endl;
 
   // std::array<uint8_t, 32> p_key = bitcoin::crypto::GeneratePrivKey(seed);
   // std::cout << "prv: " << util::BytesToHex(p_key) << std::endl;

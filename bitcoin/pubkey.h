@@ -6,10 +6,20 @@
 #include <cstddef>
 #include <cstdint>
 #include <string>
+#include <vector>
+
+enum AddrType { P2PKH, P2SH };
+
+class Address {
+ private:
+  AddrType addr_type;
+  std::vector<uint8_t> addr;
+};
 
 class PubKey {
  public:
   enum Size { kCompressed = 33, kUncompressed = 65 };
+  enum LockType { p2pk = 00, p2pkh = 05 };
 
  private:
   std::array<uint8_t, Size::kUncompressed> pub_key_;
@@ -29,6 +39,8 @@ class PubKey {
 
   bool IsCompressed();
   bool IsUncompressed();
+  // todo
+  bool IsValid();
 
   uint32_t size() const;
   const uint8_t* data() const;
@@ -38,6 +50,24 @@ class PubKey {
 
   std::string hex() const;
   std::string bin() const;
+
+  // todo
+  bool Decompress();
+
+  /**
+   * @brief Returns the hash160 of this public key.
+   *
+   * @return std::array<uint8_t, 20>
+   */
+  // todo: use kHASH160SIZE instead of 20
+  std::array<uint8_t, 20> GetHash160();
+
+  /**
+   * @brief Get the address for this public key based on the address type
+   *
+   * @return Address
+   */
+  Address GetAddress(AddrType& addr_type);
 };
 
 #endif
