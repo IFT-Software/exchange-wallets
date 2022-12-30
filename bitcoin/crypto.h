@@ -156,6 +156,8 @@ namespace {
   return res_ripemd160;
 }
 
+enum lock { p2pk, p2pkh, p2sh, p2ms };
+
 }  // namespace
 }  // namespace crypto
 }  // namespace bitcoin

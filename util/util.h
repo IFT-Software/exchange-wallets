@@ -116,6 +116,10 @@ template <std::size_t N, std::size_t M>
   return binStr;
 }
 
+[[maybe_unused]] std::string BytesToBin(const uint8_t* bytes, size_t len) {
+  return HexToBin(BytesToHex(bytes, len));
+}
+
 [[maybe_unused]] std::vector<uint64_t> UnpackBitStr(const std::string& str, const size_t k,
                                                     const char filler) {
   std::string partition = "";
