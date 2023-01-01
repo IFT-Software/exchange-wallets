@@ -12,6 +12,9 @@ class Script {
  private:
   LockType lock_type;
   std::vector<uint8_t> script;
+
+ public:
+  Script(std::vector<uint8_t> script, LockType lock_type);
 };
 
 /**

@@ -156,7 +156,7 @@ std::string GenerateAddressFromPubkey(PubKey& pub_key, AddrType& addr_type) {
       std::array<uint8_t, 21> pkey_hash_checksum;
       pub_key_hash = pub_key.GetHash160();
 
-      pkey_hash_checksum[0] = {0x00};
+      pkey_hash_checksum[0] = {0x6F};
       std::copy(pub_key_hash.begin(), pub_key_hash.end(), pkey_hash_checksum.begin() + 1);
 
       bitcoin::crypto::GenerateChecksum(pkey_hash_checksum.begin(), pkey_hash_checksum.size(),

@@ -6,7 +6,12 @@
 namespace bitcoin {
 namespace script {
 
-enum OPCodeType { OP_DUP = 0x76, OP_HASH160 = 0xa9, OP_EQUALVERIFY = 0x88, OP_CHECKSIG = 0xac };
+enum class OPCodeType : uint8_t {
+  OP_DUP = 0x76,
+  OP_HASH160 = 0xa9,
+  OP_EQUALVERIFY = 0x88,
+  OP_CHECKSIG = 0xac
+};
 
 void GenerateP2PKHScript(PubKey& pub_key, std::array<uint8_t, 24>& res);
 void GenerateP2PKHScript(std::array<uint8_t, 65>& pub_key, std::array<uint8_t, 24>& res);

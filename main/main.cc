@@ -10,6 +10,8 @@
 #include "bitcoin/crypto.h"
 #include "bitcoin/privkey.h"
 #include "bitcoin/pubkey.h"
+#include "bitcoin/script.h"
+#include "bitcoin/scriptpubkey.h"
 #include "util/util.h"
 
 int main(int argc, char** argv) {
@@ -24,6 +26,7 @@ int main(int argc, char** argv) {
   // std::string wif1 = "L19aitXT5ryXvRHeRAgPAQaZ2ggjxD8Gs6hqDX8zodDRdAUwkaeN";
   std::string pub1_hex = "024db2bc47838541eee14b8db5efde29c5201724021ecbf7ef6d9387e6b5ca2978";
   std::string address1 = "1PTvasHrVnkoK3Y8RL2zsLHNgTXSev2mDQ";
+  std::string taddress1 = "n3yssvNqJpC46A1k8u1NhFVhYT89bYUksP";
   std::string pub1_bin = util::HexToBin(pub1_hex);
 
   std::array<uint8_t, PubKey::Size::kCompressed> pub1_bytes;
@@ -38,16 +41,26 @@ int main(int argc, char** argv) {
   }
 
   if (pk1.IsUncompressed()) {
-    std::cout << "This key is a uncompressed pub key" << std::endl;
+    std::cout << "This key is an uncompressed pub key" << std::endl;
   }
 
   AddrType type = AddrType::P2PKH;
-  std::cout << "address 1: " << bitcoin::crypto::GenerateAddressFromPubkey(pk1, type) << std::endl;
+  std::string addr = bitcoin::crypto::GenerateAddressFromPubkey(pk1, type);
+  std::cout << "address 1: " << addr << std::endl;
+
+  Address addr_o = Address(addr, type);
+
+  std::array<uint8_t, 24> p2pkh_script1;
+  bitcoin::script::GenerateP2PKHScript(pk1, p2pkh_script1);
+
+  std::cout << util::BytesToHex(p2pkh_script1) << std::endl;
+
+  //-----------------------------------------------------------------------------------------------------
 
   std::array<uint8_t, 64> extended_priv_key;
   bitcoin::crypto::GenerateExtPrivKey(seed, extended_priv_key);
 
-  std::cout << util::BytesToHex(extended_priv_key) << std::endl;
+  std::cout << "\np2pkh script: " << util::BytesToHex(p2pkh_script1) << std::endl;
 
   std::string pub2_hex =
       "044db2bc47838541eee14b8db5efde29c5201724021ecbf7ef6d9387e6b5ca2978f585d9e0a2d30cc9137c1d"
