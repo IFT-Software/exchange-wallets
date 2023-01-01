@@ -1,7 +1,10 @@
+#ifndef BITCOIN_PRIVKEY_H
+#define BITCOIN_PRIVKEY_H
+
 #include <array>
 #include <cstdint>
 
-#include "pubkey.h"
+#include "bitcoin/pubkey.h"
 #include "util/util.h"
 
 class ScriptSig {
@@ -40,3 +43,5 @@ class PrivKey {
   // todo
   ScriptSig Sign();
 };
+
+#endif

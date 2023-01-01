@@ -8,13 +8,11 @@
 #include <string>
 #include <vector>
 
-enum AddrType { P2PKH, P2SH };
+#include "bitcoin/crypto.h"
 
-class Address {
- private:
-  AddrType addr_type;
-  std::vector<uint8_t> addr;
-};
+class Address;
+
+enum class AddrType : uint16_t;
 
 class PubKey {
  public:
@@ -53,6 +51,8 @@ class PubKey {
 
   // todo
   bool Decompress();
+
+  // todos:
 
   /**
    * @brief Returns the hash160 of this public key.

@@ -119,7 +119,8 @@ TEST(BIP32Test, PrivKeyFromSeed) {
 
   // std::cout << "real value: " << bip32.GetPrivKeyStr() << std::endl;
   // std::cout << "exp value: " << prv1;
-  std::array<uint8_t, 32> priv_key = bitcoin::crypto::GeneratePrivKey(seed1_b);
+  std::array<uint8_t, 32> priv_key;
+  bitcoin::crypto::GeneratePrivKey(seed1_b, priv_key);
   std::string priv_key_string = util::BytesToHex(priv_key);
   EXPECT_STREQ(priv_key_string.c_str(), priv1.c_str());
 
@@ -136,22 +137,26 @@ TEST(BIP32Test, PrivKeyFromSeed) {
 TEST(BIP32Test, WIFFromSeed) {
   // std::cout << "real: " << bip32.GenerateWIF(net1, seed1_b) << std::endl;
   // std::cout << "expected: " << wif1 << std::endl;
-  std::array<uint8_t, 32> priv_key = bitcoin::crypto::GeneratePrivKey(seed1_b);
+  std::array<uint8_t, 32> priv_key;
+  bitcoin::crypto::GeneratePrivKey(seed1_b, priv_key);
   std::string wif = bitcoin::crypto::GenerateWIF(net1, priv_key);
   EXPECT_STREQ(wif.c_str(), wif1.c_str());
 }
 
 TEST(BIP32Test, PubFromPriv) {
-  std::array<uint8_t, 32> priv_key = bitcoin::crypto::GeneratePrivKey(seed1_b);
+  std::array<uint8_t, 32> priv_key;
+  bitcoin::crypto::GeneratePrivKey(seed1_b, priv_key);
   std::array<uint8_t, 33> pub_key = bitcoin::crypto::GeneratePubKey(priv_key);
   std::string pub_key_str = util::BytesToHex(pub_key);
   EXPECT_STREQ(pub_key_str.c_str(), pub1.c_str());
 }
 
 TEST(CryptoTest, RIPEMD160) {
-  std::array<uint8_t, 32> priv_key = bitcoin::crypto::GeneratePrivKey(seed1_b);
+  std::array<uint8_t, 32> priv_key;
+  bitcoin::crypto::GeneratePrivKey(seed1_b, priv_key);
   std::array<uint8_t, 33> pub_key = bitcoin::crypto::GeneratePubKey(priv_key);
-  std::array<uint8_t, 20> pub_key_hash = bitcoin::crypto::GeneratePubKeyHash(pub_key);
+  std::array<uint8_t, 20> pub_key_hash;
+  bitcoin::crypto::GeneratePubKeyHash(pub_key, pub_key_hash);
   std::string pub_key_hash_str = util::BytesToHex(pub_key_hash);
   EXPECT_STREQ(pub_key_hash_str.c_str(), pub_hashed1.c_str());
 }

@@ -1,7 +1,7 @@
 cc_library(
   name = "bitcoin",
-  srcs = ["pubkey.cc", "privkey.cc"],
-  hdrs = ["crypto.h", "bip39.h", "pubkey.h", "privkey.h"],
+  srcs = ["address.cc", "crypto.cc", "pubkey.cc", "privkey.cc"],
+  hdrs = ["address.h", "bip39.h", "crypto.h", "pubkey.h", "privkey.h", "scriptpubkey.h"],
   data = ["wordlist.txt"],
   deps = [
     "//util",

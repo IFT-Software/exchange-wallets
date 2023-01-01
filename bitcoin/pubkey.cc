@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <string>
 
+#include "bitcoin/address.h"
 #include "util/util.h"
 
 uint32_t PubKey::GetSize(uint8_t pubkey_first_byte) const {
@@ -33,3 +34,11 @@ const uint8_t& PubKey::operator[](uint32_t pos) const { return pub_key_[pos]; }
 
 std::string PubKey::hex() const { return util::BytesToHex(pub_key_.begin(), GetSize(pub_key_[0])); }
 std::string PubKey::bin() const { return util::BytesToBin(pub_key_.begin(), GetSize(pub_key_[0])); }
+
+std::array<uint8_t, 20> PubKey::GetHash160() {
+  std::array<uint8_t, 20> res;
+  bitcoin::crypto::GeneratePubKeyHash(pub_key_.begin(), GetSize(pub_key_[0]), res.begin());
+  return res;
+}
+
+Address GetAddress(AddrType& addr_type) {}

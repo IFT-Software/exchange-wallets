@@ -1,10 +1,14 @@
+#ifndef BITCOIN_SCRIPTPUBKEY_H
+#define BITCOIN_SCRIPTPUBKEY_H
+
 #include <vector>
 
-#include "pubkey.h"
+#include "bitcoin/address.h"
+#include "bitcoin/pubkey.h"
 
 enum LockType { p2pkh, p2sh };
 
-class LockingScript {
+class Script {
  private:
   LockType lock_type;
   std::vector<uint8_t> script;
@@ -15,7 +19,7 @@ class LockingScript {
  *
  * @return Script
  */
-LockingScript GetScriptForAddr(Address& addr);
+Script GetScriptForAddr(Address& addr);
 
 /**
  * @brief Gets the p2pk locking script for the given public key
@@ -23,6 +27,8 @@ LockingScript GetScriptForAddr(Address& addr);
  * @param pub_key
  * @return LockingScript
  */
-LockingScript GetScriptForPubKey(PubKey& pub_key);
+Script GetScriptForPubKey(PubKey& pub_key);
 
-LockingScript GetScriptForMultiSig(int num_keys, std::vector<PubKey>& keys);
+Script GetScriptForMultiSig(int num_keys, std::vector<PubKey>& keys);
+
+#endif
