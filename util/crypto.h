@@ -78,6 +78,7 @@ using CodecMapping = struct _codecmapping {
   std::copy(hash, hash + hash_len, res);
 }
 
+// todo: write base58 encoding with uint8_t array return type
 [[maybe_unused]] std::string Base58Encode(const std::vector<uint8_t>& data, CodecMapping mapping) {
   std::vector<uint8_t> digits((data.size() * 138 / 100) + 1);
   size_t digitslen = 1;

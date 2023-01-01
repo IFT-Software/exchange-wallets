@@ -22,6 +22,8 @@ class Address {
   Address(std::string& addr, AddrType& addr_type);
 
   bool IsValid(std::string& addr, AddrType& addr_type);
+
+  AddrType GetAddrType();
 };
 
 #endif
