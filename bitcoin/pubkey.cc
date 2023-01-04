@@ -40,5 +40,3 @@ std::array<uint8_t, 20> PubKey::GetHash160() {
   bitcoin::crypto::GeneratePubKeyHash(pub_key_.begin(), GetSize(pub_key_[0]), res.begin());
   return res;
 }
-
-Address GetAddress(AddrType& addr_type) {}

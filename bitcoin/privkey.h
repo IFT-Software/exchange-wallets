@@ -4,15 +4,19 @@
 #include <array>
 #include <cstdint>
 
+#include "bitcoin/crypto.h"
 #include "bitcoin/pubkey.h"
 #include "bitcoin/signature.h"
 #include "util/util.h"
+
+typedef std::array<uint8_t, 32> ChainCode;
 
 class PrivKey {
  private:
   std::array<uint8_t, 32> priv_key_;
 
  public:
+  // todo: empty constructor?
   PrivKey(std::array<uint8_t, 32>& priv_key);
 
   // todo
@@ -28,6 +32,13 @@ class PrivKey {
   std::string bin() const;
 
   /**
+   * @brief Gets the corresponding compressed public key of this private key.
+   *
+   * @return PubKey*
+   */
+  PubKey GetPubKey();
+
+  /**
    * @brief Verifies if this private key corresponds to the given public key.
    *
    * @param pub_key The public key to be verified.
@@ -38,14 +49,29 @@ class PrivKey {
 
   // todo
   ScriptSig Sign();
+
+  /**
+   * @brief Derives a BIP32 child key, returns true if the derivation was successful.
+   *
+   * @param child_priv The array to write the child private key.
+   * @param child_chain The array to write the  child chain code.
+   * @param nChild The index of the child that will be derived.
+   * @param chain_code The chain code of this private key.
+   * @return true
+   * @return false
+   */
+  bool DeriveNormalChild(std::array<uint8_t, 32>& child_priv, ChainCode& child_chain,
+                         unsigned int nChild, const ChainCode& chain_code);
 };
 
-typedef std::array<uint8_t, 32> ChainCode;
-
+// used in BIP32
 class ExtPrivKey {
  private:
   std::array<uint8_t, 32> priv_key_;
   std::array<uint8_t, 32> chain_code_;
+
+  unsigned int depth;
+  unsigned int child;
 
  public:
   ExtPrivKey(PrivKey priv_key, ChainCode chain_code);
@@ -63,6 +89,16 @@ class ExtPrivKey {
 
   std::string hex() const;
   std::string bin() const;
+
+  /**
+   * @brief Derives a BIP32 child key, returns true if the derivation was successful.
+   *
+   * @param child_ext_key The 64-byte array to write the extended key of the child.
+   * @param nChild The index of the child that will be derived.
+   * @return true
+   * @return false
+   */
+  bool DeriveChild(std::array<uint8_t, 64>& child_ext_key, unsigned int nChild);
 };
 
 #endif
