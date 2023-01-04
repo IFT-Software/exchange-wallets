@@ -1,5 +1,7 @@
 #include "util/util.h"
 
+#include <bitset>
+
 namespace util {
 
 [[maybe_unused]] std::string BytesToHex(const uint8_t* bytes, size_t len) {
@@ -18,6 +20,30 @@ namespace util {
     ss << std::hex << std::setw(2) << (uint32_t)bytes[i];
   }
   return ss.str();
+}
+
+[[maybe_unused]] void UInt16ToBytes(const uint16_t uint16, uint8_t* bytes) {
+  BinToBytes(std::bitset<16>(uint16), bytes);
+}
+
+[[maybe_unused]] void UInt16ToBytes(const uint16_t uint16, std::array<uint8_t, 2>& bytes) {
+  UInt16ToBytes(uint16, bytes.begin());
+}
+
+[[maybe_unused]] void UInt32ToBytes(const uint32_t uint32, uint8_t* bytes) {
+  BinToBytes(std::bitset<32>(uint32), bytes);
+}
+
+[[maybe_unused]] void UInt32ToBytes(const uint32_t uint32, std::array<uint8_t, 4>& bytes) {
+  UInt32ToBytes(uint32, bytes.begin());
+}
+
+[[maybe_unused]] void UInt64ToBytes(const uint64_t uint64, uint8_t* bytes) {
+  BinToBytes(std::bitset<64>(uint64), bytes);
+}
+
+[[maybe_unused]] void UInt64ToBytes(const uint64_t uint64, std::array<uint8_t, 8>& bytes) {
+  UInt64ToBytes(uint64, bytes.begin());
 }
 
 [[maybe_unused]] std::string HexToBin(const std::string& hexStr) {

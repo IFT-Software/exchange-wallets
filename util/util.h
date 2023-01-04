@@ -26,9 +26,6 @@ template <std::size_t N>
 
 template <std::size_t N>
 [[maybe_unused]] void BinToBytes(const std::bitset<N>& bin, uint8_t* bytes) {
-  std::bitset<128> mask(0);
-  mask.flip();
-
   for (size_t i = 0; i < bin.size() / 8; i++) {
     uint8_t byte = 0;
     for (size_t j = 0; j < 8; j++) {
@@ -44,6 +41,15 @@ template <std::size_t N, std::size_t M>
 [[maybe_unused]] void BinToBytes(const std::bitset<N>& bin, std::array<uint8_t, M>& bytes) {
   return BinToBytes(bin, bytes.begin());
 }
+
+[[maybe_unused]] void UInt16ToBytes(const uint16_t uint16, uint8_t* bytes);
+[[maybe_unused]] void UInt16ToBytes(const uint16_t uint16, std::array<uint8_t, 2>& bytes);
+
+[[maybe_unused]] void UInt32ToBytes(const uint32_t uint32, uint8_t* bytes);
+[[maybe_unused]] void UInt32ToBytes(const uint32_t uint32, std::array<uint8_t, 4>& bytes);
+
+[[maybe_unused]] void UInt64ToBytes(const uint64_t uint64, uint8_t* bytes);
+[[maybe_unused]] void UInt64ToBytes(const uint64_t uint64, std::array<uint8_t, 8>& bytes);
 
 [[maybe_unused]] std::string HexToBin(const std::string& hexStr);
 

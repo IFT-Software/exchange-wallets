@@ -20,11 +20,11 @@
 #include "util/util.h"
 
 int main(int argc, char** argv) {
-  zmq::context_t ctx(4);
+  // zmq::context_t ctx(4);
 
-  // SubscriberThread(&ctx);
-  auto thread = std::async(std::launch::async, &(comms::SubscriberThread), &ctx);
-  thread.wait();
+  // // SubscriberThread(&ctx);
+  // auto thread = std::async(std::launch::async, &(comms::SubscriberThread), &ctx);
+  // thread.wait();
 
   // -----------------------------------------------------------------------------------------
 
@@ -114,6 +114,22 @@ int main(int argc, char** argv) {
 
   // // std::array<uint8_t, 32> p_key = bitcoin::crypto::GeneratePrivKey(seed);
   // // std::cout << "prv: " << util::BytesToHex(p_key) << std::endl;
+
+  uint16_t uint16_int = 30;
+  uint32_t uint32_int = 30;
+  uint64_t uint64_int = 30;
+
+  uint8_t uint16_bytes[2];
+  uint8_t uint32_bytes[4];
+  uint8_t uint64_bytes[8];
+
+  util::UInt16ToBytes(uint16_int, uint16_bytes);
+  util::UInt32ToBytes(uint32_int, uint32_bytes);
+  util::UInt64ToBytes(uint64_int, uint64_bytes);
+
+  std::cout << "uint16_str: " << util::BytesToHex(uint16_bytes, 2) << std::endl;
+  std::cout << "uint32_str: " << util::BytesToHex(uint32_bytes, 4) << std::endl;
+  std::cout << "uint64_str: " << util::BytesToHex(uint64_bytes, 8) << std::endl;
 
   return 0;
 }
