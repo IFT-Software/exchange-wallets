@@ -1,18 +1,7 @@
 exports_files(
     [
         "BUILD.libsecp256k1.bazel",
-        "BUILD.libzmq.bazel",
-        "BUILD.cppzmq.bazel"
+        "BUILD.libzmq.bazel"
     ],
     visibility = ["//visibility:public"],
 )
-
-# cc_library(
-#   name = "cppzmq",
-#   srcs = [],
-#   hdrs = ["zmq.hpp", "zmq_addon.hpp"],
-#   deps = [
-#     "@libzmq//:libzmq"
-#   ],
-#   visibility = ["//visibility:public"],
-# )

@@ -10,18 +10,12 @@ filegroup(
 
 LIB_NAME = "libzmq"
 
-# configure_make(
-#     name = "libzmq",
-#     configure_in_place = True,
-#     configure_options = ["--disable-Werror"],
-#     lib_name = LIB_NAME,
-#     lib_source = ":all_srcs",
-#     visibility = ["//visibility:public"],
-# )
-
 cmake(
     name = "libzmq",
     lib_name = LIB_NAME,
     lib_source = ":all_srcs",
+    out_shared_libs = [
+        "libzmq.so",
+    ],
     visibility = ["//visibility:public"],
 )

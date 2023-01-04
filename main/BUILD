@@ -4,5 +4,6 @@ cc_binary(
   # linkopts = ["-lzmq"],
   deps = [
     "//bitcoin",
+    "//third_party/cppzmq"
   ]
 )

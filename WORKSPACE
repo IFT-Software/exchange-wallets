@@ -35,13 +35,13 @@ http_archive(
     url = "https://github.com/bitcoin-core/secp256k1/archive/refs/tags/v0.2.0.zip"
 )
 
-# http_archive(
-#     name = "libzmq",
-#     sha256 = "622bf650f7dab6de098c84d491052ad5a6d3e57550cd09cc259e0ab24ec83ec3",
-#     build_file = "//third_party:BUILD.libzmq.bazel",
-#     strip_prefix = "zeromq-4.3.4",
-#     url = "https://github.com/zeromq/libzmq/releases/download/v4.3.4/zeromq-4.3.4.zip"
-# )
+http_archive(
+    name = "libzmq",
+    sha256 = "622bf650f7dab6de098c84d491052ad5a6d3e57550cd09cc259e0ab24ec83ec3",
+    build_file = "//third_party:BUILD.libzmq.bazel",
+    strip_prefix = "zeromq-4.3.4",
+    url = "https://github.com/zeromq/libzmq/releases/download/v4.3.4/zeromq-4.3.4.zip"
+)
 
 # http_archive(
 #     name = "cppzmq",
