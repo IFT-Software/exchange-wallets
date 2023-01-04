@@ -14,6 +14,8 @@
 #include "bitcoin/pubkey.h"
 #include "bitcoin/script.h"
 #include "bitcoin/scriptpubkey.h"
+#include "boost/multiprecision/cpp_int.hpp"
+#include "boost/multiprecision/gmp.hpp"
 #include "comms/comms.h"
 #include "third_party/cppzmq/zmq.hpp"
 #include "third_party/cppzmq/zmq_addon.hpp"
@@ -115,21 +117,39 @@ int main(int argc, char** argv) {
   // // std::array<uint8_t, 32> p_key = bitcoin::crypto::GeneratePrivKey(seed);
   // // std::cout << "prv: " << util::BytesToHex(p_key) << std::endl;
 
-  uint16_t uint16_int = 30;
-  uint32_t uint32_int = 30;
-  uint64_t uint64_int = 30;
+  // uint16_t uint16_int = 30;
+  // uint32_t uint32_int = 30;
+  // uint64_t uint64_int = 30;
 
-  uint8_t uint16_bytes[2];
-  uint8_t uint32_bytes[4];
-  uint8_t uint64_bytes[8];
+  // uint8_t uint16_bytes[2];
+  // uint8_t uint32_bytes[4];
+  // uint8_t uint64_bytes[8];
 
-  util::UInt16ToBytes(uint16_int, uint16_bytes);
-  util::UInt32ToBytes(uint32_int, uint32_bytes);
-  util::UInt64ToBytes(uint64_int, uint64_bytes);
+  // util::UInt16ToBytes(uint16_int, uint16_bytes);
+  // util::UInt32ToBytes(uint32_int, uint32_bytes);
+  // util::UInt64ToBytes(uint64_int, uint64_bytes);
 
-  std::cout << "uint16_str: " << util::BytesToHex(uint16_bytes, 2) << std::endl;
-  std::cout << "uint32_str: " << util::BytesToHex(uint32_bytes, 4) << std::endl;
-  std::cout << "uint64_str: " << util::BytesToHex(uint64_bytes, 8) << std::endl;
+  // std::cout << "uint16_str: " << util::BytesToHex(uint16_bytes, 2) << std::endl;
+  // std::cout << "uint32_str: " << util::BytesToHex(uint32_bytes, 4) << std::endl;
+  // std::cout << "uint64_str: " << util::BytesToHex(uint64_bytes, 8) << std::endl;
+
+  using namespace boost::multiprecision;
+
+  // int128_t v = 1;
+
+  // // Do some fixed precision arithmetic:
+  // for (unsigned i = 1; i <= 20; ++i) v *= i;
+
+  // std::cout << v << std::endl;  // prints 2432902008176640000 (i.e. 20!)
+
+  // Repeat at arbitrary precision:
+  mpz_int u = 1;
+  for (unsigned i = 1; i <= 10000; ++i) u *= i;
+
+  // prints
+  // 93326215443944152681699238856266700490715968264381621468592963895217599993229915608941463976156518286253697920827223758251185210916864000000000000000000000000
+  // (i.e. 100!)
+  std::cout << u << std::endl;
 
   return 0;
 }

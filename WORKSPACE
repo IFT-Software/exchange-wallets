@@ -7,6 +7,22 @@ http_archive(
 )
 
 http_archive(
+    name = "rules_foreign_cc",
+    sha256 = "2a4d07cd64b0719b39a7c12218a3e507672b82a97b98c6a89d38565894cf7c51",
+    strip_prefix = "rules_foreign_cc-0.9.0",
+    url = "https://github.com/bazelbuild/rules_foreign_cc/archive/refs/tags/0.9.0.tar.gz",
+)
+
+load("@rules_foreign_cc//foreign_cc:repositories.bzl", "rules_foreign_cc_dependencies")
+rules_foreign_cc_dependencies()
+
+load("//openssl:openssl_repositories.bzl", "openssl_repositories")
+openssl_repositories()
+
+load("//openssl:openssl_setup.bzl", "openssl_setup")
+openssl_setup()
+
+http_archive(
   name = "com_google_absl",
   sha256 = "54707f411cb62a26a776dad5fd60829098c181700edcd022ea5c2ca49e9b7ef1",
   strip_prefix = "abseil-cpp-20220623.1",
@@ -18,13 +34,6 @@ http_archive(
     sha256 = "199e68f9dff997b30d420bf23cd9a0d3f66bfee4460e2cd95084a2c45ee00f1a",
     strip_prefix = "googletest-5376968f6948923e2411081fd9372e71a59d8e77",
     urls = ["https://github.com/google/googletest/archive/5376968f6948923e2411081fd9372e71a59d8e77.zip"],
-)
-
-http_archive(
-    name = "rules_foreign_cc",
-    sha256 = "2a4d07cd64b0719b39a7c12218a3e507672b82a97b98c6a89d38565894cf7c51",
-    strip_prefix = "rules_foreign_cc-0.9.0",
-    url = "https://github.com/bazelbuild/rules_foreign_cc/archive/refs/tags/0.9.0.tar.gz",
 )
 
 http_archive(
@@ -43,18 +52,12 @@ http_archive(
     url = "https://github.com/zeromq/libzmq/releases/download/v4.3.4/zeromq-4.3.4.zip"
 )
 
-# http_archive(
-#     name = "cppzmq",
-#     build_file = "//third_party:BUILD.cppzmq.bazel",
-#     strip_prefix = "cppzmq-4.9.0",
-#     url = "https://github.com/zeromq/cppzmq/archive/refs/tags/v4.9.0.zip"
-# )
+http_archive(
+    name = "com_github_nelhage_rules_boost",
+    sha256 = "5ea00abc70cdf396a23fb53201db19ebce2837d28887a08544429d27783309ed",
+    url = "https://github.com/nelhage/rules_boost/archive/96e9b631f104b43a53c21c87b01ac538ad6f3b48.tar.gz",
+    strip_prefix = "rules_boost-96e9b631f104b43a53c21c87b01ac538ad6f3b48",
+)
 
-load("@rules_foreign_cc//foreign_cc:repositories.bzl", "rules_foreign_cc_dependencies")
-rules_foreign_cc_dependencies()
-
-load("//openssl:openssl_repositories.bzl", "openssl_repositories")
-openssl_repositories()
-
-load("//openssl:openssl_setup.bzl", "openssl_setup")
-openssl_setup()
+load("@com_github_nelhage_rules_boost//:boost/boost.bzl", "boost_deps")
+boost_deps()
