@@ -176,5 +176,7 @@ std::string GenerateAddressFromPubkey(PubKey& pub_key, AddrType& addr_type) {
   }
 }
 
+// Child Key Derivation (CKD) Functions
+
 }  // namespace crypto
 }  // namespace bitcoin

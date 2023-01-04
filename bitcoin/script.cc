@@ -1,6 +1,6 @@
-#include "script.h"
+#include "bitcoin/script.h"
 
-#include "crypto.h"
+#include "bitcoin/crypto.h"
 #include "util/util.h"
 
 namespace bitcoin {

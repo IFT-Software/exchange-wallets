@@ -26,6 +26,7 @@ class PubKey {
   void Invalidate();
 
  public:
+  // todo: IsValid checks
   template <size_t N>
   PubKey(std::array<uint8_t, N>& pub_key) {
     if (N == Size::kCompressed || N == Size::kUncompressed) {

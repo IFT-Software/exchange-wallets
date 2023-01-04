@@ -27,18 +27,6 @@ http_archive(
     url = "https://github.com/bazelbuild/rules_foreign_cc/archive/refs/tags/0.9.0.tar.gz",
 )
 
-load("@rules_foreign_cc//foreign_cc:repositories.bzl", "rules_foreign_cc_dependencies")
-
-# This sets up some common toolchains for building targets. For more details, please see
-# https://bazelbuild.github.io/rules_foreign_cc/0.9.0/flatten.html#rules_foreign_cc_dependencies
-rules_foreign_cc_dependencies()
-
-load("//openssl:openssl_repositories.bzl", "openssl_repositories")
-openssl_repositories()
-
-load("//openssl:openssl_setup.bzl", "openssl_setup")
-openssl_setup()
-
 http_archive(
     name = "libsecp256k1",
     sha256 = "6ece280c0e6ea9d861051077c28a25b7f48800c43a4098a800b7d3b0c124e406",
@@ -46,3 +34,20 @@ http_archive(
     strip_prefix = "secp256k1-0.2.0",
     url = "https://github.com/bitcoin-core/secp256k1/archive/refs/tags/v0.2.0.zip"
 )
+
+http_archive(
+    name = "libzmq",
+    sha256 = "622bf650f7dab6de098c84d491052ad5a6d3e57550cd09cc259e0ab24ec83ec3",
+    build_file = "//libzmq:BUILD.libzmq.bazel",
+    strip_prefix = "zeromq-4.3.4",
+    url = "https://github.com/zeromq/libzmq/releases/download/v4.3.4/zeromq-4.3.4.zip"
+)
+
+load("@rules_foreign_cc//foreign_cc:repositories.bzl", "rules_foreign_cc_dependencies")
+rules_foreign_cc_dependencies()
+
+load("//openssl:openssl_repositories.bzl", "openssl_repositories")
+openssl_repositories()
+
+load("//openssl:openssl_setup.bzl", "openssl_setup")
+openssl_setup()

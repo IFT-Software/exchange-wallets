@@ -75,6 +75,8 @@ template <size_t N>
 // // used for p2sh
 // std::string GenerateAddressFromScript(Script& script);
 
+// Child Key Derivation (CKD) functions
+
 }  // namespace crypto
 }  // namespace bitcoin
 

@@ -10,28 +10,24 @@ enum LockType { p2pkh, p2sh };
 
 class Script {
  private:
-  LockType lock_type;
-  std::vector<uint8_t> script;
+  LockType lock_type_;
+  std::vector<uint8_t> script_;
 
  public:
   Script(std::vector<uint8_t> script, LockType lock_type);
+
+  bool IsValid(std::vector<uint8_t> script, LockType lock_type);
+
+  LockType GetLockType();
+
+  uint32_t size() const;
+  std::vector<uint8_t> data() const;
+  std::vector<uint8_t>::const_iterator begin() const;
+  std::vector<uint8_t>::const_iterator end() const;
+  const uint8_t& operator[](uint32_t pos) const;
+
+  std::string hex();
+  std::string bin();
 };
-
-/**
- * @brief Gets the locking script for the given address
- *
- * @return Script
- */
-Script GetScriptForAddr(Address& addr);
-
-/**
- * @brief Gets the p2pk locking script for the given public key
- *
- * @param pub_key
- * @return LockingScript
- */
-Script GetScriptForPubKey(PubKey& pub_key);
-
-Script GetScriptForMultiSig(int num_keys, std::vector<PubKey>& keys);
 
 #endif
