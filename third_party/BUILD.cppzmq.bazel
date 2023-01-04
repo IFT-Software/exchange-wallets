@@ -1,4 +1,4 @@
-load("@rules_foreign_cc//foreign_cc:defs.bzl", "configure_make")
+load("@rules_foreign_cc//foreign_cc:defs.bzl", "configure_make", "cmake")
 
 filegroup(
     name = "all_srcs",
@@ -8,12 +8,10 @@ filegroup(
     ),
 )
 
-LIB_NAME = "libzmq"
+LIB_NAME = "cppzmq"
 
-configure_make(
-    name = "libzmq",
-    configure_in_place = True,
-    configure_options = ["--disable-Werror"],
+cmake(
+    name = "cppzmq",
     lib_name = LIB_NAME,
     lib_source = ":all_srcs",
     visibility = ["//visibility:public"],

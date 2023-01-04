@@ -30,18 +30,25 @@ http_archive(
 http_archive(
     name = "libsecp256k1",
     sha256 = "6ece280c0e6ea9d861051077c28a25b7f48800c43a4098a800b7d3b0c124e406",
-    build_file = "//libsecp256k1:BUILD.libsecp256k1.bazel",
+    build_file = "//third_party:BUILD.libsecp256k1.bazel",
     strip_prefix = "secp256k1-0.2.0",
     url = "https://github.com/bitcoin-core/secp256k1/archive/refs/tags/v0.2.0.zip"
 )
 
-http_archive(
-    name = "libzmq",
-    sha256 = "622bf650f7dab6de098c84d491052ad5a6d3e57550cd09cc259e0ab24ec83ec3",
-    build_file = "//libzmq:BUILD.libzmq.bazel",
-    strip_prefix = "zeromq-4.3.4",
-    url = "https://github.com/zeromq/libzmq/releases/download/v4.3.4/zeromq-4.3.4.zip"
-)
+# http_archive(
+#     name = "libzmq",
+#     sha256 = "622bf650f7dab6de098c84d491052ad5a6d3e57550cd09cc259e0ab24ec83ec3",
+#     build_file = "//third_party:BUILD.libzmq.bazel",
+#     strip_prefix = "zeromq-4.3.4",
+#     url = "https://github.com/zeromq/libzmq/releases/download/v4.3.4/zeromq-4.3.4.zip"
+# )
+
+# http_archive(
+#     name = "cppzmq",
+#     build_file = "//third_party:BUILD.cppzmq.bazel",
+#     strip_prefix = "cppzmq-4.9.0",
+#     url = "https://github.com/zeromq/cppzmq/archive/refs/tags/v4.9.0.zip"
+# )
 
 load("@rules_foreign_cc//foreign_cc:repositories.bzl", "rules_foreign_cc_dependencies")
 rules_foreign_cc_dependencies()

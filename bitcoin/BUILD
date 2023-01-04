@@ -5,7 +5,6 @@ cc_library(
   data = ["wordlist.txt"],
   deps = [
     "//util",
-    "//libzmq:cppzmq",
     "@libsecp256k1//:libsecp256k1",
     "@com_google_absl//absl/strings"
   ],

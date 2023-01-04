@@ -1,6 +1,0 @@
-exports_files(
-    [
-        "BUILD.libsecp256k1.bazel",
-    ],
-    visibility = ["//visibility:public"],
-)

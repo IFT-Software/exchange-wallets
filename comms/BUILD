@@ -3,7 +3,6 @@ cc_library(
   srcs = ["comms.cc"],
   hdrs = ["comms.h"],
   deps = [
-    "//libzmq:cppzmq"
   ],
   visibility = ["//visibility:public"],
 )

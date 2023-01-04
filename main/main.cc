@@ -6,6 +6,8 @@
 #include <iostream>
 #include <string>
 #include <thread>
+// #include <zmq.hpp>
+// #include <zmq_addon.hpp>
 
 #include "bitcoin/address.h"
 #include "bitcoin/bip39.h"
@@ -14,8 +16,6 @@
 #include "bitcoin/pubkey.h"
 #include "bitcoin/script.h"
 #include "bitcoin/scriptpubkey.h"
-// #include "libzmq/zmq.hpp"
-// #include "libzmq/zmq_addon.hpp"
 #include "util/util.h"
 
 // void SubscriberThread(zmq::context_t* ctx) {
@@ -46,9 +46,10 @@ int main(int argc, char** argv) {
   // -----------------------------------------------------------------------------------------
 
   // std::string seed =
-  //
-  // "54ce95e2378ca7096e775f2c254d10f9a92b548e9378ac54297def659ae8d599dafc23dbae5f0e1130c3bd6e64cefffd"
-  // "6dc8cde38f2ba35811e480cd7246e675";
+
+  //     "54ce95e2378ca7096e775f2c254d10f9a92b548e9378ac54297def659ae8d599dafc23dbae5f0e1130c3bd6e64ce"
+  //     "fffd"
+  //     "6dc8cde38f2ba35811e480cd7246e675";
   std::array<uint8_t, 64> seed = {0x24, 0xd5, 0xe9, 0xfe, 0xbf, 0x08, 0xa9, 0x1d, 0xaa, 0x52, 0x43,
                                   0xa2, 0x5b, 0x2d, 0x4e, 0xc0, 0xf0, 0x95, 0x49, 0xb1, 0x95, 0x53,
                                   0x9c, 0x18, 0x8b, 0xca, 0xba, 0xcd, 0x7a, 0xee, 0xc6, 0x89, 0xc9,
