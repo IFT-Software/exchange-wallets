@@ -14,35 +14,18 @@
 #include "bitcoin/pubkey.h"
 #include "bitcoin/script.h"
 #include "bitcoin/scriptpubkey.h"
+#include "comms/comms.h"
 #include "third_party/cppzmq/zmq.hpp"
 #include "third_party/cppzmq/zmq_addon.hpp"
 #include "util/util.h"
 
-void SubscriberThread(zmq::context_t* ctx) {
-  //  Prepare our context and subscriber
-  zmq::socket_t subscriber(*ctx, zmq::socket_type::sub);
-  subscriber.connect("tcp://127.0.0.1:29000");
-
-  //  Thread3 opens ALL envelopes
-  subscriber.set(zmq::sockopt::subscribe, "hashtx");
-
-  while (1) {
-    // Receive all parts of the message
-    std::vector<zmq::message_t> recv_msgs;
-    zmq::recv_result_t result = zmq::recv_multipart(subscriber, std::back_inserter(recv_msgs));
-    assert(result && "recv failed");
-    assert(*result == 2);
-
-    std::cout << "Thread: [" << recv_msgs[0].to_string() << "] " << recv_msgs[1].to_string()
-              << std::endl;
-  }
-}
-
 int main(int argc, char** argv) {
-  zmq::context_t ctx(0);
+  zmq::context_t ctx(4);
 
-  auto thread = std::async(std::launch::async, SubscriberThread, &ctx);
+  // SubscriberThread(&ctx);
+  auto thread = std::async(std::launch::async, &(comms::SubscriberThread), &ctx);
   thread.wait();
+
   // -----------------------------------------------------------------------------------------
 
   // std::string seed =
