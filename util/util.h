@@ -1,6 +1,8 @@
 #ifndef UTIL_UTIL_H
 #define UTIL_UTIL_H
 
+#include <gmpxx.h>
+
 #include <array>
 #include <bitset>
 #include <climits>
@@ -9,6 +11,7 @@
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <memory>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -59,6 +62,9 @@ template <std::size_t N, std::size_t M>
 
 [[maybe_unused]] void UInt64ToBytes(const uint64_t uint64, uint8_t* bytes);
 [[maybe_unused]] void UInt64ToBytes(const uint64_t uint64, std::array<uint8_t, 8>& bytes);
+
+[[maybe_unused]] void MpIntToBytes(const mpz_t& mpint, std::vector<uint8_t>& bytes);
+[[maybe_unused]] void MpIntToBytes(const mpz_class& mpint, std::vector<uint8_t>& bytes);
 
 [[maybe_unused]] std::string HexToBin(const std::string& hexStr);
 

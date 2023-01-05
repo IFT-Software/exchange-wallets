@@ -48,8 +48,8 @@ namespace crypto {
 
   std::copy(res_.begin(), res_.begin() + 4, res);
 
-  std::cout << "data: " << util::BytesToHex(data, len) << std::endl;
-  std::cout << "checksum: " << util::BytesToHex(res, 4) << std::endl;
+  // std::cout << "data: " << util::BytesToHex(data, len) << std::endl;
+  // std::cout << "checksum: " << util::BytesToHex(res, 4) << std::endl;
 }
 
 [[maybe_unused]] std::string GenerateWIF(const int net, const uint8_t* priv_key) {
@@ -81,9 +81,9 @@ namespace crypto {
   secp256k1_context* ctx = secp256k1_context_create(SECP256K1_CONTEXT_NONE);
   secp256k1_pubkey pubkey;
 
-  if (secp256k1_ec_seckey_verify(ctx, priv_key.begin())) {
-    std::cout << "verified" << std::endl;
-  }
+  // if (secp256k1_ec_seckey_verify(ctx, priv_key.begin())) {
+  //   std::cout << "verified" << std::endl;
+  // }
 
   int return_val = secp256k1_ec_pubkey_create(ctx, &pubkey, priv_key.begin());
   assert(return_val);
@@ -139,12 +139,6 @@ namespace crypto {
 
 [[maybe_unused]] void GeneratePubKeyHash(std::array<uint8_t, 65>& pub_key,
                                          std::array<uint8_t, 20>& res) {
-  // std::array<uint8_t, 32> res_sha256;
-  // std::array<uint8_t, 20> res_ripemd160;
-  // util::crypto::SHA256(pub_key.begin(), pub_key.size(), res_sha256.begin());
-  // util::crypto::RIPEMD160(res_sha256.begin(), res_sha256.size(), res_ripemd160.begin());
-
-  // return res_ripemd160;
   GeneratePubKeyHash(pub_key.begin(), pub_key.size(), res.begin());
 }
 
@@ -156,7 +150,7 @@ std::string GenerateAddressFromPubkey(PubKey& pub_key, AddrType& addr_type) {
       std::array<uint8_t, 21> pkey_hash_checksum;
       pub_key_hash = pub_key.GetHash160();
 
-      pkey_hash_checksum[0] = {0x6F};
+      pkey_hash_checksum[0] = {0x00};
       std::copy(pub_key_hash.begin(), pub_key_hash.end(), pkey_hash_checksum.begin() + 1);
 
       bitcoin::crypto::GenerateChecksum(pkey_hash_checksum.begin(), pkey_hash_checksum.size(),

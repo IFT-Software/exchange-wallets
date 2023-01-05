@@ -44,6 +44,8 @@ using CodecMapping = struct _codecmapping {
                                          int32_t salt_len, int32_t iterations, uint32_t keylength,
                                          uint8_t* res);
 
+[[maybe_unused]] void HMAC_SHA512(const uint8_t* key, size_t key_size, const uint8_t* data,
+                                  size_t data_len, uint8_t* res);
 [[maybe_unused]] void HMAC_SHA512(const std::string& key, const uint8_t* data, size_t data_len,
                                   uint8_t* res);
 

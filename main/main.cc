@@ -1,3 +1,4 @@
+#include <asm-generic/errno-base.h>
 #include <gmpxx.h>
 #include <secp256k1.h>
 
@@ -26,30 +27,45 @@
 int main(int argc, char** argv) {
   // zmq::context_t ctx(4);
 
-  // // SubscriberThread(&ctx);
+  // SubscriberThread(&ctx);
   // auto thread = std::async(std::launch::async, &(comms::SubscriberThread), &ctx);
   // thread.wait();
 
-  // -----------------------------------------------------------------------------------------
+  // -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+  // -- -- -- -- -- -- -- -- -- -- -- -- -
 
   // std::string seed =
+  //     "54ce95e2378ca7096e775f2c254d10f9a92b548e9378ac54297def659ae8d599dafc23dbae5f0e1130c3bd6e64cefffd6dc8cde38f2ba35811e480cd7246e675";
+  std::array<uint8_t, 64> seed = {0x24, 0xd5, 0xe9, 0xfe, 0xbf, 0x08, 0xa9, 0x1d, 0xaa, 0x52, 0x43,
+                                  0xa2, 0x5b, 0x2d, 0x4e, 0xc0, 0xf0, 0x95, 0x49, 0xb1, 0x95, 0x53,
+                                  0x9c, 0x18, 0x8b, 0xca, 0xba, 0xcd, 0x7a, 0xee, 0xc6, 0x89, 0xc9,
+                                  0x33, 0xc9, 0x42, 0xa5, 0x5e, 0x4e, 0x0e, 0xec, 0x65, 0x24, 0xe0,
+                                  0x17, 0xc8, 0xb3, 0x1e, 0x5c, 0xd9, 0xea, 0x3f, 0x87, 0xb2, 0x9a,
+                                  0xea, 0x12, 0x62, 0x02, 0xb2, 0xa2, 0x50, 0x55, 0xd3};
+  // std::string wif1 = "L19aitXT5ryXvRHeRAgPAQaZ2ggjxD8Gs6hqDX8zodDRdAUwkaeN";
+  std::string pub1_hex = "024db2bc47838541eee14b8db5efde29c5201724021ecbf7ef6d9387e6b5ca2978";
+  std::string address1 = "1PTvasHrVnkoK3Y8RL2zsLHNgTXSev2mDQ";
+  std::string taddress1 = "n3yssvNqJpC46A1k8u1NhFVhYT89bYUksP";
+  std::string pub1_bin = util::HexToBin(pub1_hex);
 
-  //     "54ce95e2378ca7096e775f2c254d10f9a92b548e9378ac54297def659ae8d599dafc23dbae5f0e1130c3bd6e64ce"
-  //     "fffd"
-  //     "6dc8cde38f2ba35811e480cd7246e675";
-  // std::array<uint8_t, 64> seed = {0x24, 0xd5, 0xe9, 0xfe, 0xbf, 0x08, 0xa9, 0x1d, 0xaa, 0x52,
-  // 0x43,
-  //                                 0xa2, 0x5b, 0x2d, 0x4e, 0xc0, 0xf0, 0x95, 0x49, 0xb1, 0x95,
-  //                                 0x53, 0x9c, 0x18, 0x8b, 0xca, 0xba, 0xcd, 0x7a, 0xee, 0xc6,
-  //                                 0x89, 0xc9, 0x33, 0xc9, 0x42, 0xa5, 0x5e, 0x4e, 0x0e, 0xec,
-  //                                 0x65, 0x24, 0xe0, 0x17, 0xc8, 0xb3, 0x1e, 0x5c, 0xd9, 0xea,
-  //                                 0x3f, 0x87, 0xb2, 0x9a, 0xea, 0x12, 0x62, 0x02, 0xb2, 0xa2,
-  //                                 0x50, 0x55, 0xd3};
-  // // std::string wif1 = "L19aitXT5ryXvRHeRAgPAQaZ2ggjxD8Gs6hqDX8zodDRdAUwkaeN";
-  // std::string pub1_hex = "024db2bc47838541eee14b8db5efde29c5201724021ecbf7ef6d9387e6b5ca2978";
-  // std::string address1 = "1PTvasHrVnkoK3Y8RL2zsLHNgTXSev2mDQ";
-  // std::string taddress1 = "n3yssvNqJpC46A1k8u1NhFVhYT89bYUksP";
-  // std::string pub1_bin = util::HexToBin(pub1_hex);
+  std::array<uint8_t, 64> seed_l;
+  util::BinToBytes(std::bitset<64 * 8>(util::HexToBin(
+                       "67f93560761e20617de26e0cb84f7234aaf373ed2e66295c3d7397e6d7ebe882"
+                       "ea396d5d293808b0defd7edd2bab"
+                       "d4c091ad942e6a9351e6d075a29d4df872af")),
+                   seed_l.begin());
+
+  std::array<uint8_t, 64> ext_priv_key1;
+  std::array<uint8_t, 32> priv_key1;
+  bitcoin::crypto::GenerateExtPrivKey(seed.begin(), ext_priv_key1.begin());
+  bitcoin::crypto::GeneratePrivKey(seed.begin(), priv_key1.begin());
+  std::string wif1 = bitcoin::crypto::GenerateWIF(0, priv_key1.begin());
+
+  std::array<uint8_t, 64> ext_priv_keyl;
+  bitcoin::crypto::GenerateExtPrivKey(seed_l.begin(), ext_priv_keyl.begin());
+  std::cout << "ext. ex priv key: " << util::BytesToHex(ext_priv_keyl.begin(), 32) << std::endl;
+  std::cout << "ext. ex chain code: " << util::BytesToHex(ext_priv_keyl.begin() + 32, 32)
+            << std::endl;
 
   // std::array<uint8_t, PubKey::Size::kCompressed> pub1_bytes;
   // util::BinToBytes(std::bitset<PubKey::Size::kCompressed * 8>(pub1_bin), pub1_bytes);
@@ -66,9 +82,10 @@ int main(int argc, char** argv) {
   //   std::cout << "This key is an uncompressed pub key" << std::endl;
   // }
 
-  // AddrType type = AddrType::P2PKH;
+  AddrType type = AddrType::P2PKH;
   // std::string addr = bitcoin::crypto::GenerateAddressFromPubkey(pk1, type);
   // std::cout << "address 1: " << addr << std::endl;
+  // std::cout << "wif 1: " << wif1 << std::endl;
 
   // Address addr_o = Address(addr, type);
 
@@ -79,6 +96,50 @@ int main(int argc, char** argv) {
 
   // Script script_o =
   //     Script(std::vector<uint8_t>(p2pkh_script1.begin(), p2pkh_script1.end()), LockType::p2pkh);
+
+  ExtPrivKey ext_pkey = ExtPrivKey(ext_priv_keyl);
+
+  std::cout << "derivation key: " << util::BytesToHex(ext_priv_keyl.begin(), 32) << std::endl;
+
+  std::array<uint8_t, 64> purpose_child;
+  ext_pkey.DeriveNormalChild(44, purpose_child);
+
+  ExtPrivKey purpose = ExtPrivKey(purpose_child);
+
+  std::array<uint8_t, 32> prupose_priv = purpose.GetPrivKey();
+  std::cout << "m/44 priv key: " << util::BytesToHex(prupose_priv) << std::endl;
+  std::array<uint8_t, 33> purpose_bytes = bitcoin::crypto::GeneratePubKey(prupose_priv);
+  PubKey purpose_pub = PubKey(purpose_bytes);
+  std::string purpose_addr = bitcoin::crypto::GenerateAddressFromPubkey(purpose_pub, type);
+
+  std::cout << "m/44: " << purpose_addr << std::endl;
+
+  // std::array<uint8_t, 64> coin_child;
+  // purpose.DeriveNormalChild(0, coin_child);
+
+  // ExtPrivKey coin = ExtPrivKey(coin_child);
+
+  // std::array<uint8_t, 64> account_child;
+  // coin.DeriveNormalChild(0, account_child);
+
+  // ExtPrivKey account = ExtPrivKey(account_child);
+
+  // std::array<uint8_t, 64> receving_child;
+  // account.DeriveNormalChild(0, receving_child);
+
+  // ExtPrivKey receving = ExtPrivKey(receving_child);
+
+  // std::array<uint8_t, 64> child_child;
+  // receving.DeriveNormalChild(0, child_child);
+
+  // ExtPrivKey child = ExtPrivKey(child_child);
+  // std::array<uint8_t, 32> child_priv = child.GetPrivKey();
+
+  // std::array<uint8_t, 33> child_pub_bytes = bitcoin::crypto::GeneratePubKey(child_priv);
+  // PubKey child_pub = PubKey(child_pub_bytes);
+  // std::string child_addr = bitcoin::crypto::GenerateAddressFromPubkey(child_pub, type);
+
+  // std::cout << "m/44/0/0/0/0: " << child_addr << std::endl;
 
   // //--------------------------------------------------------------------------------------------------------
 
@@ -145,18 +206,21 @@ int main(int argc, char** argv) {
   // // std::cout << v << std::endl;  // prints 2432902008176640000 (i.e. 20!)
 
   // Repeat at arbitrary precision:
-  std::chrono::milliseconds start = std::chrono::duration_cast<std::chrono::milliseconds>(
-      std::chrono::system_clock::now().time_since_epoch());
 
-  cpp_int u = 1;
-  for (unsigned i = 1; i <= 100000; ++i) u *= i;
+  // using namespace boost::multiprecision;
 
-  std::cout << u << std::endl;
+  // std::chrono::milliseconds start = std::chrono::duration_cast<std::chrono::milliseconds>(
+  //     std::chrono::system_clock::now().time_since_epoch());
 
-  std::chrono::milliseconds stop = std::chrono::duration_cast<std::chrono::milliseconds>(
-      std::chrono::system_clock::now().time_since_epoch());
+  // cpp_int u = 1;
+  // for (unsigned i = 1; i <= 100000; ++i) u *= i;
 
-  std::cout << "Total(ms): " << (stop.count() - start.count()) << std::endl;
+  // std::cout << u << std::endl;
+
+  // std::chrono::milliseconds stop = std::chrono::duration_cast<std::chrono::milliseconds>(
+  //     std::chrono::system_clock::now().time_since_epoch());
+
+  // std::cout << "Total(ms): " << (stop.count() - start.count()) << std::endl;
 
   // // prints
   // //
@@ -164,19 +228,19 @@ int main(int argc, char** argv) {
   // // (i.e. 100!)
   // std::cout << u << std::endl;
 
-  mpz_class mc("50616765206e6f74206e6f74", 16);
-  mc = mc / 2;
+  // mpz_class mc("50616765206e6f74206e6f74", 16);
+  // mc = mc / 2;
 
-  std::cout << mc << std::endl;
+  // std::cout << mc << std::endl;
 
-  std::array<uint8_t, 2> uint16_bytes = {0x50, 0x61};
-  std::cout << util::BytesToUInt16(uint16_bytes) << std::endl;
+  // std::array<uint8_t, 2> uint16_bytes = {0x50, 0x61};
+  // std::cout << util::BytesToUInt16(uint16_bytes) << std::endl;
 
-  std::array<uint8_t, 4> uint32_bytes = {0x50, 0x61, 0x67, 0x65};
-  std::cout << util::BytesToUInt32(uint32_bytes) << std::endl;
+  // std::array<uint8_t, 4> uint32_bytes = {0x50, 0x61, 0x67, 0x65};
+  // std::cout << util::BytesToUInt32(uint32_bytes) << std::endl;
 
-  std::array<uint8_t, 8> uint64_bytes = {0x50, 0x61, 0x67, 0x65, 0x20, 0x6e, 0x6f, 0x74};
-  std::cout << util::BytesToUInt64(uint64_bytes) << std::endl;
+  // std::array<uint8_t, 8> uint64_bytes = {0x50, 0x61, 0x67, 0x65, 0x20, 0x6e, 0x6f, 0x74};
+  // std::cout << util::BytesToUInt64(uint64_bytes) << std::endl;
 
   return 0;
 }

@@ -26,13 +26,13 @@ namespace crypto {
   std::copy(digest, digest + keylength, res);
 }
 
-[[maybe_unused]] void HMAC_SHA512(const std::string& key, const uint8_t* data, size_t data_len,
-                                  uint8_t* res) {
+[[maybe_unused]] void HMAC_SHA512(const uint8_t* key, size_t key_size, const uint8_t* data,
+                                  size_t data_len, uint8_t* res) {
   uint8_t hash[EVP_MAX_MD_SIZE];
   size_t hash_len = 64;
 
   EVP_MD_CTX* evp_md = EVP_MD_CTX_new();
-  EVP_PKEY* pkey = EVP_PKEY_new_mac_key(EVP_PKEY_HMAC, NULL, (uint8_t*)key.c_str(), key.length());
+  EVP_PKEY* pkey = EVP_PKEY_new_mac_key(EVP_PKEY_HMAC, NULL, key, key_size);
 
   EVP_DigestSignInit(evp_md, NULL, EVP_sha512(), NULL, pkey);
   EVP_DigestSignUpdate(evp_md, data, data_len);
@@ -40,6 +40,11 @@ namespace crypto {
   EVP_MD_CTX_free(evp_md);
 
   std::copy(hash, hash + hash_len, res);
+}
+
+[[maybe_unused]] void HMAC_SHA512(const std::string& key, const uint8_t* data, size_t data_len,
+                                  uint8_t* res) {
+  HMAC_SHA512((uint8_t*)key.c_str(), key.length(), data, data_len, res);
 }
 
 // todo: write base58 encoding with uint8_t array return type

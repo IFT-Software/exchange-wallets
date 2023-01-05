@@ -71,6 +71,16 @@ namespace util {
   UInt64ToBytes(uint64, bytes.begin());
 }
 
+[[maybe_unused]] void MpIntToBytes(const mpz_t mpint, std::vector<uint8_t>& bytes) {
+  size_t size = (mpz_sizeinbase(mpint, 2) + CHAR_BIT - 1) / CHAR_BIT;
+  bytes.resize(size);
+  mpz_export(&bytes[0], &size, 1, 1, 0, 0, mpint);
+}
+
+[[maybe_unused]] void MpIntToBytes(const mpz_class& mpint, std::vector<uint8_t>& bytes) {
+  MpIntToBytes(mpint.get_mpz_t(), bytes);
+}
+
 [[maybe_unused]] std::string HexToBin(const std::string& hexStr) {
   std::string binStr = "";
   for (size_t i = 0; i < hexStr.length(); i++) {

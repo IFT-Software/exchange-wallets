@@ -8,7 +8,8 @@ cc_library(
     "//util",
     "@libsecp256k1//:libsecp256k1",
     "@com_google_absl//absl/strings",
-    "@boost//:multiprecision"
+    "@boost//:multiprecision",
+    "//third_party/cppzmq"
   ],
   visibility = ["//visibility:public"],
 )

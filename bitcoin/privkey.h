@@ -61,8 +61,11 @@ class PrivKey {
    * @return true
    * @return false
    */
-  bool DeriveNormalChild(std::array<uint8_t, 32>& child_priv, ChainCode& child_chain,
-                         uint32_t n_child, ChainCode& chain_code);
+  bool DeriveNormalChild(uint32_t n_child, ChainCode& chain_code,
+                         std::array<uint8_t, 32>& child_priv, ChainCode& child_chain);
+
+  bool DeriveNormalChild(uint32_t n_child, ChainCode& chain_code, uint8_t* child_priv,
+                         uint8_t* child_chain);
 };
 
 // used in BIP32
@@ -71,8 +74,8 @@ class ExtPrivKey {
   std::array<uint8_t, 32> priv_key_;
   std::array<uint8_t, 32> chain_code_;
 
-  unsigned int depth;
-  unsigned int child;
+  // unsigned int depth;
+  // unsigned int child;
 
  public:
   ExtPrivKey(PrivKey priv_key, ChainCode chain_code);
@@ -91,6 +94,8 @@ class ExtPrivKey {
   std::string hex() const;
   std::string bin() const;
 
+  std::array<uint8_t, 32> GetPrivKey() { return priv_key_; }
+
   /**
    * @brief Derives a BIP32 child key, returns true if the derivation was successful.
    *
@@ -99,7 +104,7 @@ class ExtPrivKey {
    * @return true
    * @return false
    */
-  bool DeriveChild(std::array<uint8_t, 64>& child_ext_key, unsigned int nChild);
+  bool DeriveNormalChild(uint32_t n_child, std::array<uint8_t, 64>& child_ext_key);
 };
 
 #endif
