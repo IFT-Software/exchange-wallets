@@ -3,12 +3,26 @@
 #include "bitcoin/bip39.h"
 #include "bitcoin/crypto.h"
 #include "gtest/gtest.h"
+#include "util/util.h"
 
 TEST(HelloTest, BasicAssertions) {
   // Expect two strings not to be equal.
   EXPECT_STRNE("hello", "world");
   EXPECT_EQ(6 * 7, 42);
 }
+
+TEST(BytesToUInt16Test, BytesToUIntConversions) {
+  uint8_t uint16_bytes[] = {0x50, 0x61};
+  std::array<uint8_t, 2> uint16_bytes_std = {0x50, 0x61};
+
+  EXPECT_EQ(util::BytesToUInt16(uint16_bytes), (uint16_t)20577);
+  EXPECT_EQ(util::BytesToUInt16(uint16_bytes_std), (uint16_t)20577);
+}
+
+// TEST(BytesToUInt32Test, BytesToUIntConversions) {
+//   std::array<uint8_t, 2> uint16_bytes = {0x50, 0x61};
+//   EXPECT_EQ(util::BytesToUInt16(uint16_bytes), (uint16_t)20577);
+// }
 
 std::bitset<128> entropy1(
     "0010110110010100110110111000000101100011001110010001010011011101111111001000010001110111001011"
