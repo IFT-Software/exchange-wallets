@@ -38,6 +38,7 @@ class PrivKey {
    */
   PubKey GetPubKey();
 
+  // TODO:
   /**
    * @brief Verifies if this private key corresponds to the given public key.
    *
@@ -47,7 +48,7 @@ class PrivKey {
    */
   bool VerifyPubKey(PubKey& pub_key);
 
-  // todo
+  // TODO:
   ScriptSig Sign();
 
   /**
@@ -61,7 +62,7 @@ class PrivKey {
    * @return false
    */
   bool DeriveNormalChild(std::array<uint8_t, 32>& child_priv, ChainCode& child_chain,
-                         unsigned int nChild, const ChainCode& chain_code);
+                         uint32_t n_child, ChainCode& chain_code);
 };
 
 // used in BIP32

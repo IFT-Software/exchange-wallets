@@ -1,6 +1,7 @@
 #include <secp256k1.h>
 
 #include <array>
+#include <chrono>
 #include <cstdint>
 #include <future>
 #include <iostream>
@@ -143,13 +144,22 @@ int main(int argc, char** argv) {
   // std::cout << v << std::endl;  // prints 2432902008176640000 (i.e. 20!)
 
   // Repeat at arbitrary precision:
-  mpz_int u = 1;
-  for (unsigned i = 1; i <= 10000; ++i) u *= i;
+  std::chrono::milliseconds start = std::chrono::duration_cast<std::chrono::milliseconds>(
+      std::chrono::system_clock::now().time_since_epoch());
+
+  cpp_int u = 1;
+  for (unsigned i = 1; i <= 100000; ++i) u *= i;
+
+  std::cout << u << std::endl;
+
+  std::chrono::milliseconds stop = std::chrono::duration_cast<std::chrono::milliseconds>(
+      std::chrono::system_clock::now().time_since_epoch());
+
+  std::cout << "Total(ms): " << (stop.count() - start.count()) << std::endl;
 
   // prints
   // 93326215443944152681699238856266700490715968264381621468592963895217599993229915608941463976156518286253697920827223758251185210916864000000000000000000000000
   // (i.e. 100!)
-  std::cout << u << std::endl;
 
   return 0;
 }

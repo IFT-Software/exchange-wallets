@@ -1,5 +1,8 @@
 #include "privkey.h"
 
+#include <cstdint>
+
+#include "boost/multiprecision/gmp.hpp"
 #include "crypto.h"
 
 // todo: IsValid checks
@@ -22,13 +25,22 @@ PubKey PrivKey::GetPubKey() {
   return PubKey(key);
 }
 
-// bool PrivKey::DeriveNormalChild(std::array<uint8_t, 32>& child_priv, ChainCode& child_chain,
-//                                 unsigned int nChild, const ChainCode& cc){
+namespace mpl = boost::multiprecision;
 
-//   PubKey pub_key = GetPubKey();
-//   std::array<uint8_t, >
+bool PrivKey::DeriveNormalChild(std::array<uint8_t, 32>& child_priv, ChainCode& child_chain,
+                                uint32_t n_child, ChainCode& chain_code) {
+  mpl::mpz_int n = 115792089237316195423570985008687907852837564279074904382605163141518161494337;
 
-// };
+  std::array<uint8_t, 37> res;
+  PubKey pub_key = GetPubKey();
+  std::copy(pub_key.begin(), pub_key.end(), res.begin());
+  util::UInt32ToBytes(n_child, res.begin() + 33);
+
+  std::array<uint8_t, 64> hmac_res;
+
+  util::crypto::HMAC_SHA512(util::BytesToHex(chain_code), res.begin(), res.size(),
+                            hmac_res.begin());
+};
 
 // todo: IsValid checks
 ExtPrivKey::ExtPrivKey(PrivKey priv_key, ChainCode chain_code) {
