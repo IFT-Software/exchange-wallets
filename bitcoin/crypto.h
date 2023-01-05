@@ -55,8 +55,10 @@ template <size_t N>
 //   return m_pub_key_unc;
 // }
 
+// TODO: make return type void
 [[maybe_unused]] std::array<uint8_t, 33> GeneratePubKey(std::array<uint8_t, 32>& priv_key);
 
+// TODO: make return type void
 [[maybe_unused]] std::array<uint8_t, 65> GeneratePubKeyUncomp(std::array<uint8_t, 32>& priv_key);
 
 [[maybe_unused]] void GeneratePubKeyHash(uint8_t* pub_key, size_t len, uint8_t* res);
