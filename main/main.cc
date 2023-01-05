@@ -1,3 +1,4 @@
+#include <gmpxx.h>
 #include <secp256k1.h>
 
 #include <array>
@@ -134,7 +135,7 @@ int main(int argc, char** argv) {
   // std::cout << "uint32_str: " << util::BytesToHex(uint32_bytes, 4) << std::endl;
   // std::cout << "uint64_str: " << util::BytesToHex(uint64_bytes, 8) << std::endl;
 
-  // using namespace boost::multiprecision;
+  // namespace mpl = boost::multiprecision;
 
   // // int128_t v = 1;
 
@@ -162,6 +163,11 @@ int main(int argc, char** argv) {
   // 93326215443944152681699238856266700490715968264381621468592963895217599993229915608941463976156518286253697920827223758251185210916864000000000000000000000000
   // // (i.e. 100!)
   // std::cout << u << std::endl;
+
+  mpz_class mc("50616765206e6f74206e6f74", 16);
+  mc = mc / 2;
+
+  std::cout << mc << std::endl;
 
   std::array<uint8_t, 2> uint16_bytes = {0x50, 0x61};
   std::cout << util::BytesToUInt16(uint16_bytes) << std::endl;
