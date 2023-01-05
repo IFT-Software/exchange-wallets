@@ -22,6 +22,31 @@ namespace util {
   return ss.str();
 }
 
+[[maybe_unused]] uint16_t BytesToUInt16(const uint8_t* bytes) {
+  return uint16_t(static_cast<uint16_t>(bytes[0]) << 8 | static_cast<uint16_t>(bytes[1]));
+}
+[[maybe_unused]] uint16_t BytesToUInt16(std::array<uint8_t, 2>& bytes) {
+  return BytesToUInt16(bytes.begin());
+}
+
+[[maybe_unused]] uint32_t BytesToUInt32(const uint8_t* bytes) {
+  return uint32_t(static_cast<uint32_t>(bytes[0]) << 24 | static_cast<uint32_t>(bytes[1]) << 16 |
+                  static_cast<uint32_t>(bytes[2]) << 8 | static_cast<uint32_t>(bytes[3]));
+}
+[[maybe_unused]] uint32_t BytesToUInt32(std::array<uint8_t, 4>& bytes) {
+  return BytesToUInt32(bytes.begin());
+}
+
+[[maybe_unused]] uint64_t BytesToUInt64(const uint8_t* bytes) {
+  return uint64_t(static_cast<uint64_t>(bytes[0]) << 56 | static_cast<uint64_t>(bytes[1]) << 48 |
+                  static_cast<uint64_t>(bytes[2]) << 40 | static_cast<uint64_t>(bytes[3]) << 32 |
+                  static_cast<uint64_t>(bytes[4]) << 24 | static_cast<uint64_t>(bytes[5]) << 16 |
+                  static_cast<uint64_t>(bytes[6]) << 8 | static_cast<uint64_t>(bytes[7]));
+}
+[[maybe_unused]] uint64_t BytesToUInt64(std::array<uint8_t, 8>& bytes) {
+  return BytesToUInt64(bytes.begin());
+}
+
 [[maybe_unused]] void UInt16ToBytes(const uint16_t uint16, uint8_t* bytes) {
   BinToBytes(std::bitset<16>(uint16), bytes);
 }

@@ -134,14 +134,14 @@ int main(int argc, char** argv) {
   // std::cout << "uint32_str: " << util::BytesToHex(uint32_bytes, 4) << std::endl;
   // std::cout << "uint64_str: " << util::BytesToHex(uint64_bytes, 8) << std::endl;
 
-  using namespace boost::multiprecision;
+  // using namespace boost::multiprecision;
 
-  // int128_t v = 1;
+  // // int128_t v = 1;
 
-  // // Do some fixed precision arithmetic:
-  // for (unsigned i = 1; i <= 20; ++i) v *= i;
+  // // // Do some fixed precision arithmetic:
+  // // for (unsigned i = 1; i <= 20; ++i) v *= i;
 
-  // std::cout << v << std::endl;  // prints 2432902008176640000 (i.e. 20!)
+  // // std::cout << v << std::endl;  // prints 2432902008176640000 (i.e. 20!)
 
   // Repeat at arbitrary precision:
   std::chrono::milliseconds start = std::chrono::duration_cast<std::chrono::milliseconds>(
@@ -157,9 +157,20 @@ int main(int argc, char** argv) {
 
   std::cout << "Total(ms): " << (stop.count() - start.count()) << std::endl;
 
-  // prints
+  // // prints
+  // //
   // 93326215443944152681699238856266700490715968264381621468592963895217599993229915608941463976156518286253697920827223758251185210916864000000000000000000000000
-  // (i.e. 100!)
+  // // (i.e. 100!)
+  // std::cout << u << std::endl;
+
+  std::array<uint8_t, 2> uint16_bytes = {0x50, 0x61};
+  std::cout << util::BytesToUInt16(uint16_bytes) << std::endl;
+
+  std::array<uint8_t, 4> uint32_bytes = {0x50, 0x61, 0x67, 0x65};
+  std::cout << util::BytesToUInt32(uint32_bytes) << std::endl;
+
+  std::array<uint8_t, 8> uint64_bytes = {0x50, 0x61, 0x67, 0x65, 0x20, 0x6e, 0x6f, 0x74};
+  std::cout << util::BytesToUInt64(uint64_bytes) << std::endl;
 
   return 0;
 }

@@ -42,6 +42,15 @@ template <std::size_t N, std::size_t M>
   return BinToBytes(bin, bytes.begin());
 }
 
+[[maybe_unused]] uint16_t BytesToUInt16(const uint8_t* bytes);
+[[maybe_unused]] uint16_t BytesToUInt16(std::array<uint8_t, 2>& bytes);
+
+[[maybe_unused]] uint32_t BytesToUInt32(const uint8_t* bytes);
+[[maybe_unused]] uint32_t BytesToUInt32(std::array<uint8_t, 4>& bytes);
+
+[[maybe_unused]] uint64_t BytesToUInt64(const uint8_t* bytes);
+[[maybe_unused]] uint64_t BytesToUInt64(std::array<uint8_t, 8>& bytes);
+
 [[maybe_unused]] void UInt16ToBytes(const uint16_t uint16, uint8_t* bytes);
 [[maybe_unused]] void UInt16ToBytes(const uint16_t uint16, std::array<uint8_t, 2>& bytes);
 
