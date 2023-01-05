@@ -1,11 +1,10 @@
 cc_binary(
   name = "main",
   srcs = ["main.cc"],
-  linkopts = ["-lgmp", "-lgmpxx"],
   deps = [
     "//bitcoin",
+    "//socketio",
     "//third_party/cppzmq",
-    "//comms",
     "@boost//:multiprecision"
   ]
 )

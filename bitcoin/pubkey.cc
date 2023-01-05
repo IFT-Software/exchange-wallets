@@ -7,7 +7,13 @@
 #include <string>
 
 #include "bitcoin/address.h"
+#include "secp256k1.h"
 #include "util/util.h"
+
+namespace {
+/* Global secp256k1_context object used for verification. */
+secp256k1_context* secp256k1_context_verify = nullptr;
+}  // namespace
 
 uint32_t PubKey::GetSize(uint8_t pubkey_first_byte) const {
   if (pubkey_first_byte == 0x02 || pubkey_first_byte == 0x03) {
@@ -24,6 +30,12 @@ void PubKey::Invalidate() { pub_key_[0] = 0xff; }
 bool PubKey::IsCompressed() { return GetSize(pub_key_[0]) == PubKey::Size::kCompressed; }
 
 bool PubKey::IsUncompressed() { return GetSize(pub_key_[0]) == PubKey::Size::kUncompressed; }
+
+bool PubKey::IsValid() {
+  if (size() <= 0) return false;
+  secp256k1_pubkey pubkey;
+  return secp256k1_ec_pubkey_parse(secp256k1_context_verify, &pubkey, pub_key_.begin(), size());
+};
 
 uint32_t PubKey::size() const { return GetSize(pub_key_[0]); }
 

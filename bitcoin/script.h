@@ -15,7 +15,11 @@ enum class OPCodeType : uint8_t {
 
 void GenerateP2PKHScript(PubKey& pub_key, std::array<uint8_t, 24>& res);
 void GenerateP2PKHScript(std::array<uint8_t, 65>& pub_key, std::array<uint8_t, 24>& res);
+
+// TODO:
 void GenerateP2PKHScript(std::array<uint8_t, 33>& pub_key, std::array<uint8_t, 24>& res);
+
+// TODO:
 void GenerateP2PKHScript(std::array<uint8_t, 20>& pub_key_hash, std::array<uint8_t, 24>& res);
 
 }  // namespace script

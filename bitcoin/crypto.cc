@@ -1,6 +1,17 @@
 #include "bitcoin/crypto.h"
 
+#include <array>
+#include <cassert>
+#include <cstdint>
+#include <iostream>
+#include <string>
+#include <vector>
+
 #include "bitcoin/address.h"
+#include "bitcoin/bip39.h"
+#include "secp256k1.h"
+#include "util/crypto.h"
+#include "util/util.h"
 
 namespace bitcoin {
 namespace crypto {
@@ -77,7 +88,27 @@ namespace crypto {
   return GenerateWIF(net, priv_key.begin());
 }
 
-[[maybe_unused]] std::array<uint8_t, 33> GeneratePubKey(std::array<uint8_t, 32>& priv_key) {
+[[maybe_unused]] void GeneratePubKey(std::array<uint8_t, 32>& priv_key,
+                                     std::array<uint8_t, 33>& pub_key) {
+  secp256k1_context* ctx = secp256k1_context_create(SECP256K1_CONTEXT_NONE);
+  secp256k1_pubkey pubkey;
+
+  // if (secp256k1_ec_seckey_verify(ctx, priv_key.begin())) {
+  //   std::cout << "verified" << std::endl;
+  // }
+
+  uint32_t return_val = secp256k1_ec_pubkey_create(ctx, &pubkey, priv_key.begin());
+  assert(return_val);
+
+  size_t size = pub_key.size();
+
+  return_val =
+      secp256k1_ec_pubkey_serialize(ctx, pub_key.begin(), &size, &pubkey, SECP256K1_EC_COMPRESSED);
+  assert(return_val);
+}
+
+[[maybe_unused]] void GeneratePubKeyUncomp(std::array<uint8_t, 32>& priv_key,
+                                           std::array<uint8_t, 65>& pub_key) {
   secp256k1_context* ctx = secp256k1_context_create(SECP256K1_CONTEXT_NONE);
   secp256k1_pubkey pubkey;
 
@@ -88,38 +119,14 @@ namespace crypto {
   int return_val = secp256k1_ec_pubkey_create(ctx, &pubkey, priv_key.begin());
   assert(return_val);
 
-  std::array<uint8_t, 33> pub_key;
   size_t size = pub_key.size();
-  // std::array<uint8_t, 65> output;
-  return_val =
-      secp256k1_ec_pubkey_serialize(ctx, pub_key.begin(), &size, &pubkey, SECP256K1_EC_COMPRESSED);
-  assert(return_val);
 
-  return pub_key;
-}
-
-[[maybe_unused]] std::array<uint8_t, 65> GeneratePubKeyUncomp(std::array<uint8_t, 32>& priv_key) {
-  secp256k1_context* ctx = secp256k1_context_create(SECP256K1_CONTEXT_NONE);
-  secp256k1_pubkey pubkey;
-
-  if (secp256k1_ec_seckey_verify(ctx, priv_key.begin())) {
-    std::cout << "verified" << std::endl;
-  }
-
-  int return_val = secp256k1_ec_pubkey_create(ctx, &pubkey, priv_key.begin());
-  assert(return_val);
-
-  std::array<uint8_t, 65> pub_key;
-  size_t size = pub_key.size();
-  // std::array<uint8_t, 65> output;
   return_val = secp256k1_ec_pubkey_serialize(ctx, pub_key.begin(), &size, &pubkey,
                                              SECP256K1_EC_UNCOMPRESSED);
   assert(return_val);
-
-  return pub_key;
 }
 
-[[maybe_unused]] void GeneratePubKeyHash(uint8_t* pub_key, size_t len, uint8_t* res) {
+[[maybe_unused]] void GeneratePubKeyHash(const uint8_t* pub_key, size_t len, uint8_t* res) {
   std::array<uint8_t, 32> res_sha256;
   // std::array<uint8_t, 20> res_ripemd160;
   util::crypto::SHA256(pub_key, len, res_sha256.begin());
@@ -150,6 +157,7 @@ std::string GenerateAddressFromPubkey(PubKey& pub_key, AddrType& addr_type) {
       std::array<uint8_t, 21> pkey_hash_checksum;
       pub_key_hash = pub_key.GetHash160();
 
+      // TODO: make this a variable (based on test/mainnet)
       pkey_hash_checksum[0] = {0x00};
       std::copy(pub_key_hash.begin(), pub_key_hash.end(), pkey_hash_checksum.begin() + 1);
 

@@ -1,16 +1,18 @@
 #include "bitcoin/scriptpubkey.h"
 
+#include "util/util.h"
+
 Script::Script(std::vector<uint8_t> script, LockType lock_type) {
   if (IsValid(script, lock_type)) {
     script_ = script;
     lock_type_ = lock_type;
   } else {
-    // todo: custom exceptions
+    // TODO: custom exceptions
     throw std::invalid_argument("invalid script");
   }
 }
 
-// todo: implement this
+// TODO: implement this
 bool Script::IsValid(std::vector<uint8_t> script, LockType lock_type) { return true; }
 
 uint32_t Script::size() const { return script_.size(); }

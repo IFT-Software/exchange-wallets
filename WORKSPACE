@@ -53,6 +53,13 @@ http_archive(
 )
 
 http_archive(
+    name = "libgmp",
+    build_file = "//third_party:BUILD.libgmp.bazel",
+    strip_prefix = "gmp-6.2.1",
+    url = "https://gmplib.org/download/gmp/gmp-6.2.1.tar.xz"
+)
+
+http_archive(
     name = "com_github_nelhage_rules_boost",
     sha256 = "5ea00abc70cdf396a23fb53201db19ebce2837d28887a08544429d27783309ed",
     url = "https://github.com/nelhage/rules_boost/archive/96e9b631f104b43a53c21c87b01ac538ad6f3b48.tar.gz",

@@ -1,7 +1,3 @@
-#include <asm-generic/errno-base.h>
-#include <gmpxx.h>
-#include <secp256k1.h>
-
 #include <array>
 #include <chrono>
 #include <cstdint>
@@ -17,11 +13,11 @@
 #include "bitcoin/pubkey.h"
 #include "bitcoin/script.h"
 #include "bitcoin/scriptpubkey.h"
-#include "boost/multiprecision/cpp_int.hpp"
-#include "boost/multiprecision/gmp.hpp"
-#include "comms/comms.h"
+#include "secp256k1.h"
+#include "socketio/comms.h"
 #include "third_party/cppzmq/zmq.hpp"
 #include "third_party/cppzmq/zmq_addon.hpp"
+#include "third_party/gmpxx/gmpxx.h"
 #include "util/util.h"
 
 int main(int argc, char** argv) {
@@ -106,10 +102,15 @@ int main(int argc, char** argv) {
 
   ExtPrivKey purpose = ExtPrivKey(purpose_child);
 
-  std::array<uint8_t, 32> prupose_priv = purpose.GetPrivKey();
-  std::cout << "m/44 priv key: " << util::BytesToHex(prupose_priv) << std::endl;
-  std::array<uint8_t, 33> purpose_bytes = bitcoin::crypto::GeneratePubKey(prupose_priv);
+  std::array<uint8_t, 32> purpose_priv = purpose.GetPrivKey();
+
+  std::cout << "m/44 priv key: " << util::BytesToHex(purpose_priv) << std::endl;
+
+  std::array<uint8_t, 33> purpose_bytes;
+  bitcoin::crypto::GeneratePubKey(purpose_priv, purpose_bytes);
+
   PubKey purpose_pub = PubKey(purpose_bytes);
+
   std::string purpose_addr = bitcoin::crypto::GenerateAddressFromPubkey(purpose_pub, type);
 
   std::cout << "m/44: " << purpose_addr << std::endl;
@@ -195,52 +196,6 @@ int main(int argc, char** argv) {
   // std::cout << "uint16_str: " << util::BytesToHex(uint16_bytes, 2) << std::endl;
   // std::cout << "uint32_str: " << util::BytesToHex(uint32_bytes, 4) << std::endl;
   // std::cout << "uint64_str: " << util::BytesToHex(uint64_bytes, 8) << std::endl;
-
-  // namespace mpl = boost::multiprecision;
-
-  // // int128_t v = 1;
-
-  // // // Do some fixed precision arithmetic:
-  // // for (unsigned i = 1; i <= 20; ++i) v *= i;
-
-  // // std::cout << v << std::endl;  // prints 2432902008176640000 (i.e. 20!)
-
-  // Repeat at arbitrary precision:
-
-  // using namespace boost::multiprecision;
-
-  // std::chrono::milliseconds start = std::chrono::duration_cast<std::chrono::milliseconds>(
-  //     std::chrono::system_clock::now().time_since_epoch());
-
-  // cpp_int u = 1;
-  // for (unsigned i = 1; i <= 100000; ++i) u *= i;
-
-  // std::cout << u << std::endl;
-
-  // std::chrono::milliseconds stop = std::chrono::duration_cast<std::chrono::milliseconds>(
-  //     std::chrono::system_clock::now().time_since_epoch());
-
-  // std::cout << "Total(ms): " << (stop.count() - start.count()) << std::endl;
-
-  // // prints
-  // //
-  // 93326215443944152681699238856266700490715968264381621468592963895217599993229915608941463976156518286253697920827223758251185210916864000000000000000000000000
-  // // (i.e. 100!)
-  // std::cout << u << std::endl;
-
-  // mpz_class mc("50616765206e6f74206e6f74", 16);
-  // mc = mc / 2;
-
-  // std::cout << mc << std::endl;
-
-  // std::array<uint8_t, 2> uint16_bytes = {0x50, 0x61};
-  // std::cout << util::BytesToUInt16(uint16_bytes) << std::endl;
-
-  // std::array<uint8_t, 4> uint32_bytes = {0x50, 0x61, 0x67, 0x65};
-  // std::cout << util::BytesToUInt32(uint32_bytes) << std::endl;
-
-  // std::array<uint8_t, 8> uint64_bytes = {0x50, 0x61, 0x67, 0x65, 0x20, 0x6e, 0x6f, 0x74};
-  // std::cout << util::BytesToUInt64(uint64_bytes) << std::endl;
 
   return 0;
 }

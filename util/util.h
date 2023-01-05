@@ -1,20 +1,15 @@
 #ifndef UTIL_UTIL_H
 #define UTIL_UTIL_H
 
-#include <gmpxx.h>
-
 #include <array>
 #include <bitset>
 #include <climits>
-#include <cmath>
 #include <cstdlib>
 #include <fstream>
-#include <iomanip>
-#include <iostream>
-#include <memory>
-#include <sstream>
 #include <string>
 #include <vector>
+
+#include "gmpxx.h"
 
 namespace util {
 
