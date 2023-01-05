@@ -196,7 +196,7 @@ int main(int argc, char** argv) {
   // std::cout << "uint32_str: " << util::BytesToHex(uint32_bytes, 4) << std::endl;
   // std::cout << "uint64_str: " << util::BytesToHex(uint64_bytes, 8) << std::endl;
 
-  // namespace mpl = boost::multiprecision;
+  namespace mpl = boost::multiprecision;
 
   // // int128_t v = 1;
 
@@ -212,8 +212,8 @@ int main(int argc, char** argv) {
   // std::chrono::milliseconds start = std::chrono::duration_cast<std::chrono::milliseconds>(
   //     std::chrono::system_clock::now().time_since_epoch());
 
-  // cpp_int u = 1;
-  // for (unsigned i = 1; i <= 100000; ++i) u *= i;
+  mpl::cpp_int u = 1;
+  for (unsigned i = 1; i <= 100000; ++i) u *= i;
 
   // std::cout << u << std::endl;
 

@@ -1,5 +1,5 @@
-.vscode
 .cache
+.vscode
 
 bazel-bin
 bazel-testlogs

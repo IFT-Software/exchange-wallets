@@ -5,12 +5,6 @@
 #include "gtest/gtest.h"
 #include "util/util.h"
 
-TEST(HelloTest, BasicAssertions) {
-  // Expect two strings not to be equal.
-  EXPECT_STRNE("hello", "world");
-  EXPECT_EQ(6 * 7, 42);
-}
-
 TEST(BytesToUInt16Test, BytesToUIntConversions) {
   uint8_t uint16_bytes1[] = {0x50, 0x61};
   std::array<uint8_t, 2> uint16_bytes_std1 = {0x50, 0x61};
@@ -25,8 +19,8 @@ TEST(BytesToUInt16Test, BytesToUIntConversions) {
   EXPECT_EQ(util::BytesToUInt16(uint16_bytes_std2), (uint16_t)0);
 }
 
-TEST(BytesToUInt16Test, BytesToUIntConversions) {
-  uint8_t uint32_bytes1[] = {0x50, 0x61};
+TEST(BytesToUInt32Test, BytesToUIntConversions) {
+  uint8_t uint32_bytes1[] = {0x50, 0x61, 0x67, 0x65};
   std::array<uint8_t, 4> uint32_bytes_std1 = {0x50, 0x61, 0x67, 0x65};
 
   uint8_t uint32_bytes2[] = {0x00, 0x00, 0x00, 0x00};
@@ -35,8 +29,8 @@ TEST(BytesToUInt16Test, BytesToUIntConversions) {
   EXPECT_EQ(util::BytesToUInt32(uint32_bytes1), (uint16_t)20577);
   EXPECT_EQ(util::BytesToUInt32(uint32_bytes_std1), (uint16_t)20577);
 
-  EXPECT_EQ(util::BytesToUInt16(uint16_bytes2), (uint16_t)0);
-  EXPECT_EQ(util::BytesToUInt16(uint16_bytes_std2), (uint16_t)0);
+  EXPECT_EQ(util::BytesToUInt32(uint32_bytes2), (uint16_t)0);
+  EXPECT_EQ(util::BytesToUInt32(uint32_bytes_std2), (uint16_t)0);
 }
 
 std::bitset<128> entropy1(
