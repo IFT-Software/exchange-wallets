@@ -1,0 +1,19 @@
+load("@rules_foreign_cc//foreign_cc:defs.bzl", "configure_make")
+
+filegroup(
+    name = "all_srcs",
+    srcs = glob(
+        include = ["**"],
+        exclude = ["*.bazel"],
+    ),
+)
+
+LIB_NAME = "libgmp"
+
+configure_make(
+    name = "libgmp",
+    configure_in_place = True,
+    lib_name = LIB_NAME,
+    lib_source = ":all_srcs",
+    visibility = ["//visibility:public"],
+)

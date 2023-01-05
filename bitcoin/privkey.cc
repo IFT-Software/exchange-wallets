@@ -1,14 +1,16 @@
-#include "privkey.h"
+#include "bitcoin/privkey.h"
 
-#include <gmpxx.h>
-
+#include <array>
 #include <cstdint>
 
-#include "boost/multiprecision/cpp_int.hpp"
-#include "boost/multiprecision/gmp.hpp"
-#include "crypto.h"
+#include "bitcoin/crypto.h"
+#include "bitcoin/pubkey.h"
+#include "bitcoin/signature.h"
 #include "third_party/cppzmq/zmq.hpp"
 #include "third_party/cppzmq/zmq_addon.hpp"
+#include "third_party/gmpxx/gmpxx.h"
+#include "util/crypto.h"
+#include "util/util.h"
 
 // todo: IsValid checks
 PrivKey::PrivKey(std::array<uint8_t, 32>& priv_key) {
@@ -26,7 +28,9 @@ std::string PrivKey::hex() const { return util::BytesToHex(priv_key_.begin(), si
 std::string PrivKey::bin() const { return util::BytesToBin(priv_key_.begin(), size()); }
 
 PubKey PrivKey::GetPubKey() {
-  std::array<uint8_t, PubKey::kCompressed> key = bitcoin::crypto::GeneratePubKey(priv_key_);
+  std::array<uint8_t, PubKey::kCompressed> key;
+  bitcoin::crypto::GeneratePubKey(priv_key_, key);
+
   return PubKey(key);
 }
 

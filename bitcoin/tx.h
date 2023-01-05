@@ -64,7 +64,7 @@ typedef struct Output_ {
 
 class Transaction {
  private:
-  // TODO: look at this
+  // TODO: look at this (constant? static?)
   std::string version_;
   std::vector<uint8_t> input_count_;
   std::vector<Input> inputs_;

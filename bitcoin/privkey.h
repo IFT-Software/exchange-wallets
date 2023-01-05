@@ -3,11 +3,10 @@
 
 #include <array>
 #include <cstdint>
+#include <string>
 
-#include "bitcoin/crypto.h"
 #include "bitcoin/pubkey.h"
 #include "bitcoin/signature.h"
-#include "util/util.h"
 
 typedef std::array<uint8_t, 32> ChainCode;
 
@@ -16,10 +15,10 @@ class PrivKey {
   std::array<uint8_t, 32> priv_key_;
 
  public:
-  // todo: empty constructor?
+  // TODO: empty constructor?
   PrivKey(std::array<uint8_t, 32>& priv_key);
 
-  // todo
+  // TODO:
   bool IsValid();
 
   uint32_t size() const;
@@ -82,7 +81,7 @@ class ExtPrivKey {
   ExtPrivKey(std::array<uint8_t, 32> priv_key_, std::array<uint8_t, 32> chain_code_);
   ExtPrivKey(std::array<uint8_t, 64> ext_priv_key);
 
-  // todo: write these functions
+  // TODO: write these functions
   bool IsValid();
 
   uint32_t size() const;

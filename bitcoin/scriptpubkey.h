@@ -1,10 +1,9 @@
 #ifndef BITCOIN_SCRIPTPUBKEY_H
 #define BITCOIN_SCRIPTPUBKEY_H
 
+#include <cstdint>
+#include <string>
 #include <vector>
-
-#include "bitcoin/address.h"
-#include "bitcoin/pubkey.h"
 
 enum LockType { p2pkh, p2sh };
 

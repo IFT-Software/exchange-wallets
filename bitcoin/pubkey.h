@@ -26,7 +26,7 @@ class PubKey {
   void Invalidate();
 
  public:
-  // todo: IsValid checks
+  // TODO: IsValid checks
   template <size_t N>
   PubKey(std::array<uint8_t, N>& pub_key) {
     if (N == Size::kCompressed || N == Size::kUncompressed) {
@@ -38,7 +38,7 @@ class PubKey {
 
   bool IsCompressed();
   bool IsUncompressed();
-  // todo
+  // TODO:
   bool IsValid();
 
   uint32_t size() const;
@@ -50,10 +50,8 @@ class PubKey {
   std::string hex() const;
   std::string bin() const;
 
-  // todo
+  // TODO:
   bool Decompress();
-
-  // todos:
 
   /**
    * @brief Returns the hash160 of this public key.
@@ -62,13 +60,6 @@ class PubKey {
    */
   // todo: use kHASH160SIZE instead of 20
   std::array<uint8_t, 20> GetHash160();
-
-  /**
-   * @brief Get the address for this public key based on the address type
-   *
-   * @return Address
-   */
-  Address GetAddress(AddrType& addr_type);
 };
 
 #endif

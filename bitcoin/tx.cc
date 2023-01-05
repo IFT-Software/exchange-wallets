@@ -1,7 +1,9 @@
 #include "bitcoin/tx.h"
 
+#include <array>
 #include <cstdint>
 #include <string>
+#include <vector>
 
 #include "util/util.h"
 
