@@ -1,7 +1,7 @@
 cc_binary(
   name = "main",
   srcs = ["main.cc"],
-  linkopts = ["-lgmp"],
+  linkopts = ["-lgmp", "-lgmpxx"],
   deps = [
     "//bitcoin",
     "//third_party/cppzmq",
