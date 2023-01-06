@@ -60,6 +60,14 @@ http_archive(
 )
 
 http_archive(
+    name = "libpqxx",
+    sha256 = "6a1aba33b08448795c621bcb36949158eb4a7c8db2946be4701700b6210ec985",
+    build_file = "//third_party:BUILD.libpqxx.bazel",
+    strip_prefix = "libpqxx-7.7.4",
+    url = "https://github.com/jtv/libpqxx/archive/refs/tags/7.7.4.zip"
+)
+
+http_archive(
     name = "com_github_nelhage_rules_boost",
     sha256 = "5ea00abc70cdf396a23fb53201db19ebce2837d28887a08544429d27783309ed",
     url = "https://github.com/nelhage/rules_boost/archive/96e9b631f104b43a53c21c87b01ac538ad6f3b48.tar.gz",

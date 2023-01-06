@@ -1,9 +1,6 @@
 #ifndef UTIL_CRYPTO_H
 #define UTIL_CRYPTO_H
 
-#include <openssl/bio.h>
-#include <openssl/evp.h>
-
 #include <algorithm>
 #include <cstring>
 #include <iomanip>

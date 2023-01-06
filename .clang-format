@@ -4,7 +4,7 @@ IndentWidth: 2
 
 Language: Cpp
 ColumnLimit: 100
-# Force pointers to the type for C++.
+IncludeBlocks: Preserve
 DerivePointerAlignment: false
 PointerAlignment: Left
 ---

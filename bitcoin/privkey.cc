@@ -4,13 +4,14 @@
 #include <cstdint>
 #include <stdexcept>
 
-#include "bitcoin/crypto.h"
-#include "bitcoin/pubkey.h"
-#include "bitcoin/signature.h"
 #include "secp256k1.h"
 #include "third_party/cppzmq/zmq.hpp"
 #include "third_party/cppzmq/zmq_addon.hpp"
 #include "third_party/gmpxx/gmpxx.h"
+
+#include "bitcoin/crypto.h"
+#include "bitcoin/pubkey.h"
+#include "bitcoin/signature.h"
 #include "util/crypto.h"
 #include "util/util.h"
 

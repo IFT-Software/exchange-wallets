@@ -8,9 +8,10 @@
 #include <string>
 #include <vector>
 
+#include "secp256k1.h"
+
 #include "bitcoin/address.h"
 #include "bitcoin/bip39.h"
-#include "secp256k1.h"
 #include "util/crypto.h"
 #include "util/util.h"
 

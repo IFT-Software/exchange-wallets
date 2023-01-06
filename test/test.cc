@@ -1,11 +1,12 @@
 #include <array>
 #include <stdexcept>
 
+#include "gtest/gtest.h"
+
 #include "bitcoin/address.h"
 #include "bitcoin/bip39.h"
 #include "bitcoin/crypto.h"
 #include "bitcoin/privkey.h"
-#include "gtest/gtest.h"
 #include "test/consts.h"
 #include "util/util.h"
 

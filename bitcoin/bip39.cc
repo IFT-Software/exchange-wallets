@@ -1,7 +1,5 @@
 #include "bitcoin/bip39.h"
 
-#include <openssl/rand.h>
-
 #include <array>
 #include <bitset>
 #include <cassert>
@@ -11,6 +9,8 @@
 #include <string>
 
 #include "absl/strings/str_join.h"
+#include "openssl/rand.h"
+
 #include "util/crypto.h"
 #include "util/util.h"
 

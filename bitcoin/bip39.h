@@ -1,13 +1,12 @@
 #ifndef BITCOIN_BIP39_H
 #define BITCOIN_BIP39_H
 
-// generates seed for the private and public keys using bip39 protocol
-#include <openssl/rand.h>
-
 #include <array>
 #include <bitset>
 #include <cstdint>
 #include <string>
+
+#include "openssl/rand.h"
 
 namespace bitcoin {
 namespace bip39 {

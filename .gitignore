@@ -5,3 +5,5 @@ bazel-bin
 bazel-testlogs
 bazel-exchange-wallets
 bazel-out
+
+compile_commands.json
