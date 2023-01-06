@@ -49,9 +49,23 @@ const uint8_t& PubKey::operator[](uint32_t pos) const { return pub_key_[pos]; }
 std::string PubKey::hex() const { return util::BytesToHex(pub_key_.begin(), GetSize(pub_key_[0])); }
 std::string PubKey::bin() const { return util::BytesToBin(pub_key_.begin(), GetSize(pub_key_[0])); }
 
-// TODO: necessary?
-std::array<uint8_t, 20> PubKey::GetHash160() {
+Hash160 PubKey::GetHash160() {
   std::array<uint8_t, 20> res;
   bitcoin::crypto::GeneratePubKeyHash(pub_key_.begin(), GetSize(pub_key_[0]), res.begin());
   return res;
+}
+
+bool PubKey::Decompress() {
+  if (size() <= 0) return false;
+  secp256k1_pubkey pub_key;
+  if (!secp256k1_ec_pubkey_parse(secp256k1_context_verify, &pub_key, pub_key_.begin(), size())) {
+    return false;
+  }
+  std::array<uint8_t, 65> uncompressed;
+  size_t size_unc = uncompressed.size();
+
+  secp256k1_ec_pubkey_serialize(secp256k1_context_verify, uncompressed.begin(), &size_unc, &pub_key,
+                                SECP256K1_EC_UNCOMPRESSED);
+
+  std::copy(uncompressed.begin(), uncompressed.end(), pub_key_.begin());
 }

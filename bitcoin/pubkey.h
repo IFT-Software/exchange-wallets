@@ -12,8 +12,8 @@
 #include "bitcoin/crypto.h"
 
 class Address;
-
 enum class AddrType : uint16_t;
+typedef std::array<uint8_t, 20> Hash160;
 
 class PubKey {
  public:
@@ -54,7 +54,12 @@ class PubKey {
   std::string hex() const;
   std::string bin() const;
 
-  // TODO:
+  /**
+   * @brief Converts this public key into uncompressed format (65 bytes).
+   *
+   * @return true
+   * @return false
+   */
   bool Decompress();
 
   /**
@@ -62,8 +67,7 @@ class PubKey {
    *
    * @return std::array<uint8_t, 20>
    */
-  // todo: use kHASH160SIZE instead of 20
-  std::array<uint8_t, 20> GetHash160();
+  Hash160 GetHash160();
 };
 
 #endif

@@ -93,28 +93,6 @@ int main(int argc, char** argv) {
   // Script script_o =
   //     Script(std::vector<uint8_t>(p2pkh_script1.begin(), p2pkh_script1.end()), LockType::p2pkh);
 
-  ExtPrivKey ext_pkey = ExtPrivKey(ext_priv_keyl);
-
-  std::cout << "derivation key: " << util::BytesToHex(ext_priv_keyl.begin(), 32) << std::endl;
-
-  std::array<uint8_t, 64> purpose_child;
-  ext_pkey.DeriveNormalChild(44, purpose_child);
-
-  ExtPrivKey purpose = ExtPrivKey(purpose_child);
-
-  std::array<uint8_t, 32> purpose_priv = purpose.GetPrivKey();
-
-  std::cout << "m/44 priv key: " << util::BytesToHex(purpose_priv) << std::endl;
-
-  std::array<uint8_t, 33> purpose_bytes;
-  bitcoin::crypto::GeneratePubKey(purpose_priv, purpose_bytes);
-
-  PubKey purpose_pub = PubKey(purpose_bytes);
-
-  std::string purpose_addr = bitcoin::crypto::GenerateAddressFromPubkey(purpose_pub, type);
-
-  std::cout << "m/44: " << purpose_addr << std::endl;
-
   // std::array<uint8_t, 64> coin_child;
   // purpose.DeriveNormalChild(0, coin_child);
 
