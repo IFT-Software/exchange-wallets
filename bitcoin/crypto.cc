@@ -4,6 +4,7 @@
 #include <cassert>
 #include <cstdint>
 #include <iostream>
+#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -112,10 +113,6 @@ namespace crypto {
   secp256k1_context* ctx = secp256k1_context_create(SECP256K1_CONTEXT_NONE);
   secp256k1_pubkey pubkey;
 
-  // if (secp256k1_ec_seckey_verify(ctx, priv_key.begin())) {
-  //   std::cout << "verified" << std::endl;
-  // }
-
   int return_val = secp256k1_ec_pubkey_create(ctx, &pubkey, priv_key.begin());
   assert(return_val);
 
@@ -127,20 +124,18 @@ namespace crypto {
 }
 
 [[maybe_unused]] void GeneratePubKeyHash(const uint8_t* pub_key, size_t len, uint8_t* res) {
+  if ((len != 33 && len != 65)) {
+    // TODO: custom exceptions
+    throw std::invalid_argument("the length of the public key is invalid");
+  };
+
   std::array<uint8_t, 32> res_sha256;
-  // std::array<uint8_t, 20> res_ripemd160;
   util::crypto::SHA256(pub_key, len, res_sha256.begin());
   util::crypto::RIPEMD160(res_sha256.begin(), res_sha256.size(), res);
 }
 
 [[maybe_unused]] void GeneratePubKeyHash(std::array<uint8_t, 33>& pub_key,
                                          std::array<uint8_t, 20>& res) {
-  // std::array<uint8_t, 32> res_sha256;
-  // std::array<uint8_t, 20> res_ripemd160;
-  // util::crypto::SHA256(pub_key.begin(), pub_key.size(), res_sha256.begin());
-  // util::crypto::RIPEMD160(res_sha256.begin(), res_sha256.size(), res_ripemd160.begin());
-
-  // return res_ripemd160;
   GeneratePubKeyHash(pub_key.begin(), pub_key.size(), res.begin());
 }
 
@@ -149,6 +144,7 @@ namespace crypto {
   GeneratePubKeyHash(pub_key.begin(), pub_key.size(), res.begin());
 }
 
+// TODO: write tests
 std::string GenerateAddressFromPubkey(PubKey& pub_key, AddrType& addr_type) {
   switch (addr_type) {
     case AddrType::P2PKH: {
@@ -170,7 +166,7 @@ std::string GenerateAddressFromPubkey(PubKey& pub_key, AddrType& addr_type) {
       return util::crypto::Base58Encode(std::vector<uint8_t>(res.begin(), res.end()), mapping);
     }
     case AddrType::P2SH:
-      // todo: custom exceptions
+      // TODO: custom exceptions
       throw std::invalid_argument("can't produce p2sh address from pubkey");
     default:
       // todo: custom exceptions

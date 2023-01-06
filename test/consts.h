@@ -22,24 +22,21 @@ const std::string seed1_str =
 
 std::array<uint8_t, 64> seed1 = seedFromSeedStr(seed1_str);
 
-// const std::array<uint8_t, 64> seed1 = {
-//     0x24, 0xd5, 0xe9, 0xfe, 0xbf, 0x08, 0xa9, 0x1d, 0xaa, 0x52, 0x43, 0xa2, 0x5b, 0x2d, 0x4e,
-//     0xc0, 0xf0, 0x95, 0x49, 0xb1, 0x95, 0x53, 0x9c, 0x18, 0x8b, 0xca, 0xba, 0xcd, 0x7a, 0xee,
-//     0xc6, 0x89, 0xc9, 0x33, 0xc9, 0x42, 0xa5, 0x5e, 0x4e, 0x0e, 0xec, 0x65, 0x24, 0xe0, 0x17,
-//     0xc8, 0xb3, 0x1e, 0x5c, 0xd9, 0xea, 0x3f, 0x87, 0xb2, 0x9a, 0xea, 0x12, 0x62, 0x02, 0xb2,
-//     0xa2, 0x50, 0x55, 0xd3};
-
 const std::string prv1 = "7539c474d72a9cc9c89c67265bd8a5d4e37234b3a926e986ddff7cd02bc98510";
-
 const std::string wif1 = "L19aitXT5ryXvRHeRAgPAQaZ2ggjxD8Gs6hqDX8zodDRdAUwkaeN";
 
 const std::string pub1 = "024db2bc47838541eee14b8db5efde29c5201724021ecbf7ef6d9387e6b5ca2978";
-
-const std::string pub_hashed1 = "f66a4fd55d468bd049579660b57504da32f8a924";
+const std::string unc_pub1 =
+    "044db2bc47838541eee14b8db5efde29c5201724021ecbf7ef6d9387e6b5ca2978f585d9e0a2d30cc9137c1d64bc98"
+    "87a5dde451571cb4f47fd12b8a334b436478";
+const std::string pub_hash1 = "f66a4fd55d468bd049579660b57504da32f8a924";
+const std::string unc_pub_hash1 = "992714937a5e2235b98948bb7c7b1daab631295f";
 
 const std::string address1 = "1PTvasHrVnkoK3Y8RL2zsLHNgTXSev2mDQ";
 
-const bool net1 = 1;
+const std::string m_44__1 = "13BcVMa2CNF2GVvfnXoxsqsL9pHe5KgLdA";
+
+const std::string m_44_0_0_0__1 = "1MPBpxT4SaXPk8NDewVNTgHramN4NYHFHA";
 
 const std::bitset<128> entropy2(
     "0111010011110101000101110110100010011001010110011000101001110011100101011110000100011011000010"
@@ -52,9 +49,20 @@ const std::string seed2_str =
 std::array<uint8_t, 64> seed2 = seedFromSeedStr(seed2_str);
 
 const std::string prv2 = "3bbb7fd52104cfc259811c588cf020b49bf8bfef3fe98de8fb518928112ee28e";
+const std::string wif2 = "KyDpgV7cHvpnvPesyq9jR5vRQ3iA6YVGcwF74jKiZUx1ed7r5ZhN";
+
+const std::string pub2 = "037f06f6d79526d7009d9150a1a7727c17c47304228242e76e6c31ae533a3afaee";
+const std::string unc_pub2 =
+    "047f06f6d79526d7009d9150a1a7727c17c47304228242e76e6c31ae533a3afaee11c46f156c05c78ceb6e27a9b33d"
+    "d91aeda2a29fe6aeb5bc5537e08e48da5e85";
+const std::string pub_hash2 = "9a8f5885166e4ba42588bf548d856413b467a200";
+const std::string unc_pub_hash2 = "ddaa51f54fcd93f6e72047cf0e7fc3dc7ef88819";
+
+const std::string m_44__2 = "12w5zzawuMTJdfbJ7bKzzYoAKiBEqLZxAC";
 
 const std::bitset<128> entropy3(
-    "1011100110001101010010110111000100101011011000101000010100000000001011001110111100100101011010"
+    "10111001100011010100101101110001001010110110001010000101000000000010110011101111001001"
+    "01011010"
     "1101001011000010010111110010100111");
 
 const std::string seed3_str =
@@ -64,6 +72,16 @@ const std::string seed3_str =
 std::array<uint8_t, 64> seed3 = seedFromSeedStr(seed3_str);
 
 const std::string prv3 = "a0986383f0d216d6643df2c8735500fb2d20c02ff734a4a0405be789a7c700bc";
+const std::string wif3 = "L2btQT2k4fNJAe9FzzeYmT6dU32UmxZpUkaLj7QeeRsqUMBwhm5k";
+
+const std::string pub3 = "02e901e3e5a4f5bbb8d6fa623e8daa71caea1463439b87f3c61fe419940f39a6b5";
+const std::string unc_pub3 =
+    "04e901e3e5a4f5bbb8d6fa623e8daa71caea1463439b87f3c61fe419940f39a6b5d49c1083908f1cd594f8125c3112"
+    "9923aef3b7461ae3c282bc6750c1531227ca";
+const std::string pub_hash3 = "7e8ac398f4eeb7b9634b9fd417b10cbdb8563981";
+const std::string unc_pub_hash3 = "c57cf957b8e523abd10ee3e23ca2059722933f18";
+
+const std::string m_44__3 = "1KUSZEbUDYK5RMkaBb9XBeHLUBFj7rxQ6q";
 
 const std::bitset<128> entropy4(
     "1010110001101111010100111110000011101110110100001010000010010000111110111101000101011000000110"
@@ -78,6 +96,15 @@ std::array<uint8_t, 64> seed4 = seedFromSeedStr(seed4_str);
 const std::string prv4 = "493348530495cd274af5a45f25361fd08a810fa19ba0fd576c6f6a5ebd2c743a";
 const std::string wif4 = "Kyg17UkNTcHe6V9qatqUDeznSjcGv9Kv5PLb44dycyHTyX6yi5Yd";
 
+const std::string pub4 = "02feef1c767d3f3db29a73ca4a02c5e1bbf021d5760b44104f8a7a741f70e0a019";
+const std::string unc_pub4 =
+    "04feef1c767d3f3db29a73ca4a02c5e1bbf021d5760b44104f8a7a741f70e0a0198ffbd808c1df35c669240244373e"
+    "77b102656428b8addc0d9d802746e77e1c20";
+const std::string pub_hash4 = "a6f70085368b2ece0981dbc845d7b5b24941ae22";
+const std::string unc_pub_hash4 = "4153d32271c33b2e16d8c312c6adbf9ee025ecbc";
+
+const std::string m_44__4 = "16W1YNgVudxkU67Ud4JkmjTyYYepPi1exz";
+
 const std::bitset<128> entropy5(
     "0010101101101000010010110100011000100111010101110110100111101011100011000010000101101010100010"
     "1011110011001101100110010100100110");
@@ -89,8 +116,16 @@ std::string seed5_str =
 std::array<uint8_t, 64> seed5 = seedFromSeedStr(seed5_str);
 
 const std::string prv5 = "0108c3c51c15dd5905246d105cc9b6a2ee393b2931dc1a04e0a7b4f40e1aaf47";
-
 const std::string wif5 = "KwFiniaazpvkzZ59f9TyA4XvSKLcenA66Mv4Dk9VrygWfXVFBA1Y";
+
+const std::string pub5 = "03500685859da82fc6af9470980523c9f115e529e4387e81267a5dd484c484f77f";
+const std::string unc_pub5 =
+    "04500685859da82fc6af9470980523c9f115e529e4387e81267a5dd484c484f77f6fa2dc446f4543c533ba866f2d81"
+    "864f9a3484c085c98cb1b33d05381b68a1ed";
+const std::string pub_hash5 = "ae224b7596c5942602810246d5a66784b3f88854";
+const std::string unc_pub_hash5 = "6adde506e57844662fa39fde9b96438a27af93fb";
+
+const std::string m_44__5 = "1FBJ9DAoZZ1HbaKMnA43x1TsUdHfbDW5tt";
 
 std::bitset<128> entropy6(
     "0010010100011101111000110111011000010000100000000000101000011100010110100101011010110011010111"

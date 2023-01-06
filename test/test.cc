@@ -1,7 +1,10 @@
 #include <array>
+#include <stdexcept>
 
+#include "bitcoin/address.h"
 #include "bitcoin/bip39.h"
 #include "bitcoin/crypto.h"
+#include "bitcoin/privkey.h"
 #include "gtest/gtest.h"
 #include "test/consts.h"
 #include "util/util.h"
@@ -66,15 +69,28 @@ TEST(BIP39Test, SeedFromEntropy) {
 class BitcoinCryptoTest : public ::testing::Test {
  protected:
   void SetUp() override {
-    bitcoin::crypto::GeneratePrivKey(seed1, priv_keys[0]);
-    bitcoin::crypto::GeneratePrivKey(seed2, priv_keys[1]);
-    bitcoin::crypto::GeneratePrivKey(seed3, priv_keys[2]);
-    bitcoin::crypto::GeneratePrivKey(seed4, priv_keys[3]);
-    bitcoin::crypto::GeneratePrivKey(seed5, priv_keys[4]);
+    for (int i = 0; i < 5; i++) {
+      bitcoin::crypto::GeneratePrivKey(seeds[i], priv_keys[i]);
+      bitcoin::crypto::GenerateExtPrivKey(seeds[i], ext_priv_keys[i]);
+    };
+
+    for (int i = 0; i < 5; i++) {
+      bitcoin::crypto::GeneratePubKey(priv_keys[i], pub_keys[i]);
+      bitcoin::crypto::GeneratePubKeyUncomp(priv_keys[i], unc_pub_keys[i]);
+    };
+
+    for (int i = 0; i < 5; i++) {
+      bitcoin::crypto::GeneratePubKeyHash(pub_keys[i], pub_key_hashes[i]);
+    };
   }
 
  public:
+  std::array<std::array<uint8_t, 64>, 5> seeds = {seed1, seed2, seed3, seed4, seed5};
   std::array<std::array<uint8_t, 32>, 5> priv_keys;
+  std::array<std::array<uint8_t, 64>, 5> ext_priv_keys;
+  std::array<std::array<uint8_t, 33>, 5> pub_keys;
+  std::array<std::array<uint8_t, 65>, 5> unc_pub_keys;
+  std::array<std::array<uint8_t, 20>, 5> pub_key_hashes;
 };
 
 TEST_F(BitcoinCryptoTest, PrivKeyFromSeed) {
@@ -85,33 +101,87 @@ TEST_F(BitcoinCryptoTest, PrivKeyFromSeed) {
   }
 }
 
-// TEST_F(BitcoinCryptoTest, WIFFromSeed) {
-//   std::string wif;
-//   std::string exp_wifs[] = {wif1, wif2, wif3, wif4, wif5};
-//   for (int i = 0; i < 5; i++) {
-//     wif = bitcoin::crypto::GenerateWIF(1, priv_keys[i].begin());
-//   }
+TEST_F(BitcoinCryptoTest, WIFFromSeed) {
+  std::string exp_wifs[] = {wif1, wif2, wif3, wif4, wif5};
+  for (int i = 0; i < 5; i++) {
+    EXPECT_STREQ(bitcoin::crypto::GenerateWIF(1, priv_keys[i].begin()).c_str(),
+                 exp_wifs[i].c_str());
+  }
+}
 
-//   EXPECT_STREQ(wif.c_str(), wif1.c_str());
-// }
+TEST_F(BitcoinCryptoTest, PubFromPriv) {
+  std::string exp_pubs[] = {pub1, pub2, pub3, pub4, pub5};
+  for (int i = 0; i < 5; i++) {
+    EXPECT_STREQ(util::BytesToHex(pub_keys[i]).c_str(), exp_pubs[i].c_str());
+  };
+}
 
-// TEST(BitcoinCryptoTest, PubFromPriv) {
-//   std::array<uint8_t, 32> priv_key;
-//   bitcoin::crypto::GeneratePrivKey(seed1_b, priv_key);
-//   std::array<uint8_t, 33> pub_key = bitcoin::crypto::GeneratePubKey(priv_key);
-//   std::string pub_key_str = util::BytesToHex(pub_key);
-//   EXPECT_STREQ(pub_key_str.c_str(), pub1.c_str());
-// }
+TEST_F(BitcoinCryptoTest, UncPubFromPriv) {
+  std::string exp_unc_pubs[] = {unc_pub1, unc_pub2, unc_pub3, unc_pub4, unc_pub5};
+  for (int i = 0; i < 5; i++) {
+    EXPECT_STREQ(util::BytesToHex(unc_pub_keys[i]).c_str(), exp_unc_pubs[i].c_str());
+  };
+}
 
-// TEST(UtilCryptoTest, RIPEMD160) {
-//   std::array<uint8_t, 32> priv_key;
-//   bitcoin::crypto::GeneratePrivKey(seed1, priv_key);
-//   std::array<uint8_t, 33> pub_key = bitcoin::crypto::GeneratePubKey(priv_key);
-//   std::array<uint8_t, 20> pub_key_hash;
-//   bitcoin::crypto::GeneratePubKeyHash(pub_key, pub_key_hash);
-//   std::string pub_key_hash_str = util::BytesToHex(pub_key_hash);
-//   EXPECT_STREQ(pub_key_hash_str.c_str(), pub_hashed1.c_str());
-// }
+TEST_F(BitcoinCryptoTest, PubKeyHash) {
+  std::string exp_hashes[] = {pub_hash1, pub_hash2, pub_hash3, pub_hash4, pub_hash5};
+  for (int i = 0; i < 5; i++) {
+    EXPECT_STREQ(util::BytesToHex(pub_key_hashes[i]).c_str(), exp_hashes[i].c_str());
+  };
+
+  // expect an exception
+  std::array<uint8_t, 34> pub_key_long;
+  std::copy(pub_keys[0].begin(), pub_keys[0].end(), pub_key_long.begin());
+  pub_key_long[33] = 0x00;
+
+  std::array<uint8_t, 20> res;
+  EXPECT_ANY_THROW(bitcoin::crypto::GeneratePubKeyHash(pub_key_long.begin(), 34, res.begin()));
+}
+
+class BIP32Test : public ::testing::Test {
+ protected:
+  void SetUp() override {
+    for (int i = 0; i < 5; i++) {
+      bitcoin::crypto::GeneratePrivKey(seeds[i], priv_keys[i]);
+      bitcoin::crypto::GenerateExtPrivKey(seeds[i], ext_priv_keys[i]);
+    };
+    for (int i = 0; i < 5; i++) {
+      exts[i] = ExtPrivKey(ext_priv_keys[i]);
+    };
+  };
+
+ public:
+  std::array<std::array<uint8_t, 64>, 5> seeds = {seed1, seed2, seed3, seed4, seed5};
+  std::array<std::array<uint8_t, 32>, 5> priv_keys;
+  std::array<std::array<uint8_t, 64>, 5> ext_priv_keys;
+
+  std::array<ExtPrivKey, 5> exts = {ext_priv_keys[0], ext_priv_keys[1], ext_priv_keys[2],
+                                    ext_priv_keys[3], ext_priv_keys[4]};
+};
+
+TEST_F(BIP32Test, ChildDerivation) {
+  PubKey pk;
+  AddrType type = AddrType::P2PKH;
+  std::string purpose_addr;
+
+  std::string exp_derivations[] = {m_44__1, m_44__2, m_44__3, m_44__4, m_44__5};
+
+  for (int i = 0; i < 5; i++) {
+    pk = exts[i].DeriveNormalChild(44).GetPrivKey().GetPubKey();
+    purpose_addr = bitcoin::crypto::GenerateAddressFromPubkey(pk, type);
+    EXPECT_STREQ(exp_derivations[i].c_str(), purpose_addr.c_str());
+  }
+
+  pk = exts[0]
+           .DeriveNormalChild(44)
+           .DeriveNormalChild(0)
+           .DeriveNormalChild(0)
+           .DeriveNormalChild(0)
+           .GetPrivKey()
+           .GetPubKey();
+  purpose_addr = bitcoin::crypto::GenerateAddressFromPubkey(pk, type);
+  EXPECT_STREQ(m_44_0_0_0__1.c_str(), purpose_addr.c_str());
+}
 
 int main(int argc, char** argv) {
   ::testing::InitGoogleTest(&argc, argv);

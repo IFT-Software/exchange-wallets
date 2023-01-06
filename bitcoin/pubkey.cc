@@ -15,6 +15,8 @@ namespace {
 secp256k1_context* secp256k1_context_verify = nullptr;
 }  // namespace
 
+PubKey::PubKey() { Invalidate(); }
+
 uint32_t PubKey::GetSize(uint8_t pubkey_first_byte) const {
   if (pubkey_first_byte == 0x02 || pubkey_first_byte == 0x03) {
     return PubKey::Size::kCompressed;
