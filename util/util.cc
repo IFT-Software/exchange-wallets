@@ -13,6 +13,8 @@
 #include <string>
 #include <vector>
 
+#include "gmpxx.h"
+
 namespace util {
 
 [[maybe_unused]] std::string BytesToHex(const uint8_t* bytes, size_t len) {

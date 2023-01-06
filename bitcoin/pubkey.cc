@@ -6,8 +6,9 @@
 #include <cstdint>
 #include <string>
 
-#include "bitcoin/address.h"
 #include "secp256k1.h"
+
+#include "bitcoin/address.h"
 #include "util/util.h"
 
 namespace {

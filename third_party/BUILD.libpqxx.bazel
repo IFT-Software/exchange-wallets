@@ -1,4 +1,4 @@
-load("@rules_foreign_cc//foreign_cc:defs.bzl", "configure_make", "cmake")
+load("@rules_foreign_cc//foreign_cc:defs.bzl", "cmake")
 
 filegroup(
     name = "all_srcs",
@@ -8,10 +8,10 @@ filegroup(
     ),
 )
 
-LIB_NAME = "cppzmq"
+LIB_NAME = "libpqxx"
 
 cmake(
-    name = "cppzmq",
+    name = "libpqxx",
     lib_name = LIB_NAME,
     lib_source = ":all_srcs",
     visibility = ["//visibility:public"],

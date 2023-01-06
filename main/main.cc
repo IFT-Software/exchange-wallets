@@ -6,6 +6,12 @@
 #include <string>
 #include <thread>
 
+#include "pqxx/pqxx"
+#include "secp256k1.h"
+#include "third_party/cppzmq/zmq.hpp"
+#include "third_party/cppzmq/zmq_addon.hpp"
+#include "third_party/gmpxx/gmpxx.h"
+
 #include "bitcoin/address.h"
 #include "bitcoin/bip39.h"
 #include "bitcoin/crypto.h"
@@ -13,21 +19,18 @@
 #include "bitcoin/pubkey.h"
 #include "bitcoin/script.h"
 #include "bitcoin/scriptpubkey.h"
-#include "secp256k1.h"
 #include "socketio/comms.h"
-#include "third_party/cppzmq/zmq.hpp"
-#include "third_party/cppzmq/zmq_addon.hpp"
-#include "third_party/gmpxx/gmpxx.h"
 #include "util/util.h"
 
 int main(int argc, char** argv) {
   // zmq::context_t ctx(4);
 
   // SubscriberThread(&ctx);
-  // auto thread = std::async(std::launch::async, &(comms::SubscriberThread), &ctx);
-  // thread.wait();
+  // auto thread = std::async(std::launch::async, &(comms::SubscriberThread),
+  // &ctx); thread.wait();
 
-  // -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+  // -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+  // -- -- -- -- -- -- --
   // -- -- -- -- -- -- -- -- -- -- -- -- -
 
   // std::string seed =
@@ -64,7 +67,8 @@ int main(int argc, char** argv) {
             << std::endl;
 
   // std::array<uint8_t, PubKey::Size::kCompressed> pub1_bytes;
-  // util::BinToBytes(std::bitset<PubKey::Size::kCompressed * 8>(pub1_bin), pub1_bytes);
+  // util::BinToBytes(std::bitset<PubKey::Size::kCompressed * 8>(pub1_bin),
+  // pub1_bytes);
 
   // PubKey pk1 = PubKey(pub1_bytes);
 
@@ -91,29 +95,33 @@ int main(int argc, char** argv) {
   // std::cout << util::BytesToHex(p2pkh_script1) << std::endl;
 
   // Script script_o =
-  //     Script(std::vector<uint8_t>(p2pkh_script1.begin(), p2pkh_script1.end()), LockType::p2pkh);
+  //     Script(std::vector<uint8_t>(p2pkh_script1.begin(),
+  //     p2pkh_script1.end()), LockType::p2pkh);
 
-  ExtPrivKey ext_pkey = ExtPrivKey(ext_priv_keyl);
+  // ExtPrivKey ext_pkey = ExtPrivKey(ext_priv_keyl);
 
-  std::cout << "derivation key: " << util::BytesToHex(ext_priv_keyl.begin(), 32) << std::endl;
+  // std::cout << "derivation key: " << util::BytesToHex(ext_priv_keyl.begin(),
+  // 32) << std::endl;
 
-  std::array<uint8_t, 64> purpose_child;
-  ext_pkey.DeriveNormalChild(44, purpose_child);
+  // std::array<uint8_t, 64> purpose_child;
+  // ext_pkey.DeriveNormalChild(44, purpose_child);
 
-  ExtPrivKey purpose = ExtPrivKey(purpose_child);
+  // ExtPrivKey purpose = ExtPrivKey(purpose_child);
 
-  std::array<uint8_t, 32> purpose_priv = purpose.GetPrivKey();
+  // std::array<uint8_t, 32> purpose_priv = purpose.GetPrivKey();
 
-  std::cout << "m/44 priv key: " << util::BytesToHex(purpose_priv) << std::endl;
+  // std::cout << "m/44 priv key: " << util::BytesToHex(purpose_priv) <<
+  // std::endl;
 
-  std::array<uint8_t, 33> purpose_bytes;
-  bitcoin::crypto::GeneratePubKey(purpose_priv, purpose_bytes);
+  // std::array<uint8_t, 33> purpose_bytes;
+  // bitcoin::crypto::GeneratePubKey(purpose_priv, purpose_bytes);
 
-  PubKey purpose_pub = PubKey(purpose_bytes);
+  // PubKey purpose_pub = PubKey(purpose_bytes);
 
-  std::string purpose_addr = bitcoin::crypto::GenerateAddressFromPubkey(purpose_pub, type);
+  // std::string purpose_addr =
+  // bitcoin::crypto::GenerateAddressFromPubkey(purpose_pub, type);
 
-  std::cout << "m/44: " << purpose_addr << std::endl;
+  // std::cout << "m/44: " << purpose_addr << std::endl;
 
   // std::array<uint8_t, 64> coin_child;
   // purpose.DeriveNormalChild(0, coin_child);
@@ -136,9 +144,10 @@ int main(int argc, char** argv) {
   // ExtPrivKey child = ExtPrivKey(child_child);
   // std::array<uint8_t, 32> child_priv = child.GetPrivKey();
 
-  // std::array<uint8_t, 33> child_pub_bytes = bitcoin::crypto::GeneratePubKey(child_priv);
-  // PubKey child_pub = PubKey(child_pub_bytes);
-  // std::string child_addr = bitcoin::crypto::GenerateAddressFromPubkey(child_pub, type);
+  // std::array<uint8_t, 33> child_pub_bytes =
+  // bitcoin::crypto::GeneratePubKey(child_priv); PubKey child_pub =
+  // PubKey(child_pub_bytes); std::string child_addr =
+  // bitcoin::crypto::GenerateAddressFromPubkey(child_pub, type);
 
   // std::cout << "m/44/0/0/0/0: " << child_addr << std::endl;
 
@@ -147,7 +156,8 @@ int main(int argc, char** argv) {
   // std::array<uint8_t, 64> extended_priv_key;
   // bitcoin::crypto::GenerateExtPrivKey(seed, extended_priv_key);
 
-  // std::cout << "\np2pkh script: " << util::BytesToHex(p2pkh_script1) << std::endl;
+  // std::cout << "\np2pkh script: " << util::BytesToHex(p2pkh_script1) <<
+  // std::endl;
 
   // std::string pub2_hex =
   //     "044db2bc47838541eee14b8db5efde29c5201724021ecbf7ef6d9387e6b5ca2978f585d9e0a2d30cc9137c1d"
@@ -156,7 +166,8 @@ int main(int argc, char** argv) {
   // std::string pub2_bin = util::HexToBin(pub2_hex);
 
   // std::array<uint8_t, PubKey::Size::kUncompressed> pub2_bytes;
-  // util::BinToBytes(std::bitset<PubKey::Size::kUncompressed * 8>(pub2_bin), pub2_bytes);
+  // util::BinToBytes(std::bitset<PubKey::Size::kUncompressed * 8>(pub2_bin),
+  // pub2_bytes);
 
   // PubKey pk2 = PubKey(pub2_bytes);
   // std::cout << "pub(ucmp): " << pk2.hex() << std::endl;
@@ -169,7 +180,8 @@ int main(int argc, char** argv) {
   //   std::cout << "This key is a uncompressed pub key" << std::endl;
   // }
 
-  // std::string priv1_hex = "7539c474d72a9cc9c89c67265bd8a5d4e37234b3a926e986ddff7cd02bc98510";
+  // std::string priv1_hex =
+  // "7539c474d72a9cc9c89c67265bd8a5d4e37234b3a926e986ddff7cd02bc98510";
   // std::string priv1_bin = util::HexToBin(priv1_hex);
 
   // std::array<uint8_t, 32> priv1_bytes;
@@ -193,9 +205,10 @@ int main(int argc, char** argv) {
   // util::UInt32ToBytes(uint32_int, uint32_bytes);
   // util::UInt64ToBytes(uint64_int, uint64_bytes);
 
-  // std::cout << "uint16_str: " << util::BytesToHex(uint16_bytes, 2) << std::endl;
-  // std::cout << "uint32_str: " << util::BytesToHex(uint32_bytes, 4) << std::endl;
-  // std::cout << "uint64_str: " << util::BytesToHex(uint64_bytes, 8) << std::endl;
+  // std::cout << "uint16_str: " << util::BytesToHex(uint16_bytes, 2) <<
+  // std::endl; std::cout << "uint32_str: " << util::BytesToHex(uint32_bytes, 4)
+  // << std::endl; std::cout << "uint64_str: " << util::BytesToHex(uint64_bytes,
+  // 8) << std::endl;
 
   return 0;
 }

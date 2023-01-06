@@ -8,6 +8,7 @@
 
 #include "third_party/cppzmq/zmq.hpp"
 #include "third_party/cppzmq/zmq_addon.hpp"
+
 #include "util/util.h"
 
 namespace comms {

@@ -1,5 +1,17 @@
 #include "util/crypto.h"
 
+#include <algorithm>
+#include <cstring>
+#include <iomanip>
+#include <iostream>
+#include <random>
+#include <sstream>
+#include <string>
+#include <vector>
+
+#include "openssl/bio.h"
+#include "openssl/evp.h"
+
 namespace util {
 namespace crypto {
 
