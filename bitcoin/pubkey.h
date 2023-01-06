@@ -35,13 +35,14 @@ class PubKey {
 
   template <size_t N>
   PubKey(std::array<uint8_t, N>& pub_key) {
-    if (!IsValid()) {
-      throw std::invalid_argument("invalid public key");
-    }
     if (N == Size::kCompressed || N == Size::kUncompressed) {
       std::copy(pub_key.begin(), pub_key.end(), pub_key_.begin());
     } else {
       Invalidate();
+    }
+
+    if (!IsValid()) {
+      throw std::invalid_argument("invalid public key");
     }
   }
 
