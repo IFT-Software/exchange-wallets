@@ -9,6 +9,7 @@
 #include "third_party/cppzmq/zmq.hpp"
 #include "third_party/cppzmq/zmq_addon.hpp"
 
+#include "bitcoin/tx.h"
 #include "util/util.h"
 
 namespace comms {
@@ -25,10 +26,16 @@ void SubscriberThread(zmq::context_t* ctx) {
     zmq::recv_result_t result = zmq::recv_multipart(subscriber, std::back_inserter(recv_msgs));
     assert(result && "recv failed");
     // assert(*result == 2);
+    std::cout << "here1" << std::endl;
+
+    uint8_t* data = (uint8_t*)recv_msgs[1].data();
+
+    Transaction* tx = bitcoin::tx::ParseTransaction(data);
+    std::cout << "here2" << std::endl;
+
     std::cout << "Thread: [" << recv_msgs[0].to_string() << "] "
               << util::BytesToHex((uint8_t*)recv_msgs[1].data(), recv_msgs[1].size()) << std::endl;
   }
+}
 
-}  // namespace
 }  // namespace comms
-   // namespace comms

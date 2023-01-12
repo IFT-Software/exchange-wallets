@@ -46,11 +46,16 @@ class Input {
                                   std::vector<uint8_t>& place_holder, bool is_replaced);
 };
 
-typedef struct Output_ {
+class Output {
+ private:
   std::array<uint8_t, 8> value_;
   // TODO: need to be an array????
   std::vector<uint8_t> script_pubkey_size_;
   std::vector<uint8_t> script_pubkey_;
+
+ public:
+  Output(std::array<uint8_t, 8> value, std::vector<uint8_t> script_pubkey_size,
+         std::vector<uint8_t> script_pubkey);
 
   std::string hex() {
     const std::string value_str = util::BytesToHex(value_);
@@ -59,8 +64,7 @@ typedef struct Output_ {
 
     return value_str + script_pubkey_size_str + script_pubkey_str;
   }
-
-} Output;
+};
 
 class Transaction {
  private:
@@ -89,13 +93,12 @@ class Transaction {
    * @return Transaction
    */
   std::string ReturnUnsignedTransaction(uint32_t index);
-
-  //   /**
-  //    * @brief Appends signature hash type to transaction data. This is usually SIGHASH_ALL.
-  //    *
-  //    * @return std::string
-  //    */
-  //   std::string AppendHashType();
 };
+
+namespace bitcoin {
+namespace tx {
+Transaction* ParseTransaction(uint8_t* data);
+}
+}  // namespace bitcoin
 
 #endif

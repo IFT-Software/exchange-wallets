@@ -5,6 +5,7 @@ cc_library(
   deps = [
     "//util",
     "//third_party/cppzmq",
+    "//bitcoin"
     
   ],
   visibility = ["//visibility:public"],

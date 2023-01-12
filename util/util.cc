@@ -10,6 +10,7 @@
 #include <iostream>
 #include <memory>
 #include <sstream>
+#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -58,6 +59,24 @@ namespace util {
 }
 [[maybe_unused]] uint64_t BytesToUInt64(std::array<uint8_t, 8>& bytes) {
   return BytesToUInt64(bytes.begin());
+}
+
+[[maybe_unused]] uint64_t BytesToUInt64(std::vector<uint8_t>& bytes) {
+  if (bytes.size() > 8) throw std::invalid_argument("vector size is bigger than 8");
+  size_t size = std::min((size_t)8, bytes.size());
+
+  uint64_t res = 0;
+
+  for (int i = 0; i < size; i++) {
+    res = res | static_cast<uint64_t>(bytes[i]) << ((size - 1) * 8 - i * 8);
+  }
+
+  return res;
+
+  // return uint64_t(static_cast<uint64_t>(bytes[0]) << 56 | static_cast<uint64_t>(bytes[1]) << 48 |
+  //                 static_cast<uint64_t>(bytes[2]) << 40 | static_cast<uint64_t>(bytes[3]) << 32 |
+  //                 static_cast<uint64_t>(bytes[4]) << 24 | static_cast<uint64_t>(bytes[5]) << 16 |
+  //                 static_cast<uint64_t>(bytes[6]) << 8 | static_cast<uint64_t>(bytes[7]));
 }
 
 [[maybe_unused]] void UInt16ToBytes(const uint16_t uint16, uint8_t* bytes) {
