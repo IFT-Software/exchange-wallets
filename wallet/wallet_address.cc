@@ -9,3 +9,5 @@ WalletAddress::WalletAddress(Address address, std::string derivation_path)
     : Address(address), derivation_path_(derivation_path) {}
 
 std::string WalletAddress::GetDerivationPath() { return derivation_path_; }
+std::string WalletAddress::GetPrivateKey() { return prv_key_; }
+std::string WalletAddress::GetPublicKey() { return pub_key_; }

@@ -9,8 +9,10 @@
 
 class Wallet {
  private:
-  std::array<uint8_t, 32> m_priv_key;
-  std::array<uint8_t, 32> m_public_key;
+  std::string seed_;
+
+  std::array<uint8_t, 32> master_priv_key_;
+  std::array<uint8_t, 32> master_public_key_;
 
   std::vector<WalletAddress> nodes_;
 

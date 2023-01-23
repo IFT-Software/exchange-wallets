@@ -54,6 +54,7 @@ http_archive(
 
 http_archive(
     name = "libgmp",
+    sha256 = "fd4829912cddd12f84181c3451cc752be224643e87fac497b69edddadc49b4f2",
     build_file = "//third_party:BUILD.libgmp.bazel",
     strip_prefix = "gmp-6.2.1",
     url = "https://gmplib.org/download/gmp/gmp-6.2.1.tar.xz"
