@@ -20,15 +20,47 @@
 #include "bitcoin/script.h"
 #include "bitcoin/scriptpubkey.h"
 #include "bitcoin/tx.h"
+#include "db/managers/address_manager.h"
+#include "db/managers/wallet_manager.h"
+#include "db/postgresql.h"
 #include "socketio/comms.h"
 #include "util/util.h"
 
 int main(int argc, char** argv) {
-  zmq::context_t ctx(4);
+  Postgresql* db = new Postgresql("postgres", "localhost", 5432, "postgres", "");
 
-  comms::SubscriberThread(&ctx);
-  auto thread = std::async(std::launch::async, &(comms::SubscriberThread), &ctx);
-  thread.wait();
+  DbAddressManager* db_address_mgr = new DbAddressManager(db);
+  DbWalletManager* db_wallet_mgr = new DbWalletManager(db);
+
+  if (db->IsConnected()) {
+    std::cout << "Db Connected" << std::endl;
+    db_address_mgr->CreateTable();
+    db_wallet_mgr->CreateTable();
+
+    // json::object q1;
+    // q1["name"] = "Bitcoin";
+    // q1["seed"] =
+    //     "24d5e9febf08a91daa5243a25b2d4ec0f09549b195539c188bcabacd7aeec689c933c942a55e4e0eec6524e017"
+    //     "c8b31e5cd9ea3f87b29aea126202b2a25055d3";
+    // q1["coin"] = "BTC";
+
+    // db_wallet_mgr->Insert(q1);
+
+    json::object q2;
+    q2["id"] = (uint64_t)1;
+
+    json::object res = db_wallet_mgr->Select(q2);
+
+    std::cout << res["name"] << std::endl;
+    std::cout << res["seed"] << std::endl;
+    std::cout << res["coin"] << std::endl;
+  }
+
+  // zmq::context_t ctx(4);
+
+  // comms::SubscriberThread(&ctx);
+  // auto thread = std::async(std::launch::async, &(comms::SubscriberThread), &ctx);
+  // thread.wait();
 
   // std::string tx =
   //     "010000000152828d67d748482ca6f71cf9f3555643cfa223eed411fb6084531b8a02bebc67010000006a47304402"
@@ -43,6 +75,13 @@ int main(int argc, char** argv) {
   // Transaction* transaction = bitcoin::tx::ParseTransaction(res.begin());
 
   // pqxx::connection C("postgresql://postgres@localhost:5432");
+
+  // if (C.is_open()) {
+  //   std::cout << "actik: " << C.dbname() << std::endl;
+
+  // } else {
+  //   std::cout << "bum" << std::endl;
+  // }
 
   // try {
   //   if (C.is_open()) {

@@ -1,3 +1,6 @@
+#ifndef DB_MANAGER_H
+#define DB_MANAGER_H
+
 #include <string>
 
 #include "boost/json.hpp"
@@ -22,3 +25,5 @@ class DbManager {
   virtual json::object Delete(json::object obj) = 0;
   virtual json::object Select(json::object obj) = 0;
 };
+
+#endif

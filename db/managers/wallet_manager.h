@@ -1,3 +1,6 @@
+#ifndef DB_MANAGERS_WALLET_H
+#define DB_MANAGERS_WALLET_H
+
 #include "db/manager.h"
 
 #include "boost/json.hpp"
@@ -15,3 +18,5 @@ class DbWalletManager : public DbManager {
   json::object Delete(json::object obj) override;
   json::object Select(json::object obj) override;
 };
+
+#endif

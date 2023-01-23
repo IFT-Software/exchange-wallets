@@ -1,3 +1,6 @@
+#ifndef DB_OBJECTS_WALLET_H
+#define DB_OBJECTS_WALLET_H
+
 #include <string>
 
 class DbWallet {
@@ -21,3 +24,5 @@ class DbWallet {
   std::string GetSeed();
   std::string GetCoin();
 };
+
+#endif

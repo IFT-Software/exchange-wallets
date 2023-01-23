@@ -6,6 +6,7 @@ cc_binary(
   ],
   deps = [
     "//bitcoin",
+    "//db",
     "//socketio",
     "//third_party/cppzmq",
     "@boost//:multiprecision",

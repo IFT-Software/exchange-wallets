@@ -22,5 +22,6 @@ cc_library(
   deps = [
     "@libpqxx",
     "@boost//:json",
-  ]
+  ],
+  visibility = ["//visibility:public"]
 )
