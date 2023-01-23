@@ -5,7 +5,19 @@
 #include <string>
 #include <vector>
 
-enum LockType { p2pkh, p2sh };
+// types are from https://github.com/bitcoin/bitcoin/blob/master/src/script/standard.cpp#L91
+// TODO: change this to output type and use this instead of AddrType
+enum LockType {
+  P2PKH,
+  P2PK,
+  P2PSH,
+  MULTISIG,
+  WITNESS_V0_KEYHASH,
+  WITNESS_V0_SCRIPTHASH,
+  WITNESS_V1_TAPROOT,
+  WITNESS_UNKNOWN,
+  NONSTANDARD
+};
 
 class Script {
  private:

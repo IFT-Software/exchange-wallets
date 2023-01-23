@@ -1,7 +1,7 @@
 cc_library(
     name = "wallet",
-    srcs = ["addressbook.cc", "wallet.cc"],
-    hdrs = ["addressbook.h", "wallet.h"],
+    srcs = ["wallet.cc"],
+    hdrs = ["wallet.h"],
     deps = [],
     visibility = ["//visibility:public"]
 )

@@ -27,6 +27,7 @@ int main(int argc, char** argv) {
   zmq::context_t ctx(4);
 
   comms::SubscriberThread(&ctx);
+  // comms::SegWitTransactions(&ctx);
   auto thread = std::async(std::launch::async, &(comms::SubscriberThread), &ctx);
   thread.wait();
 

@@ -7,6 +7,7 @@
 namespace comms {
 
 void SubscriberThread(zmq::context_t* ctx);
+void SegWitTransactions(zmq::context_t* ctx);
 
 }  // namespace comms
 #endif

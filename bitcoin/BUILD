@@ -10,6 +10,7 @@ cc_library(
     "scriptpubkey.cc", 
     "signature.cc",
     "tx.cc",
+    "transaction.cc"
   ],
   hdrs = [
     "address.h", 
@@ -20,7 +21,8 @@ cc_library(
     "script.h", 
     "scriptpubkey.h", 
     "signature.h",
-    "tx.h"
+    "tx.h",
+    "transaction.h"
   ],
   data = ["wordlist.txt"],
   deps = [

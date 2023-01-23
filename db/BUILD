@@ -4,5 +4,6 @@ cc_library(
   hdrs = ["db.h"],
   deps = [
     "@libpqxx"
-  ]
+  ],
+  visibility = ["//visibility:public"]
 )

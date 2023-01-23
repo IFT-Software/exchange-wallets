@@ -2,6 +2,8 @@
 
 #include "util/util.h"
 
+bool IsP2SH() {}
+
 Script::Script(std::vector<uint8_t> script, LockType lock_type) {
   if (IsValid(script, lock_type)) {
     script_ = script;
