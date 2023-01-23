@@ -14,7 +14,7 @@
 #include <string>
 #include <vector>
 
-#include "gmpxx.h"
+#include "third_party/gmpxx/gmpxx.h"
 
 namespace util {
 
