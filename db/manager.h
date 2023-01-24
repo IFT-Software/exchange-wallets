@@ -24,6 +24,11 @@ class DbManager {
   virtual json::object Update(json::object obj) = 0;
   virtual json::object Delete(json::object obj) = 0;
   virtual json::object Select(json::object obj) = 0;
+
+  std::string BuildInsertQuery(json::object obj, std::string& table_name);
+  std::string BuildUpdateQuery(json::object obj, std::string& table_name);
+  std::string BuildDeleteQuery(json::object obj, std::string& table_name);
+  std::string BuildSelectQuery(json::object obj, std::string& table_name);
 };
 
 #endif

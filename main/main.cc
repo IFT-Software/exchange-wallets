@@ -37,23 +37,26 @@ int main(int argc, char** argv) {
     db_address_mgr->CreateTable();
     db_wallet_mgr->CreateTable();
 
-    // json::object q1;
-    // q1["name"] = "Bitcoin";
-    // q1["seed"] =
-    //     "24d5e9febf08a91daa5243a25b2d4ec0f09549b195539c188bcabacd7aeec689c933c942a55e4e0eec6524e017"
-    //     "c8b31e5cd9ea3f87b29aea126202b2a25055d3";
-    // q1["coin"] = "BTC";
+    json::object q1(
+        {{"data",
+          {{"name", "Alkim BTC2"},
+           {"seed",
+            "43076aea18722554d3993bde416cf3cd43f08bcb04715f7e43b9130898af7d5b0312db488ebd"
+            "6e8a14604da8c98eb8dbab792d3a1005d4c2b6d654d3598cd6c5"},
+           {"coin", "BTC"}}},
+         {"select", {{"id", true}, {"name", true}, {"seed", true}, {"coin", true}}}});
 
-    // db_wallet_mgr->Insert(q1);
+    json::object res = db_wallet_mgr->Insert(q1);
 
-    json::object q2;
-    q2["id"] = (uint64_t)1;
+    // json::object q2;
+    // q2["id"] = (uint64_t)4;
 
-    json::object res = db_wallet_mgr->Select(q2);
+    // json::object res = db_wallet_mgr->Select(q2);
 
-    std::cout << res["name"] << std::endl;
-    std::cout << res["seed"] << std::endl;
-    std::cout << res["coin"] << std::endl;
+    // std::cout << res["name"] << std::endl;
+    // std::cout << res["seed"] << std::endl;
+    // std::cout << res["coin"] << std::endl;
+    std::cout << json::serialize(res) << std::endl;
   }
 
   // zmq::context_t ctx(4);

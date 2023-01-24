@@ -1,5 +1,6 @@
 #include "db/managers/wallet_manager.h"
 #include <iostream>
+#include <tuple>
 
 #include "boost/json.hpp"
 
@@ -15,11 +16,32 @@ void DbWalletManager::CreateTable() {
 }
 
 json::object DbWalletManager::Insert(json::object obj) {
-  std::string query = "INSERT INTO " + table_name_ + " (name, seed, coin) VALUES ('" +
-                      obj["name"].as_string().c_str() + "', '" + obj["seed"].as_string().c_str() +
-                      "', '" + obj["coin"].as_string().c_str() + "');";
-  db_->Execute(query);
-  return json::object();
+  std::string query = BuildInsertQuery(obj, table_name_);
+
+  // std::cout << "DEBUG(query): " << query << std::endl;
+
+  json::object res_obj;
+  if (obj["select"].is_null()) {
+    db_->Execute(query);
+  } else {
+    std::any res;
+    db_->ExecuteWithResult(query, res);
+
+    pqxx::result pq_res = std::any_cast<pqxx::result>(res);
+
+    if (pq_res.size() > 0) {
+      for (auto value : obj["select"].as_object()) {
+        if (value.value().as_bool()) {
+          if (!pq_res[0][value.key_c_str()].is_null()) {
+            res_obj[value.key_c_str()] = pq_res[0][value.key_c_str()].c_str();
+          } else {
+            res_obj[value.key_c_str()] = nullptr;
+          }
+        }
+      }
+    }
+  }
+  return res_obj;
 }
 
 json::object DbWalletManager::Update(json::object obj) {
@@ -49,9 +71,23 @@ json::object DbWalletManager::Select(json::object obj) {
 
   json::object res_obj;
   if (pq_res.size() > 0) {
-    res_obj["name"] = pq_res[0]["name"].as<std::string>();
-    res_obj["seed"] = pq_res[0]["seed"].as<std::string>();
-    res_obj["coin"] = pq_res[0]["coin"].as<std::string>();
+    if (!pq_res[0]["name"].is_null()) {
+      res_obj["name"] = pq_res[0]["name"].as<std::string>();
+    } else {
+      res_obj["name"] = nullptr;
+    }
+
+    if (!pq_res[0]["seed"].is_null()) {
+      res_obj["seed"] = pq_res[0]["seed"].as<std::string>();
+    } else {
+      res_obj["seed"] = nullptr;
+    }
+
+    if (!pq_res[0]["coin"].is_null()) {
+      res_obj["coin"] = pq_res[0]["coin"].as<std::string>();
+    } else {
+      res_obj["coin"] = nullptr;
+    }
   }
 
   return res_obj;
