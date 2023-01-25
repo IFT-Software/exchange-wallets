@@ -105,7 +105,7 @@ json::object DbWalletManager::Delete(json::object obj) {
 json::array DbWalletManager::Select(json::object obj) {
   std::string query = BuildSelectQuery(obj, table_name_);
 
-  std::cout << "DEBUG(query): " << query << std::endl;
+  // std::cout << "DEBUG(query): " << query << std::endl;
 
   std::any res;
   db_->ExecuteWithResult(query, res);
