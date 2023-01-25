@@ -12,7 +12,6 @@
 #include "bitcoin/crypto.h"
 
 class Address;
-enum class AddrType : uint16_t;
 typedef std::array<uint8_t, 20> Hash160;
 
 class PubKey {

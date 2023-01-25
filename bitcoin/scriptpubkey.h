@@ -7,29 +7,30 @@
 
 // types are from https://github.com/bitcoin/bitcoin/blob/master/src/script/standard.cpp#L91
 // TODO: change this to output type and use this instead of AddrType
-enum LockType {
+enum OutputType {
   P2PKH,
   P2PK,
   P2PSH,
   MULTISIG,
   WITNESS_V0_KEYHASH,
   WITNESS_V0_SCRIPTHASH,
-  WITNESS_V1_TAPROOT,
-  WITNESS_UNKNOWN,
-  NONSTANDARD
+  // WITNESS_V1_TAPROOT,
+  // WITNESS_UNKNOWN,
+  // NONSTANDARD
 };
 
 class Script {
  private:
-  LockType lock_type_;
+  OutputType out_type_;
   std::vector<uint8_t> script_;
 
  public:
-  Script(std::vector<uint8_t> script, LockType lock_type);
+  // TODO: constructor without output type
+  Script(std::vector<uint8_t> script, OutputType out_type);
 
-  bool IsValid(std::vector<uint8_t> script, LockType lock_type);
+  bool IsValid(std::vector<uint8_t> script, OutputType out_type);
 
-  LockType GetLockType();
+  OutputType GetOutputType();
 
   uint32_t size() const;
   std::vector<uint8_t> data() const;

@@ -85,6 +85,34 @@ Output* ParseOutput(uint8_t* data, uint32_t& iterator) {
   return res;
 }
 
+/**
+ * @brief Advances the iterator. Since we are only using the confirmed transactions, we
+ * don't need the data in the witness field, which mostly consists of the signature and the
+ * public key.
+ *
+ * @param data
+ * @param iterator
+ * @param n_witness equals to the number of inputs of the transaction
+ */
+void ParseWitness(uint8_t* data, uint32_t& iterator, uint32_t n_witness) {
+  for (uint32_t i = 0; i < n_witness; i++) {
+    std::vector<uint8_t> n_items;
+    iterator += VarInt(data, iterator, n_items);
+
+    uint64_t n_items_int = util::BytesToUInt64(n_items);
+    if (n_items_int == 0) {
+      continue;
+    }
+
+    for (uint64_t j = 0; j < n_items_int; j++) {
+      std::vector<uint8_t> item_size;
+      iterator += VarInt(data, iterator, item_size);
+      uint64_t item_size_int = util::BytesToUInt64(item_size);
+      iterator += item_size_int;
+    }
+  }
+}
+
 Transaction* ParseTransaction(uint8_t* data) {
   uint32_t iterator = 0;
   bool is_segwit = false;
@@ -128,13 +156,15 @@ Transaction* ParseTransaction(uint8_t* data) {
     outputs.push_back(*output);
   }
 
+  ParseWitness(data, iterator, input_count_int);
+
   std::array<uint8_t, 4> lock_time;
   std::copy(data + iterator, data + iterator + 4, lock_time.begin());
   iterator += 4;
 
   iterator = 0;
-  Transaction* res =
-      new Transaction(version_str, input_count, inputs, output_count, outputs, lock_time);
+  Transaction* res = new Transaction(version_str, input_count, inputs, output_count, outputs,
+                                     lock_time, is_segwit);
 
   return res;
 }

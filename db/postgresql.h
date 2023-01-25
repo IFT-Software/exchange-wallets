@@ -9,11 +9,6 @@ class Postgresql : public Db {
   std::string host_;
   std::string user_;
   std::string password_;
-
-  std::string host_;
-  std::string user_;
-  std::string password_;
-
   pqxx::connection connection_;
 
  public:

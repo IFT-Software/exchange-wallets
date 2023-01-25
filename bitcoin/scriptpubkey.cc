@@ -2,12 +2,10 @@
 
 #include "util/util.h"
 
-bool IsP2SH() {}
-
-Script::Script(std::vector<uint8_t> script, LockType lock_type) {
+Script::Script(std::vector<uint8_t> script, OutputType lock_type) {
   if (IsValid(script, lock_type)) {
     script_ = script;
-    lock_type_ = lock_type;
+    out_type_ = lock_type;
   } else {
     // TODO: custom exceptions
     throw std::invalid_argument("invalid script");
@@ -15,7 +13,7 @@ Script::Script(std::vector<uint8_t> script, LockType lock_type) {
 }
 
 // TODO: implement this
-bool Script::IsValid(std::vector<uint8_t> script, LockType lock_type) { return true; }
+bool Script::IsValid(std::vector<uint8_t> script, OutputType out_type) { return true; }
 
 uint32_t Script::size() const { return script_.size(); }
 

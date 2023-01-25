@@ -1,3 +1,6 @@
+#ifndef DB_DB_H
+#define DB_DB_H
+
 #include <string>
 #include <vector>
 
@@ -19,10 +22,12 @@ class Db {
   virtual bool IsConnected() = 0;
   virtual bool Execute(std::string query) = 0;
 
-  virtual bool Execute(std::string query) = 0;
+  // virtual bool Execute(std::string query) = 0;
   virtual bool ExecuteWithResult(std::string query, void* res) = 0;
   virtual bool ExecuteTransaction(std::vector<std::string> queries) = 0;
 
   // virtual void SetType(DbType db_type) = 0;
   // virtual DbType GetType() = 0;
 };
+
+#endif

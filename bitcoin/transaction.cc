@@ -67,29 +67,15 @@ std::string Output::json() {
 
 Transaction::Transaction(std::string version, std::vector<uint8_t> input_count,
                          std::vector<Input> inputs, std::vector<uint8_t> output_count,
-                         std::vector<Output> outputs, std::array<uint8_t, 4> lock_time)
+                         std::vector<Output> outputs, std::array<uint8_t, 4> lock_time,
+                         bool is_segwit)
     : version_(version),
       input_count_(input_count),
       inputs_(inputs),
       output_count_(output_count),
       outputs_(outputs),
-      lock_time_(lock_time) {
-  is_segwit_ = false;
-  is_confirmed_ = false;
-};
-
-Transaction::Transaction(std::string version, std::vector<uint8_t> input_count,
-                         std::vector<Input> inputs, std::vector<uint8_t> output_count,
-                         std::vector<Output> outputs, std::vector<uint8_t> witness,
-                         std::array<uint8_t, 4> lock_time)
-    : version_(version),
-      input_count_(input_count),
-      inputs_(inputs),
-      output_count_(output_count),
-      outputs_(outputs),
-      witness_(witness),
-      lock_time_(lock_time) {
-  is_segwit_ = true;
+      lock_time_(lock_time),
+      is_segwit_(is_segwit) {
   is_confirmed_ = false;
 };
 
@@ -113,14 +99,14 @@ std::string Transaction::hex() {
 
 std::string Transaction::json() {
   std::string json = "";
-  json += "version: " + version_ + "\n";
+  json += "\nversion: " + version_ + "\n";
 
   uint64_t input_count_int = util::BytesToUInt64(input_count_);
   std::string input_count = std::to_string(input_count_int);
   json += "input count: " + input_count + "\n";
 
   for (int i = 0; i < input_count_int; i++) {
-    json += "input " + std::to_string(i) + "\n";
+    json += "input " + std::to_string(i) + ":\n";
     json += inputs_[i].json();
   }
 
@@ -129,10 +115,11 @@ std::string Transaction::json() {
   json += "output count: " + output_count + "\n";
 
   for (int i = 0; i < output_count_int; i++) {
-    json += "output " + std::to_string(i) + "\n";
+    json += "output " + std::to_string(i) + ":\n";
     json += outputs_[i].json();
   }
 
-  json += "locktime: " + util::BytesToHex(lock_time_);
+  json += "locktime: " + util::BytesToHex(lock_time_) + "\n";
+  json += "is segwit: " + std::to_string(is_segwit_);
   return json;
 }

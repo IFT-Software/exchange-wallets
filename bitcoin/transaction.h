@@ -97,7 +97,7 @@ class Transaction {
   std::vector<uint8_t> output_count_;
   std::vector<Output> outputs_;
   // this may be empty if this is a non-segwit transaction
-  // TODO: make this a type
+  // TODO: make this a type?
   std::vector<uint8_t> witness_;
   // TODO: look at this
   std::array<uint8_t, 4> lock_time_;
@@ -119,7 +119,7 @@ class Transaction {
 
  public:
   /**
-   * @brief Constructer for a non-segwit transaction.
+   * @brief Constructer for a non-segwit transaction. Sets is_confirmed_ to false.
    *
    * @param version
    * @param input_count
@@ -127,25 +127,11 @@ class Transaction {
    * @param output_count
    * @param outputs
    * @param lock_time
+   * @param is_segwit
    */
   Transaction(std::string version, std::vector<uint8_t> input_count, std::vector<Input> inputs,
               std::vector<uint8_t> output_count, std::vector<Output> outputs,
-              std::array<uint8_t, 4> lock_time);
-
-  /**
-   * @brief Constructer for a segwit transaction.
-   *
-   * @param version
-   * @param input_count
-   * @param inputs
-   * @param output_count
-   * @param outputs
-   * @param witness
-   * @param lock_time
-   */
-  Transaction(std::string version, std::vector<uint8_t> input_count, std::vector<Input> inputs,
-              std::vector<uint8_t> output_count, std::vector<Output> outputs,
-              std::vector<uint8_t> witness, std::array<uint8_t, 4> lock_time);
+              std::array<uint8_t, 4> lock_time, bool is_segwit);
 
   std::string hex();
   std::string json();
@@ -160,12 +146,18 @@ class Transaction {
   bool IsValid();
 
   /**
-   * @brief Returns true if the transaction has a witness field (wtxid).
+   * @brief Returns true if the transaction is a segwit transaction.
    *
    * @return true
    * @return false
    */
-  bool HasWitness();
+  bool IsSegwit();
+
+  /**
+   * @brief Makes this Transaction confirmed.
+   *
+   */
+  void SetConfirmed();
 };
 
 #endif

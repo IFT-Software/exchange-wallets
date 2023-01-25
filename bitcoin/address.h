@@ -6,24 +6,22 @@
 #include <vector>
 
 #include "bitcoin/pubkey.h"
+#include "bitcoin/scriptpubkey.h"
 
 class Script;
 
-// notes: can have LEGACY for P2PKH and P2SH
-enum class AddrType : uint16_t { P2PKH, P2SH };
-
 class Address {
  private:
-  AddrType addr_type_;
+  OutputType out_type_;
   std::string addr_;
   // std::vector<uint8_t> addr;
 
  public:
-  Address(std::string& addr, AddrType& addr_type);
+  Address(std::string& addr, OutputType& out_type);
 
-  bool IsValid(std::string& addr, AddrType& addr_type);
+  bool IsValid(std::string& addr, OutputType& out_type);
 
-  AddrType GetAddrType();
+  OutputType GetOutputType();
 };
 
 #endif

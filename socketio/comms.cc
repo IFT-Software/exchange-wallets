@@ -36,9 +36,9 @@ void SubscriberThread(zmq::context_t* ctx) {
 
     std::string tx_str = tx->json();
     std::cout << "tx_str " << tx_str << std::endl;
-    std::cout << "is equal: "
-              << (util::BytesToHex((uint8_t*)recv_msgs[1].data(), recv_msgs[1].size()) == tx_str)
-              << std::endl;
+    // std::cout << "is equal: "
+    //           << (util::BytesToHex((uint8_t*)recv_msgs[1].data(), recv_msgs[1].size()) == tx_str)
+    //           << std::endl;
   }
 }
 
