@@ -51,8 +51,8 @@ int main(int argc, char** argv) {
     // json::object update_res = db_wallet_mgr->Update(
     //     {{"data",
     //       {{"seed",
-    //         "43076aea18722554d3993bde416cf3cd43f08bcb04715f7e43b9130898af7d5b0312db488ebd"
-    //         "6e8a14604da8c98eb8dbab792d3a1005d4c2b6d654d3598cd6c5"}}},
+    //         "24d5e9febf08a91daa5243a25b2d4ec0f09549b195539c188bcabacd7aeec689c933c942a55e4e0eec6524"
+    //         "e017c8b31e5cd9ea3f87b29aea126202b2a25055d3"}}},
     //      {"where", {{"id", 20}}},
     //      {"select", {{"id", true}, {"name", true}, {"seed", true}, {"coin", true}}}});
 
@@ -69,15 +69,6 @@ int main(int argc, char** argv) {
          {"select", {{"id", true}, {"name", true}, {"seed", true}, {"coin", true}}}});
 
     std::cout << json::serialize(select_res) << std::endl;
-
-    // json::object q2;
-    // q2["id"] = (uint64_t)4;
-
-    // json::object res = db_wallet_mgr->Select(q2);
-
-    // std::cout << res["name"] << std::endl;
-    // std::cout << res["seed"] << std::endl;
-    // std::cout << res["coin"] << std::endl;
   }
 
   // zmq::context_t ctx(4);

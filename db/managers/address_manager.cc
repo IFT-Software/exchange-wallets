@@ -1,4 +1,5 @@
 #include "db/managers/address_manager.h"
+#include <iostream>
 
 DbAddressManager::DbAddressManager(Db* db) : DbManager(db, "Address") {}
 
@@ -12,59 +13,119 @@ void DbAddressManager::CreateTable() {
 }
 
 json::object DbAddressManager::Insert(json::object obj) {
-  std::string query =
-      "INSERT INTO " + table_name_ +
-      " (drv_path, addr, addr_type, prv_key, pub_key, wallet_id) VALUES ('" +
-      obj["drv_path"].as_string().c_str() + "', '" + obj["addr"].as_string().c_str() + "', '" +
-      obj["addr_type"].as_string().c_str() + "', '" + obj["prv_key"].as_string().c_str() + "', '" +
-      obj["pub_key"].as_string().c_str() + "','" + std::to_string(obj["wallet_id"].as_uint64()) +
-      "');";
+  std::string query = BuildInsertQuery(obj, table_name_);
 
-  db_->Execute(query);
+  // std::cout << "DEBUG(query): " << query << std::endl;
 
-  return json::object();
+  json::object res_obj;
+  if (obj["select"].is_null()) {
+    db_->Execute(query);
+  } else {
+    std::any res;
+    db_->ExecuteWithResult(query, res);
+
+    pqxx::result pq_res = std::any_cast<pqxx::result>(res);
+
+    if (pq_res.size() > 0) {
+      for (auto value : obj["select"].as_object()) {
+        if (value.value().as_bool()) {
+          if (!pq_res[0][value.key_c_str()].is_null()) {
+            res_obj[value.key_c_str()] = pq_res[0][value.key_c_str()].c_str();
+          } else {
+            res_obj[value.key_c_str()] = nullptr;
+          }
+        }
+      }
+    }
+  }
+  return res_obj;
 }
 
 json::object DbAddressManager::Update(json::object obj) {
-  std::string query =
-      "UPDATE " + table_name_ + " SET drv_path = '" + obj["drv_path"].as_string().c_str() +
-      "', addr = '" + obj["addr"].as_string().c_str() + "', addr_type = '" +
-      obj["addr_type"].as_string().c_str() + "', prv_key = '" + obj["prv_key"].as_string().c_str() +
-      "', pub_key = '" + obj["pub_key"].as_string().c_str() + "', wallet_id='" +
-      std::to_string(obj["wallet_id"].as_uint64()) +
-      "' WHERE id = " + std::to_string(obj["id"].as_uint64()) + ";";
+  std::string query = BuildUpdateQuery(obj, table_name_);
 
-  db_->Execute(query);
+  // std::cout << "DEBUG(query): " << query << std::endl;
 
-  return json::object();
+  json::object res_obj;
+  if (obj["select"].is_null()) {
+    db_->Execute(query);
+  } else {
+    std::any res;
+    db_->ExecuteWithResult(query, res);
+
+    pqxx::result pq_res = std::any_cast<pqxx::result>(res);
+
+    if (pq_res.size() > 0) {
+      for (auto value : obj["select"].as_object()) {
+        if (value.value().as_bool()) {
+          if (!pq_res[0][value.key_c_str()].is_null()) {
+            res_obj[value.key_c_str()] = pq_res[0][value.key_c_str()].c_str();
+          } else {
+            res_obj[value.key_c_str()] = nullptr;
+          }
+        }
+      }
+    }
+  }
+  return res_obj;
 }
 
 json::object DbAddressManager::Delete(json::object obj) {
-  std::string query =
-      "DELETE FROM " + table_name_ + " WHERE id = " + std::to_string(obj["id"].as_uint64()) + ";";
+  std::string query = BuildDeleteQuery(obj, table_name_);
 
-  db_->Execute(query);
-  return json::object();
+  // std::cout << "DEBUG(query): " << query << std::endl;
+
+  json::object res_obj;
+  if (obj["select"].is_null()) {
+    db_->Execute(query);
+  } else {
+    std::any res;
+    db_->ExecuteWithResult(query, res);
+
+    pqxx::result pq_res = std::any_cast<pqxx::result>(res);
+
+    if (pq_res.size() > 0) {
+      for (auto value : obj["select"].as_object()) {
+        if (value.value().as_bool()) {
+          if (!pq_res[0][value.key_c_str()].is_null()) {
+            res_obj[value.key_c_str()] = pq_res[0][value.key_c_str()].c_str();
+          } else {
+            res_obj[value.key_c_str()] = nullptr;
+          }
+        }
+      }
+    }
+  }
+  return res_obj;
 }
 
 json::array DbAddressManager::Select(json::object obj) {
-  std::string query =
-      "SELECT * FROM " + table_name_ + " WHERE id = " + std::to_string(obj["id"].as_uint64()) + ";";
+  std::string query = BuildSelectQuery(obj, table_name_);
+
+  // std::cout << "DEBUG(query): " << query << std::endl;
+
   std::any res;
   db_->ExecuteWithResult(query, res);
 
   pqxx::result pq_res = std::any_cast<pqxx::result>(res);
 
-  json::object res_obj;
+  json::array res_arr;
+
   if (pq_res.size() > 0) {
-    res_obj["drv_path"] = pq_res[0]["drv_path"].as<std::string>();
-    res_obj["addr"] = pq_res[0]["addr"].as<std::string>();
-    res_obj["addr_type"] = pq_res[0]["addr_type"].as<std::string>();
-    res_obj["prv_key"] = pq_res[0]["prv_key"].as<std::string>();
-    res_obj["pub_key"] = pq_res[0]["pub_key"].as<std::string>();
-    res_obj["wallet_id"] = pq_res[0]["wallet_id"].as<uint32_t>();
+    for (auto pq_res_elem : pq_res) {
+      json::object obj_elem;
+      for (auto value : obj["select"].as_object()) {
+        if (value.value().as_bool()) {
+          if (!pq_res_elem[value.key_c_str()].is_null()) {
+            obj_elem[value.key_c_str()] = pq_res_elem[value.key_c_str()].c_str();
+          } else {
+            obj_elem[value.key_c_str()] = nullptr;
+          }
+        }
+      }
+      res_arr.emplace_back(obj_elem);
+    }
   }
 
-  // return res_obj;
-  return json::array();
+  return res_arr;
 }
