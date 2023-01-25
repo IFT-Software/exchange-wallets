@@ -13,36 +13,14 @@
 
 namespace bitcoin {
 namespace tx {
+
+/**
+ * @brief Parses the transaction data @param data which is in json format.
+ *
+ * @param data
+ * @return Transaction*
+ */
 Transaction* ParseTransaction(uint8_t* data);
-
-/**
- * @brief Extracts the txids of the transactions that are being used as the inputs
- * of the transaction @param data.
- *
- * @param data
- * @return std::vector<std::array<uint8_t, 32>>
- */
-std::vector<std::array<uint8_t, 32>> ExtractInputTXIDs(uint8_t* data);
-
-/**
- * @brief Extracts the addresses of the transactions that are being used as the inputs
- * of the transaction @param data. Communicates with the database to access the addresses.
- *
- * @param data
- * @return std::vector<Address>
- */
-std::vector<Address> ExtractInputAddresses(uint8_t* data);
-
-/**
- * @brief Extracts the output addresses from the scriptpubkeys of the outputs of the transaction
- * @param data.
- *
- * @param data
- * @return std::vector<Address>
- */
-std::vector<Address> ExtractOutputAddresses(uint8_t* data);
-
-bool IsSegwit(uint8_t* data);
 
 }  // namespace tx
 }  // namespace bitcoin

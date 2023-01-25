@@ -31,20 +31,6 @@ class Input {
 
   std::string hex();
   std::string json();
-
-  /**
-   * @brief Returns the hex of this input with current signature removed, and replaced by
-   * place_holder if is_replaced is true. If the signature is replaces, the signature size is
-   * modified accordingly. Note that is_replaced is true when this is the input that will be signed
-   * in a transaction.
-   *
-   * @param sig_size
-   * @param place_holder
-   * @param is_replaced
-   * @return std::string
-   */
-  std::string ReturnUnsignedInput(std::vector<uint8_t>& sig_size,
-                                  std::vector<uint8_t>& place_holder, bool is_replaced);
 };
 
 class Output {
