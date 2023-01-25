@@ -5,6 +5,8 @@ cc_library(
   deps = [
     "@openssl",
     "//third_party/gmpxx",
+    "@boost//:json",
+    "@com_google_absl//absl/strings",
   ],
   visibility = ["//visibility:public"],
 )

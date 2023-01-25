@@ -14,7 +14,11 @@
 #include <string>
 #include <vector>
 
+#include "absl/strings/str_join.h"
+#include "boost/json.hpp"
 #include "third_party/gmpxx/gmpxx.h"
+
+namespace json = boost::json;
 
 namespace util {
 
@@ -67,7 +71,7 @@ namespace util {
 
   uint64_t res = 0;
 
-  for (int i = 0; i < size; i++) {
+  for (size_t i = 0; i < size; i++) {
     res = res | static_cast<uint64_t>(bytes[i]) << ((size - 1) * 8 - i * 8);
   }
 
@@ -222,6 +226,22 @@ namespace util {
     f.close();  // close the file object.
   }
   return words;
+}
+
+[[maybe_unused]] std::string JsonValueToSQLFormattedStr(json::value value) {
+  std::string res = "";
+  if (value.is_string()) {
+    absl::StrAppend(&res, absl::StrCat("'", value.get_string().c_str(), "'"));
+  } else if (value.is_bool()) {
+    absl::StrAppend(&res, value.get_bool());
+  } else if (value.is_double()) {
+    absl::StrAppend(&res, value.get_double());
+  } else if (value.is_int64()) {
+    absl::StrAppend(&res, value.get_int64());
+  } else if (value.is_uint64()) {
+    absl::StrAppend(&res, value.get_uint64());
+  }
+  return res;
 }
 
 }  // namespace util

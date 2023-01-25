@@ -47,7 +47,7 @@ json::object DbAddressManager::Delete(json::object obj) {
   return json::object();
 }
 
-json::object DbAddressManager::Select(json::object obj) {
+json::array DbAddressManager::Select(json::object obj) {
   std::string query =
       "SELECT * FROM " + table_name_ + " WHERE id = " + std::to_string(obj["id"].as_uint64()) + ";";
   std::any res;
@@ -65,5 +65,6 @@ json::object DbAddressManager::Select(json::object obj) {
     res_obj["wallet_id"] = pq_res[0]["wallet_id"].as<uint32_t>();
   }
 
-  return res_obj;
+  // return res_obj;
+  return json::array();
 }

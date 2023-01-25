@@ -37,16 +37,38 @@ int main(int argc, char** argv) {
     db_address_mgr->CreateTable();
     db_wallet_mgr->CreateTable();
 
-    json::object q1(
-        {{"data",
-          {{"name", "Alkim BTC2"},
-           {"seed",
-            "43076aea18722554d3993bde416cf3cd43f08bcb04715f7e43b9130898af7d5b0312db488ebd"
-            "6e8a14604da8c98eb8dbab792d3a1005d4c2b6d654d3598cd6c5"},
-           {"coin", "BTC"}}},
+    // json::object res = db_wallet_mgr->Insert(
+    //     {{"data",
+    //       {{"name", "Alkim BTC2"},
+    //        {"seed",
+    //         "43076aea18722554d3993bde416cf3cd43f08bcb04715f7e43b9130898af7d5b0312db488ebd"
+    //         "6e8a14604da8c98eb8dbab792d3a1005d4c2b6d654d3598cd6c5"},
+    //        {"coin", "BTC"}}},
+    //      {"select", {{"id", true}, {"name", true}, {"seed", true}, {"coin", true}}}});
+
+    // std::cout << json::serialize(res) << std::endl;
+
+    // json::object update_res = db_wallet_mgr->Update(
+    //     {{"data",
+    //       {{"seed",
+    //         "43076aea18722554d3993bde416cf3cd43f08bcb04715f7e43b9130898af7d5b0312db488ebd"
+    //         "6e8a14604da8c98eb8dbab792d3a1005d4c2b6d654d3598cd6c5"}}},
+    //      {"where", {{"id", 20}}},
+    //      {"select", {{"id", true}, {"name", true}, {"seed", true}, {"coin", true}}}});
+
+    // std::cout << json::serialize(update_res) << std::endl;
+
+    // json::object delete_res = db_wallet_mgr->Delete(
+    //     {{"where", {{"id", 21}}},
+    //      {"select", {{"id", true}, {"name", true}, {"seed", true}, {"coin", true}}}});
+
+    // std::cout << json::serialize(delete_res) << std::endl;
+
+    json::array select_res = db_wallet_mgr->Select(
+        {{"where", {{"id", 4}}},
          {"select", {{"id", true}, {"name", true}, {"seed", true}, {"coin", true}}}});
 
-    json::object res = db_wallet_mgr->Insert(q1);
+    std::cout << json::serialize(select_res) << std::endl;
 
     // json::object q2;
     // q2["id"] = (uint64_t)4;
@@ -56,7 +78,6 @@ int main(int argc, char** argv) {
     // std::cout << res["name"] << std::endl;
     // std::cout << res["seed"] << std::endl;
     // std::cout << res["coin"] << std::endl;
-    std::cout << json::serialize(res) << std::endl;
   }
 
   // zmq::context_t ctx(4);
