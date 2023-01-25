@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <future>
 #include <iostream>
+#include <map>
 #include <string>
 #include <thread>
 
@@ -23,7 +24,8 @@
 #include "db/managers/address_manager.h"
 #include "db/managers/wallet_manager.h"
 #include "db/postgresql.h"
-#include "socketio/comms.h"
+#include "net/comms.h"
+#include "net/https.h"
 #include "util/util.h"
 
 int main(int argc, char** argv) {
@@ -64,12 +66,18 @@ int main(int argc, char** argv) {
 
     // std::cout << json::serialize(delete_res) << std::endl;
 
-    json::array select_res = db_wallet_mgr->Select(
-        {{"where", {{"id", 4}}},
-         {"select", {{"id", true}, {"name", true}, {"seed", true}, {"coin", true}}}});
+    // json::array select_res = db_wallet_mgr->Select(
+    //     {{"where", {{"id", 4}}},
+    //      {"select", {{"id", true}, {"name", true}, {"seed", true}, {"coin", true}}}});
 
-    std::cout << json::serialize(select_res) << std::endl;
+    // std::cout << json::serialize(select_res) << std::endl;
   }
+
+  std::map<std::string, std::string> headers;
+  headers["Content-Type"] = "application/json";
+
+  std::string response = net::https::Get("https://www.binance.com/api/v3/time", headers);
+  std::cout << response << std::endl;
 
   // zmq::context_t ctx(4);
 

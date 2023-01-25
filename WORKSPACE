@@ -16,11 +16,20 @@ http_archive(
 load("@rules_foreign_cc//foreign_cc:repositories.bzl", "rules_foreign_cc_dependencies")
 rules_foreign_cc_dependencies()
 
-load("//openssl:openssl_repositories.bzl", "openssl_repositories")
+load("//third_party/openssl:openssl_repositories.bzl", "openssl_repositories")
 openssl_repositories()
 
-load("//openssl:openssl_setup.bzl", "openssl_setup")
+load("//third_party/openssl:openssl_setup.bzl", "openssl_setup")
 openssl_setup()
+
+load("//third_party/zlib:zlib_repositories.bzl", "zlib_repositories")
+zlib_repositories()
+
+load("//third_party/libssh2:libssh2_repositories.bzl", "libssh2_repositories")
+libssh2_repositories()
+
+load("//third_party/curl:curl_repositories.bzl", "curl_repositories")
+curl_repositories()
 
 http_archive(
   name = "com_google_absl",

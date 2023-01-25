@@ -10,6 +10,9 @@
 
 class Script;
 
+// notes: can have LEGACY for P2PKH and P2SH
+enum class AddrType : uint16_t { P2PKH, P2SH };
+
 class Address {
  private:
   OutputType out_type_;
