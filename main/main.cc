@@ -20,16 +20,71 @@
 #include "bitcoin/script.h"
 #include "bitcoin/scriptpubkey.h"
 #include "bitcoin/tx.h"
+#include "db/managers/address_manager.h"
+#include "db/managers/wallet_manager.h"
+#include "db/postgresql.h"
 #include "socketio/comms.h"
 #include "util/util.h"
 
 int main(int argc, char** argv) {
-  zmq::context_t ctx(4);
+  Postgresql* db = new Postgresql("postgres", "localhost", 5432, "postgres", "");
 
-  comms::SubscriberThread(&ctx);
-  // comms::SegWitTransactions(&ctx);
-  auto thread = std::async(std::launch::async, &(comms::SubscriberThread), &ctx);
-  thread.wait();
+  DbAddressManager* db_address_mgr = new DbAddressManager(db);
+  DbWalletManager* db_wallet_mgr = new DbWalletManager(db);
+
+  if (db->IsConnected()) {
+    std::cout << "Db Connected" << std::endl;
+    db_address_mgr->CreateTable();
+    db_wallet_mgr->CreateTable();
+
+    // json::object res = db_wallet_mgr->Insert(
+    //     {{"data",
+    //       {{"name", "Alkim BTC2"},
+    //        {"seed",
+    //         "43076aea18722554d3993bde416cf3cd43f08bcb04715f7e43b9130898af7d5b0312db488ebd"
+    //         "6e8a14604da8c98eb8dbab792d3a1005d4c2b6d654d3598cd6c5"},
+    //        {"coin", "BTC"}}},
+    //      {"select", {{"id", true}, {"name", true}, {"seed", true}, {"coin", true}}}});
+
+    // std::cout << json::serialize(res) << std::endl;
+
+    // json::object update_res = db_wallet_mgr->Update(
+    //     {{"data",
+    //       {{"seed",
+    //         "43076aea18722554d3993bde416cf3cd43f08bcb04715f7e43b9130898af7d5b0312db488ebd"
+    //         "6e8a14604da8c98eb8dbab792d3a1005d4c2b6d654d3598cd6c5"}}},
+    //      {"where", {{"id", 20}}},
+    //      {"select", {{"id", true}, {"name", true}, {"seed", true}, {"coin", true}}}});
+
+    // std::cout << json::serialize(update_res) << std::endl;
+
+    // json::object delete_res = db_wallet_mgr->Delete(
+    //     {{"where", {{"id", 21}}},
+    //      {"select", {{"id", true}, {"name", true}, {"seed", true}, {"coin", true}}}});
+
+    // std::cout << json::serialize(delete_res) << std::endl;
+
+    json::array select_res = db_wallet_mgr->Select(
+        {{"where", {{"id", 4}}},
+         {"select", {{"id", true}, {"name", true}, {"seed", true}, {"coin", true}}}});
+
+    std::cout << json::serialize(select_res) << std::endl;
+
+    // json::object q2;
+    // q2["id"] = (uint64_t)4;
+
+    // json::object res = db_wallet_mgr->Select(q2);
+
+    // std::cout << res["name"] << std::endl;
+    // std::cout << res["seed"] << std::endl;
+    // std::cout << res["coin"] << std::endl;
+  }
+
+  // zmq::context_t ctx(4);
+
+  // comms::SubscriberThread(&ctx);
+  // auto thread = std::async(std::launch::async, &(comms::SubscriberThread), &ctx);
+  // thread.wait();
 
   // std::string tx =
   //     "010000000152828d67d748482ca6f71cf9f3555643cfa223eed411fb6084531b8a02bebc67010000006a47304402"
@@ -44,6 +99,13 @@ int main(int argc, char** argv) {
   // Transaction* transaction = bitcoin::tx::ParseTransaction(res.begin());
 
   // pqxx::connection C("postgresql://postgres@localhost:5432");
+
+  // if (C.is_open()) {
+  //   std::cout << "actik: " << C.dbname() << std::endl;
+
+  // } else {
+  //   std::cout << "bum" << std::endl;
+  // }
 
   // try {
   //   if (C.is_open()) {

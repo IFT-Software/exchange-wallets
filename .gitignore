@@ -1,5 +1,6 @@
 .cache
 .vscode
+.VSCodeCounter
 
 bazel-bin
 bazel-testlogs

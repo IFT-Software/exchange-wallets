@@ -20,8 +20,10 @@ cc_library(
 
   ],
   deps = [
+    "//util",
     "@libpqxx",
     "@boost//:json",
+    "@com_google_absl//absl/strings",
   ],
-  visibility = ["//visibility:public"],
+  visibility = ["//visibility:public"]
 )

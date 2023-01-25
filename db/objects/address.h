@@ -1,3 +1,6 @@
+#ifndef DB_OBJECTS_ADDRESS_H
+#define DB_OBJECTS_ADDRESS_H
+
 //#include "db/db_object.h"
 
 #include <cstdint>
@@ -34,3 +37,5 @@ class DbAddress {
   std::string GetPublicKey();
   uint32_t GetWalletId();
 };
+
+#endif

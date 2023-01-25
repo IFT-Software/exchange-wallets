@@ -1,10 +1,12 @@
 #include "db/managers/wallet_manager.h"
+#include <iostream>
+#include <tuple>
 
 #include "boost/json.hpp"
 
 namespace json = boost::json;
 
-DbWalletManager::DbWalletManager(Db* db) : DbManager(db, "wallet") {}
+DbWalletManager::DbWalletManager(Db* db) : DbManager(db, "Wallet") {}
 
 void DbWalletManager::CreateTable() {
   std::string query =
@@ -14,41 +16,119 @@ void DbWalletManager::CreateTable() {
 }
 
 json::object DbWalletManager::Insert(json::object obj) {
-  std::string query = "INSERT INTO " + table_name_ + " (name, seed, coin) VALUES ('" +
-                      obj["name"].as_string().c_str() + "', '" + obj["seed"].as_string().c_str() +
-                      "', '" + obj["coin"].as_string().c_str() + "');";
-  db_->Execute(query);
-  return json::object();
+  std::string query = BuildInsertQuery(obj, table_name_);
+
+  // std::cout << "DEBUG(query): " << query << std::endl;
+
+  json::object res_obj;
+  if (obj["select"].is_null()) {
+    db_->Execute(query);
+  } else {
+    std::any res;
+    db_->ExecuteWithResult(query, res);
+
+    pqxx::result pq_res = std::any_cast<pqxx::result>(res);
+
+    if (pq_res.size() > 0) {
+      for (auto value : obj["select"].as_object()) {
+        if (value.value().as_bool()) {
+          if (!pq_res[0][value.key_c_str()].is_null()) {
+            res_obj[value.key_c_str()] = pq_res[0][value.key_c_str()].c_str();
+          } else {
+            res_obj[value.key_c_str()] = nullptr;
+          }
+        }
+      }
+    }
+  }
+  return res_obj;
 }
 
 json::object DbWalletManager::Update(json::object obj) {
-  std::string query = "UPDATE " + table_name_ + " SET name = '" + obj["name"].as_string().c_str() +
-                      "', seed = '" + obj["seed"].as_string().c_str() + "', coin = '" +
-                      obj["coin"].as_string().c_str() +
-                      "' WHERE id = " + std::to_string(obj["id"].as_uint64()) + ";";
-  db_->Execute(query);
-  return json::object();
+  std::string query = BuildUpdateQuery(obj, table_name_);
+
+  // std::cout << "DEBUG(query): " << query << std::endl;
+
+  json::object res_obj;
+  if (obj["select"].is_null()) {
+    db_->Execute(query);
+  } else {
+    std::any res;
+    db_->ExecuteWithResult(query, res);
+
+    pqxx::result pq_res = std::any_cast<pqxx::result>(res);
+
+    if (pq_res.size() > 0) {
+      for (auto value : obj["select"].as_object()) {
+        if (value.value().as_bool()) {
+          if (!pq_res[0][value.key_c_str()].is_null()) {
+            res_obj[value.key_c_str()] = pq_res[0][value.key_c_str()].c_str();
+          } else {
+            res_obj[value.key_c_str()] = nullptr;
+          }
+        }
+      }
+    }
+  }
+  return res_obj;
 }
 
 json::object DbWalletManager::Delete(json::object obj) {
-  std::string query =
-      "DELETE FROM " + table_name_ + " WHERE id = " + std::to_string(obj["id"].as_uint64()) + ";";
-  db_->Execute(query);
-  return json::object();
-}
+  std::string query = BuildDeleteQuery(obj, table_name_);
 
-json::object DbWalletManager::Select(json::object obj) {
-  std::string query =
-      "SELECT * FROM " + table_name_ + " WHERE id = " + std::to_string(obj["id"].as_uint64()) + ";";
-
-  pqxx::result result;
-  db_->ExecuteWithResult(query, &result);
+  // std::cout << "DEBUG(query): " << query << std::endl;
 
   json::object res_obj;
-  if (result.size() > 0) {
-    res_obj["name"] = result[0]["name"].as<std::string>();
-    res_obj["seed"] = result[0]["seed"].as<std::string>();
-    res_obj["coin"] = result[0]["coin"].as<std::string>();
+  if (obj["select"].is_null()) {
+    db_->Execute(query);
+  } else {
+    std::any res;
+    db_->ExecuteWithResult(query, res);
+
+    pqxx::result pq_res = std::any_cast<pqxx::result>(res);
+
+    if (pq_res.size() > 0) {
+      for (auto value : obj["select"].as_object()) {
+        if (value.value().as_bool()) {
+          if (!pq_res[0][value.key_c_str()].is_null()) {
+            res_obj[value.key_c_str()] = pq_res[0][value.key_c_str()].c_str();
+          } else {
+            res_obj[value.key_c_str()] = nullptr;
+          }
+        }
+      }
+    }
   }
   return res_obj;
+}
+
+json::array DbWalletManager::Select(json::object obj) {
+  std::string query = BuildSelectQuery(obj, table_name_);
+
+  std::cout << "DEBUG(query): " << query << std::endl;
+
+  std::any res;
+  db_->ExecuteWithResult(query, res);
+
+  pqxx::result pq_res = std::any_cast<pqxx::result>(res);
+
+  json::array res_arr;
+
+  if (pq_res.size() > 0) {
+    for (auto pq_res_elem : pq_res) {
+      json::object obj_elem;
+      for (auto value : obj["select"].as_object()) {
+        if (value.value().as_bool()) {
+          if (!pq_res_elem[value.key_c_str()].is_null()) {
+            obj_elem[value.key_c_str()] = pq_res_elem[value.key_c_str()].c_str();
+          } else {
+            obj_elem[value.key_c_str()] = nullptr;
+          }
+        }
+      }
+      res_arr.emplace_back(obj_elem);
+    }
+  }
+
+  return res_arr;
 }

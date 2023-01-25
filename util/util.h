@@ -9,7 +9,10 @@
 #include <string>
 #include <vector>
 
+#include "boost/json.hpp"
 #include "third_party/gmpxx/gmpxx.h"
+
+namespace json = boost::json;
 
 namespace util {
 
@@ -72,6 +75,8 @@ template <std::size_t N, std::size_t M>
                                                     const char filler);
 
 [[maybe_unused]] std::vector<std::string> MakeWordList(const std::string& file_name);
+
+[[maybe_unused]] std::string JsonValueToSQLFormattedStr(json::value value);
 
 }  // namespace util
 

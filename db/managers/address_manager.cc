@@ -1,6 +1,6 @@
 #include "db/managers/address_manager.h"
 
-DbAddressManager::DbAddressManager(Db* db) : DbManager(db, "address") {}
+DbAddressManager::DbAddressManager(Db* db) : DbManager(db, "Address") {}
 
 void DbAddressManager::CreateTable() {
   std::string query =
@@ -47,21 +47,24 @@ json::object DbAddressManager::Delete(json::object obj) {
   return json::object();
 }
 
-json::object DbAddressManager::Select(json::object obj) {
+json::array DbAddressManager::Select(json::object obj) {
   std::string query =
       "SELECT * FROM " + table_name_ + " WHERE id = " + std::to_string(obj["id"].as_uint64()) + ";";
-  pqxx::result result;
-  db_->ExecuteWithResult(query, &result);
+  std::any res;
+  db_->ExecuteWithResult(query, res);
+
+  pqxx::result pq_res = std::any_cast<pqxx::result>(res);
 
   json::object res_obj;
-  if (result.size() > 0) {
-    res_obj["drv_path"] = result[0]["drv_path"].as<std::string>();
-    res_obj["addr"] = result[0]["addr"].as<std::string>();
-    res_obj["addr_type"] = result[0]["addr_type"].as<std::string>();
-    res_obj["prv_key"] = result[0]["prv_key"].as<std::string>();
-    res_obj["pub_key"] = result[0]["pub_key"].as<std::string>();
-    res_obj["wallet_id"] = result[0]["wallet_id"].as<uint32_t>();
+  if (pq_res.size() > 0) {
+    res_obj["drv_path"] = pq_res[0]["drv_path"].as<std::string>();
+    res_obj["addr"] = pq_res[0]["addr"].as<std::string>();
+    res_obj["addr_type"] = pq_res[0]["addr_type"].as<std::string>();
+    res_obj["prv_key"] = pq_res[0]["prv_key"].as<std::string>();
+    res_obj["pub_key"] = pq_res[0]["pub_key"].as<std::string>();
+    res_obj["wallet_id"] = pq_res[0]["wallet_id"].as<uint32_t>();
   }
 
-  return res_obj;
+  // return res_obj;
+  return json::array();
 }
