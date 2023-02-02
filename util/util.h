@@ -58,6 +58,7 @@ template <std::size_t N, std::size_t M>
 
 [[maybe_unused]] void UInt32ToBytes(const uint32_t uint32, uint8_t* bytes);
 [[maybe_unused]] void UInt32ToBytes(const uint32_t uint32, std::array<uint8_t, 4>& bytes);
+[[maybe_unused]] void UInt32ToBytes(const uint32_t uint32, std::vector<uint8_t>& bytes);
 
 [[maybe_unused]] void UInt64ToBytes(const uint64_t uint64, uint8_t* bytes);
 [[maybe_unused]] void UInt64ToBytes(const uint64_t uint64, std::array<uint8_t, 8>& bytes);
@@ -77,6 +78,40 @@ template <std::size_t N, std::size_t M>
 [[maybe_unused]] std::vector<std::string> MakeWordList(const std::string& file_name);
 
 [[maybe_unused]] std::string JsonValueToSQLFormattedStr(json::value value);
+
+/**
+ * @brief Swaps the endiannes of the bytes of the @param input and writes the resuting vector
+ * to @param res.
+ *
+ * @param input
+ * @param res
+ */
+[[maybe_unused]] void SwapEndian(const std::vector<uint8_t>& input, std::vector<uint8_t>& res);
+
+/**
+ * @brief Swaps the endiannes of the bytes of the @param input and writes the resuting array
+ * to @param res.
+ *
+ * @param input
+ * @param res
+ */
+template <std::size_t N>
+[[maybe_unused]] void SwapEndian(const std::array<uint8_t, N>& input, std::array<uint8_t, N>& res) {
+  std::copy(input.begin(), input.end(), res.begin());
+  for (size_t i = 0; i < res.size() / 2; ++i) {
+    std::swap(res[i], res[res.size() - i - 1]);
+  }
+}
+
+/**
+ * @brief Reads the string input as a hex value and swaps the endiannes accordingly. Returns the
+ * swapped string.
+ * Invariant: The size of the input is even.
+ *
+ * @param input
+ * @return std::string
+ */
+[[maybe_unused]] std::string SwapEndian(const std::string& input);
 
 }  // namespace util
 

@@ -29,13 +29,13 @@ void SubscriberThread(zmq::context_t* ctx) {
 
     uint8_t* data = (uint8_t*)recv_msgs[1].data();
 
-    Transaction* tx = bitcoin::tx::ParseTransaction(data);
+    // Transaction* tx = bitcoin::tx::ParseTransaction(data);
 
     std::cout << "Thread: " << util::BytesToHex((uint8_t*)recv_msgs[1].data(), recv_msgs[1].size())
               << std::endl;
 
-    std::string tx_str = tx->json();
-    std::cout << "tx_str " << tx_str << std::endl;
+    // std::string tx_str = tx->json();
+    // std::cout << "tx_str " << tx_str << std::endl;
     // std::cout << "is equal: "
     //           << (util::BytesToHex((uint8_t*)recv_msgs[1].data(), recv_msgs[1].size()) == tx_str)
     //           << std::endl;
@@ -44,28 +44,28 @@ void SubscriberThread(zmq::context_t* ctx) {
 
 // A thread that listens for raw transactions and prints out the ones that are segwit
 // transactions.
-void SegWitTransactions(zmq::context_t* ctx) {
-  zmq::socket_t subscriber(*ctx, zmq::socket_type::sub);
-  subscriber.connect("tcp://127.0.0.1:29000");
-  subscriber.set(zmq::sockopt::subscribe, "rawtx");
+// void SegWitTransactions(zmq::context_t* ctx) {
+//   zmq::socket_t subscriber(*ctx, zmq::socket_type::sub);
+//   subscriber.connect("tcp://127.0.0.1:29000");
+//   subscriber.set(zmq::sockopt::subscribe, "rawtx");
 
-  while (1) {
-    // Receive all parts of the message
-    std::vector<zmq::message_t> recv_msgs;
-    zmq::recv_result_t result = zmq::recv_multipart(subscriber, std::back_inserter(recv_msgs));
-    assert(result && "recv failed");
-    uint8_t* data = (uint8_t*)recv_msgs[1].data();
+//   while (1) {
+//     // Receive all parts of the message
+//     std::vector<zmq::message_t> recv_msgs;
+//     zmq::recv_result_t result = zmq::recv_multipart(subscriber, std::back_inserter(recv_msgs));
+//     assert(result && "recv failed");
+//     uint8_t* data = (uint8_t*)recv_msgs[1].data();
 
-    // std::cout << "Thread: " << util::BytesToHex((uint8_t*)recv_msgs[1].data(),
-    // recv_msgs[1].size())
-    //           << std::endl;
+//     // std::cout << "Thread: " << util::BytesToHex((uint8_t*)recv_msgs[1].data(),
+//     // recv_msgs[1].size())
+//     //           << std::endl;
 
-    if (bitcoin::tx::IsSegwit(data)) {
-      std::cout << "Thread: "
-                << util::BytesToHex((uint8_t*)recv_msgs[1].data(), recv_msgs[1].size())
-                << std::endl;
-    }
-  }
-};
+//     if (bitcoin::tx::IsSegwit(data)) {
+//       std::cout << "Thread: "
+//                 << util::BytesToHex((uint8_t*)recv_msgs[1].data(), recv_msgs[1].size())
+//                 << std::endl;
+//     }
+//   }
+// };
 
 }  // namespace comms

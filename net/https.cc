@@ -35,7 +35,8 @@ size_t WriteToFileCallback(char* ptr, size_t size, size_t nmemb, void* userdata)
 }  // namespace
 
 std::string Get(const std::string& url, const std::map<std::string, std::string>& headers,
-                WriteType write_type, const std::string& file_path) {
+                WriteType write_type, const std::string& file_path, const std::string& username,
+                const std::string& password) {
   CURL* curl = curl_easy_init();
 
   if (!curl) {
@@ -62,6 +63,10 @@ std::string Get(const std::string& url, const std::map<std::string, std::string>
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &file_stream);
   }
 
+  if (!username.empty() && !password.empty()) {
+    curl_easy_setopt(curl, CURLOPT_USERPWD, (username + ":" + password).c_str());
+  }
+
   SetHeaders(curl, headers);
 
   CURLcode res = curl_easy_perform(curl);
@@ -80,7 +85,8 @@ std::string Get(const std::string& url, const std::map<std::string, std::string>
 }
 
 std::string Post(const std::string& url, const std::map<std::string, std::string>& headers,
-                 const std::string& data, WriteType write_type, const std::string& file_path) {
+                 const std::string& data, WriteType write_type, const std::string& file_path,
+                 const std::string& username, const std::string& password) {
   CURL* curl = curl_easy_init();
 
   if (!curl) {
@@ -110,6 +116,10 @@ std::string Post(const std::string& url, const std::map<std::string, std::string
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &file_stream);
   }
 
+  if (!username.empty() && !password.empty()) {
+    curl_easy_setopt(curl, CURLOPT_USERPWD, (username + ":" + password).c_str());
+  }
+
   SetHeaders(curl, headers);
 
   CURLcode res = curl_easy_perform(curl);
@@ -129,7 +139,8 @@ std::string Post(const std::string& url, const std::map<std::string, std::string
 }
 
 std::string Delete(const std::string& url, const std::map<std::string, std::string>& headers,
-                   WriteType write_type, const std::string& file_path) {
+                   WriteType write_type, const std::string& file_path, const std::string& username,
+                   const std::string& password) {
   CURL* curl = curl_easy_init();
 
   if (!curl) {
@@ -157,6 +168,10 @@ std::string Delete(const std::string& url, const std::map<std::string, std::stri
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &file_stream);
   }
 
+  if (!username.empty() && !password.empty()) {
+    curl_easy_setopt(curl, CURLOPT_USERPWD, (username + ":" + password).c_str());
+  }
+
   SetHeaders(curl, headers);
 
   CURLcode res = curl_easy_perform(curl);
@@ -178,7 +193,8 @@ std::string Delete(const std::string& url, const std::map<std::string, std::stri
 std::string MimePost(const std::string& url, const std::map<std::string, std::string>& headers,
                      const std::map<std::string, std::string>& form_data,
                      const std::map<std::string, std::string>& files, WriteType write_type,
-                     const std::string& file_path) {
+                     const std::string& file_path, const std::string& username,
+                     const std::string& password) {
   CURL* curl = curl_easy_init();
 
   if (!curl) {
@@ -202,6 +218,10 @@ std::string MimePost(const std::string& url, const std::map<std::string, std::st
   } else {
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteToFileCallback);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &fileStream);
+  }
+
+  if (!username.empty() && !password.empty()) {
+    curl_easy_setopt(curl, CURLOPT_USERPWD, (username + ":" + password).c_str());
   }
 
   SetHeaders(curl, headers);

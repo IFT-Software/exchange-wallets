@@ -7,6 +7,7 @@
 #include <string>
 #include <thread>
 
+#include "absl/strings/str_join.h"
 #include "pqxx/pqxx"
 #include "secp256k1.h"
 #include "third_party/cppzmq/zmq.hpp"
@@ -31,13 +32,13 @@
 int main(int argc, char** argv) {
   Postgresql* db = new Postgresql("postgres", "localhost", 5432, "postgres", "");
 
-  DbAddressManager* db_address_mgr = new DbAddressManager(db);
   DbWalletManager* db_wallet_mgr = new DbWalletManager(db);
+  DbAddressManager* db_address_mgr = new DbAddressManager(db);
 
   if (db->IsConnected()) {
     std::cout << "Db Connected" << std::endl;
-    db_address_mgr->CreateTable();
     db_wallet_mgr->CreateTable();
+    db_address_mgr->CreateTable();
 
     // json::object res = db_wallet_mgr->Insert(
     //     {{"data",
@@ -74,10 +75,48 @@ int main(int argc, char** argv) {
   }
 
   std::map<std::string, std::string> headers;
-  headers["Content-Type"] = "application/json";
+  headers["Content-Type"] = "text/plain";
 
-  std::string response = net::https::Get("https://www.binance.com/api/v3/time", headers);
+  std::string rawtx_str =
+      "020000000001011f3a9ebdaf82ee53ca0509d198d608d5b018e6d62ae840fd072de9c13d6b4f9f00000000000000"
+      "000001f73c000000000000160014b946dedde9ca6f0e5e5566afe14da7a5aab2005a03483045022100ec5e018521"
+      "4f517d4286036f1344ebf080666472e14eeff33a612de6d45127c4022009c0e40fff4f87fbf363aabd6e059fbb8e"
+      "d0d4f5c2eba67280e231166e064a0f01483045022100c6c53c9d3cf978952bfc3b147c4522b8ed3aaba6dc5562d9"
+      "9a628fc95bcd1a7a02207886e73e533ba01312d01bcf71d5c84abe21ae802f925f9851520497731affb801462103"
+      "7f566f1c950ee71e5075a8358db812023f10af2c2ea11a3a623cda7c9fbcc07aad21024325de7661ea0de64ef0bc"
+      "bd0dd9d2e4d9b5fe3b44423aac32c658682f26890dac00000000";
+
+  std::string post_data = absl::StrCat(
+      "{\"jsonrpc\": \"1.0\", \"id\": \"curltest\", \"method\": \"decoderawtransaction\", "
+      "\"params\": [\"",
+      rawtx_str, "\"]}");
+
+  std::string response = net::https::Post("http://127.0.0.1:18332/", headers, post_data,
+                                          net::https::WriteType::TO_STRING, "", "anan", "anan");
+
+  uint8_t buf[4096];
+  json::static_resource mr(buf);
+  // Create a parse_options object
+  json::parse_options opts;
+
+  // Enable the allow_comments option
+  opts.allow_comments = true;
+
+  // Enable the allow_trailing_commas option
+  opts.allow_trailing_commas = true;
+
+  // Parse the JSON string with the custom options
+  json::value val = json::parse(response, &mr, opts);
+
   std::cout << response << std::endl;
+  std::cout << "TXID: " << val.as_object()["result"].as_object()["txid"].as_string().c_str()
+            << std::endl;
+
+  std::cout << "before parsing" << std::endl;
+  Transaction* tx = bitcoin::tx::ParseTransaction(val.as_object()["result"]);
+  std::cout << "after parsing" << std::endl;
+
+  std::cout << tx->hex() << std::endl;
 
   // zmq::context_t ctx(4);
 
@@ -86,11 +125,11 @@ int main(int argc, char** argv) {
   // thread.wait();
 
   // std::string tx =
-  //     "010000000152828d67d748482ca6f71cf9f3555643cfa223eed411fb6084531b8a02bebc67010000006a47304402"
-  //     "202d6aebf16023528228fa79e00a62eae5f325b59ef2e713b2dc0bd67e0d4688cb02201e654a6e81b8d111e8fff6"
-  //     "e3f4fff17f3c438d09e4e1cba999ebcd7d795785870121037f78faffffefd89a886fc6871efb33a63f8ee4510244"
-  //     "a8b5ea56887856459502ffffffff02f8350000000000001976a9140cb643567f4950c454476c58501b194bc6901a"
-  //     "f988acd0200000000000001976a914a5bbd9e5314e0867c2081af2c52aee6dc1743e0d88ac00000000";
+  // "010000000152828d67d748482ca6f71cf9f3555643cfa223eed411fb6084531b8a02bebc67010000006a47304402"
+  // "202d6aebf16023528228fa79e00a62eae5f325b59ef2e713b2dc0bd67e0d4688cb02201e654a6e81b8d111e8fff6"
+  // "e3f4fff17f3c438d09e4e1cba999ebcd7d795785870121037f78faffffefd89a886fc6871efb33a63f8ee4510244"
+  // "a8b5ea56887856459502ffffffff02f8350000000000001976a9140cb643567f4950c454476c58501b194bc6901a"
+  // "f988acd0200000000000001976a914a5bbd9e5314e0867c2081af2c52aee6dc1743e0d88ac00000000";
 
   // std::array<uint8_t, 225> res;
   // util::BinToBytes(std::bitset<225 * 8>(util::HexToBin(tx)), res);

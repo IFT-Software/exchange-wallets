@@ -10,6 +10,7 @@ cc_binary(
     "//net",
     "//third_party/cppzmq",
     "@boost//:multiprecision",
-    "@libpqxx"
+    "@libpqxx",
+    "@com_google_absl//absl/strings",
   ]
 )

@@ -20,7 +20,7 @@ namespace tx {
  * @param data
  * @return Transaction*
  */
-Transaction* ParseTransaction(uint8_t* data);
+Transaction* ParseTransaction(json::value& data);
 
 }  // namespace tx
 }  // namespace bitcoin

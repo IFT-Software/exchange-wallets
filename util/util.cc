@@ -99,6 +99,20 @@ namespace util {
   UInt32ToBytes(uint32, bytes.begin());
 }
 
+[[maybe_unused]] void UInt32ToBytes(uint32_t uint32, std::vector<uint8_t>& bytes) {
+  bytes.clear();
+  // Keep adding the last byte of the number to the vector
+  // until the number becomes 0
+  while (uint32 > 0) {
+    bytes.push_back(uint32 & 0xFF);
+    uint32 >>= 8;
+  }
+  // If the vector is empty, add a single byte of value 0
+  if (bytes.empty()) {
+    bytes.push_back(0);
+  }
+}
+
 [[maybe_unused]] void UInt64ToBytes(const uint64_t uint64, uint8_t* bytes) {
   BinToBytes(std::bitset<64>(uint64), bytes);
 }
@@ -240,6 +254,28 @@ namespace util {
     absl::StrAppend(&res, value.get_int64());
   } else if (value.is_uint64()) {
     absl::StrAppend(&res, value.get_uint64());
+  }
+  return res;
+}
+
+[[maybe_unused]] void SwapEndian(const std::vector<uint8_t>& input, std::vector<uint8_t>& res) {
+  res.resize(input.size());
+
+  std::copy(input.begin(), input.end(), res.begin());
+
+  for (size_t i = 0; i < res.size() / 2; ++i) {
+    std::swap(res[i], res[res.size() - i - 1]);
+  }
+}
+
+[[maybe_unused]] std::string SwapEndian(const std::string& input) {
+  std::string res(input);
+  for (size_t i = 0; i < res.size() / 2; i++) {
+    if (i % 2 == 0) {
+      std::swap(res[i], res[res.size() - i - 2]);
+    } else {
+      std::swap(res[i], res[res.size() - i]);
+    }
   }
   return res;
 }

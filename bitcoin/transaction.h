@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 
+#include "scriptpubkey.h"
 #include "util/util.h"
 
 enum HashType {
@@ -19,30 +20,47 @@ enum HashType {
 
 class Input {
  private:
-  std::array<uint8_t, 32> tx_id_;
-  std::array<uint8_t, 4> vout_;
+  std::string tx_id_;
+  uint32_t vout_;
   std::vector<uint8_t> sig_size_;
-  std::vector<uint8_t> sig_;
+  std::string sig_;
+  std::vector<std::string> witness_;
   std::array<uint8_t, 4> sequence_;
 
+  /**
+   * @brief Indicates that this input is coming from a segwit address. Set to true in the
+   * constructor if the witness_ field is not empty.
+   *
+   */
+  bool is_segwit_;
+
  public:
-  Input(std::array<uint8_t, 32> tx_id, std::array<uint8_t, 4> vout, std::vector<uint8_t> sig_size,
-        std::vector<uint8_t> sig, std::array<uint8_t, 4> sequence);
+  Input(std::string tx_id, uint32_t vout, std::string sig, std::vector<std::string> witness,
+        std::array<uint8_t, 4> sequence);
 
   std::string hex();
   std::string json();
+
+  bool IsSegwit() { return is_segwit_; }
+
+  /**
+   * @brief If this input is a segwit input, returns its witness. If not, returns 0x00.
+   *
+   * @return std::string
+   */
+  std::string GetWitnessHex();
 };
 
 class Output {
  private:
-  std::array<uint8_t, 8> value_;
-  // TODO: need to be an array????
+  OutputType out_type_;
+
+  uint64_t value_;
   std::vector<uint8_t> script_pubkey_size_;
-  std::vector<uint8_t> script_pubkey_;
+  std::string script_pubkey_;
 
  public:
-  Output(std::array<uint8_t, 8> value, std::vector<uint8_t> script_pubkey_size,
-         std::vector<uint8_t> script_pubkey);
+  Output(OutputType out_type, uint64_t value, std::string script_pubkey);
 
   std::string hex();
   std::string json();
@@ -76,16 +94,12 @@ class RawTransaction {
 
 class Transaction {
  private:
-  // TODO: look at this (constant? static?)
-  std::string version_;
-  std::vector<uint8_t> input_count_;
+  std::string tx_id_;
+  uint32_t version_;
+  uint32_t input_count_;
   std::vector<Input> inputs_;
-  std::vector<uint8_t> output_count_;
+  uint32_t output_count_;
   std::vector<Output> outputs_;
-  // this may be empty if this is a non-segwit transaction
-  // TODO: make this a type?
-  std::vector<uint8_t> witness_;
-  // TODO: look at this
   std::array<uint8_t, 4> lock_time_;
 
   /**
@@ -115,8 +129,8 @@ class Transaction {
    * @param lock_time
    * @param is_segwit
    */
-  Transaction(std::string version, std::vector<uint8_t> input_count, std::vector<Input> inputs,
-              std::vector<uint8_t> output_count, std::vector<Output> outputs,
+  Transaction(std::string& tx_id, uint32_t& version, uint32_t input_count,
+              std::vector<Input> inputs, uint32_t output_count, std::vector<Output> outputs,
               std::array<uint8_t, 4> lock_time, bool is_segwit);
 
   std::string hex();
