@@ -3,9 +3,13 @@
 #include <array>
 #include <cstdint>
 #include <iostream>
+#include <map>
 #include <string>
 #include <vector>
 
+#include "absl/strings/str_join.h"
+#include "net/https.h"
+#include "pubkey.h"
 #include "util/util.h"
 
 Input::Input(std::string tx_id, uint32_t vout, std::string sig, std::vector<std::string> witness,
@@ -75,8 +79,64 @@ std::string Input::GetWitnessHex() {
   }
 }
 
-Output::Output(OutputType out_type, uint64_t value, std::string script_pubkey)
-    : out_type_(out_type), value_(value), script_pubkey_(script_pubkey) {
+Address* Input::ExtractAddress() {
+  std::map<std::string, std::string> headers;
+  headers["Content-Type"] = "text/plain";
+
+  std::string post_data = absl::StrCat(
+      "{\"jsonrpc\": \"1.0\", \"id\": \"curltest\", \"method\": \"getrawtransaction\", "
+      "\"params\": [\"",
+      tx_id_, "\", true]}");
+
+  std::string response = net::https::Post("http://127.0.0.1:18332/", headers, post_data,
+                                          net::https::WriteType::TO_STRING, "", "anan", "anan");
+
+  std::cout << response << std::endl;
+
+  // TODO: throws boost::wrapexcept<std::bad_alloc> when buf size is 4096
+  uint8_t buf[40096];
+  json::static_resource mr(buf);
+  json::parse_options opts;
+  opts.allow_comments = true;
+  opts.allow_trailing_commas = true;
+
+  json::value val = json::parse(response, &mr, opts);
+
+  json::array outputs;
+  outputs = val.as_object()["result"].as_object()["vout"].as_array();
+
+  std::string output_addr =
+      outputs[vout_].as_object()["scriptPubKey"].as_object()["address"].as_string().c_str();
+
+  std::string type =
+      outputs[vout_].as_object()["scriptPubKey"].as_object()["type"].as_string().c_str();
+
+  OutputType output_type;
+
+  // TODO: not sure about the strings in here
+  if (type == "pubkey") {
+    output_type = OutputType::P2PK;
+  } else if (type == "pubkeyhash") {
+    output_type = OutputType::P2PKH;
+  } else if (type == "script") {
+    output_type = OutputType::P2SH;
+  } else if (type == "witness_v0_keyhash") {
+    output_type = OutputType::WITNESS_V0_KEYHASH;
+  } else if (type == "witness_v0_scripthash") {
+    output_type = OutputType::WITNESS_V0_SCRIPTHASH;
+  } else if (type == "multisig") {
+    output_type = OutputType::MULTISIG;
+  } else {
+    // TODO: for now
+    output_type = OutputType::UNKNOWN;
+  };
+
+  Address* res = new Address(output_addr, output_type);
+  return res;
+}
+
+Output::Output(OutputType out_type, std::string address, uint64_t value, std::string script_pubkey)
+    : out_type_(out_type), address_(address), value_(value), script_pubkey_(script_pubkey) {
   util::UInt32ToBytes(script_pubkey.size() / 2, script_pubkey_size_);
 };
 
@@ -106,9 +166,14 @@ std::string Output::json() {
   return json;
 }
 
+Address* Output::ExtractAddress() {
+  Address* res = new Address(address_, out_type_);
+  return res;
+}
+
 Transaction::Transaction(std::string& tx_id, uint32_t& version, uint32_t input_count,
-                         std::vector<Input> inputs, uint32_t output_count,
-                         std::vector<Output> outputs, std::array<uint8_t, 4> lock_time,
+                         std::vector<Input>& inputs, uint32_t output_count,
+                         std::vector<Output>& outputs, std::array<uint8_t, 4>& lock_time,
                          bool is_segwit)
     : tx_id_(tx_id),
       version_(version),
@@ -119,6 +184,14 @@ Transaction::Transaction(std::string& tx_id, uint32_t& version, uint32_t input_c
       lock_time_(lock_time),
       is_segwit_(is_segwit) {
   is_confirmed_ = false;
+
+  for (Input i : inputs) {
+    input_addresses_.push_back(*i.ExtractAddress());
+  }
+
+  for (Output o : outputs) {
+    output_addresses_.push_back(*o.ExtractAddress());
+  }
 };
 
 std::string Transaction::hex() {
@@ -187,3 +260,6 @@ std::string Transaction::json() {
   json += "is segwit: " + std::to_string(is_segwit_);
   return json;
 }
+
+std::vector<Address> Transaction::GetInputAddresses() { return input_addresses_; }
+std::vector<Address> Transaction::GetOutputAddresses() { return output_addresses_; }

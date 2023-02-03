@@ -1,17 +1,5 @@
 #include "net/comms.h"
 
-#include <array>
-#include <cstdint>
-#include <iostream>
-#include <string>
-#include <vector>
-
-#include "third_party/cppzmq/zmq.hpp"
-#include "third_party/cppzmq/zmq_addon.hpp"
-
-#include "bitcoin/tx.h"
-#include "util/util.h"
-
 namespace comms {
 
 void SubscriberThread(zmq::context_t* ctx) {

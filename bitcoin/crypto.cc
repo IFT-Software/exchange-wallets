@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 
+#include "scriptpubkey.h"
 #include "secp256k1.h"
 
 #include "bitcoin/address.h"
@@ -146,9 +147,9 @@ namespace crypto {
 }
 
 // TODO: write tests
-std::string GenerateAddressFromPubkey(PubKey& pub_key, AddrType& addr_type) {
+std::string GenerateAddressFromPubkey(PubKey& pub_key, OutputType& addr_type) {
   switch (addr_type) {
-    case AddrType::P2PKH: {
+    case OutputType::P2PKH: {
       std::array<uint8_t, 25> res;
       std::array<uint8_t, 20> pub_key_hash;
       std::array<uint8_t, 21> pkey_hash_checksum;
@@ -166,7 +167,7 @@ std::string GenerateAddressFromPubkey(PubKey& pub_key, AddrType& addr_type) {
 
       return util::crypto::Base58Encode(std::vector<uint8_t>(res.begin(), res.end()), mapping);
     }
-    case AddrType::P2SH:
+    case OutputType::P2SH:
       // TODO: custom exceptions
       throw std::invalid_argument("can't produce p2sh address from pubkey");
     default:

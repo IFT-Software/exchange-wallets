@@ -19,3 +19,5 @@ Address::Address(std::string& addr, OutputType& out_type) {
 
 // todo: change this
 bool Address::IsValid(std::string& addr, OutputType& out_type) { return true; }
+
+std::string Address::GetStr() { return addr_; }

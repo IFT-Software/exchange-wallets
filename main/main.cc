@@ -30,49 +30,48 @@
 #include "util/util.h"
 
 int main(int argc, char** argv) {
-  Postgresql* db = new Postgresql("postgres", "localhost", 5432, "postgres", "");
+  // Postgresql* db = new Postgresql("postgres", "localhost", 5432, "postgres", "");
 
-  DbWalletManager* db_wallet_mgr = new DbWalletManager(db);
-  DbAddressManager* db_address_mgr = new DbAddressManager(db);
+  // DbWalletManager* db_wallet_mgr = new DbWalletManager(db);
+  // DbAddressManager* db_address_mgr = new DbAddressManager(db);
 
-  if (db->IsConnected()) {
-    std::cout << "Db Connected" << std::endl;
-    db_wallet_mgr->CreateTable();
-    db_address_mgr->CreateTable();
+  // if (db->IsConnected()) {
+  //   std::cout << "Db Connected" << std::endl;
+  //   db_wallet_mgr->CreateTable();
+  //   db_address_mgr->CreateTable();
+  // }
+  // json::object res = db_wallet_mgr->Insert(
+  //     {{"data",
+  //       {{"name", "Alkim BTC2"},
+  //        {"seed",
+  //         "43076aea18722554d3993bde416cf3cd43f08bcb04715f7e43b9130898af7d5b0312db488ebd"
+  //         "6e8a14604da8c98eb8dbab792d3a1005d4c2b6d654d3598cd6c5"},
+  //        {"coin", "BTC"}}},
+  //      {"select", {{"id", true}, {"name", true}, {"seed", true}, {"coin", true}}}});
 
-    // json::object res = db_wallet_mgr->Insert(
-    //     {{"data",
-    //       {{"name", "Alkim BTC2"},
-    //        {"seed",
-    //         "43076aea18722554d3993bde416cf3cd43f08bcb04715f7e43b9130898af7d5b0312db488ebd"
-    //         "6e8a14604da8c98eb8dbab792d3a1005d4c2b6d654d3598cd6c5"},
-    //        {"coin", "BTC"}}},
-    //      {"select", {{"id", true}, {"name", true}, {"seed", true}, {"coin", true}}}});
+  // std::cout << json::serialize(res) << std::endl;
 
-    // std::cout << json::serialize(res) << std::endl;
+  // json::object update_res = db_wallet_mgr->Update(
+  //     {{"data",
+  //       {{"seed",
+  //         "24d5e9febf08a91daa5243a25b2d4ec0f09549b195539c188bcabacd7aeec689c933c942a55e4e0eec6524"
+  //         "e017c8b31e5cd9ea3f87b29aea126202b2a25055d3"}}},
+  //      {"where", {{"id", 20}}},
+  //      {"select", {{"id", true}, {"name", true}, {"seed", true}, {"coin", true}}}});
 
-    // json::object update_res = db_wallet_mgr->Update(
-    //     {{"data",
-    //       {{"seed",
-    //         "24d5e9febf08a91daa5243a25b2d4ec0f09549b195539c188bcabacd7aeec689c933c942a55e4e0eec6524"
-    //         "e017c8b31e5cd9ea3f87b29aea126202b2a25055d3"}}},
-    //      {"where", {{"id", 20}}},
-    //      {"select", {{"id", true}, {"name", true}, {"seed", true}, {"coin", true}}}});
+  // std::cout << json::serialize(update_res) << std::endl;
 
-    // std::cout << json::serialize(update_res) << std::endl;
+  // json::object delete_res = db_wallet_mgr->Delete(
+  //     {{"where", {{"id", 21}}},
+  //      {"select", {{"id", true}, {"name", true}, {"seed", true}, {"coin", true}}}});
 
-    // json::object delete_res = db_wallet_mgr->Delete(
-    //     {{"where", {{"id", 21}}},
-    //      {"select", {{"id", true}, {"name", true}, {"seed", true}, {"coin", true}}}});
+  // std::cout << json::serialize(delete_res) << std::endl;
 
-    // std::cout << json::serialize(delete_res) << std::endl;
+  // json::array select_res = db_wallet_mgr->Select(
+  //     {{"where", {{"id", 4}}},
+  //      {"select", {{"id", true}, {"name", true}, {"seed", true}, {"coin", true}}}});
 
-    // json::array select_res = db_wallet_mgr->Select(
-    //     {{"where", {{"id", 4}}},
-    //      {"select", {{"id", true}, {"name", true}, {"seed", true}, {"coin", true}}}});
-
-    // std::cout << json::serialize(select_res) << std::endl;
-  }
+  // std::cout << json::serialize(select_res) << std::endl;
 
   std::map<std::string, std::string> headers;
   headers["Content-Type"] = "text/plain";
@@ -86,10 +85,17 @@ int main(int argc, char** argv) {
       "7f566f1c950ee71e5075a8358db812023f10af2c2ea11a3a623cda7c9fbcc07aad21024325de7661ea0de64ef0bc"
       "bd0dd9d2e4d9b5fe3b44423aac32c658682f26890dac00000000";
 
+  std::string tx_id = "9f4f6b3dc1e92d07fd40e82ad6e618b0d508d698d10905ca53ee82afbd9e3a1f";
+
+  // std::string post_data = absl::StrCat(
+  //     "{\"jsonrpc\": \"1.0\", \"id\": \"curltest\", \"method\": \"decoderawtransaction\", "
+  //     "\"params\": [\"",
+  //     rawtx_str, "\"]}");
+
   std::string post_data = absl::StrCat(
-      "{\"jsonrpc\": \"1.0\", \"id\": \"curltest\", \"method\": \"decoderawtransaction\", "
+      "{\"jsonrpc\": \"1.0\", \"id\": \"curltest\", \"method\": \"getrawtransaction\", "
       "\"params\": [\"",
-      rawtx_str, "\"]}");
+      tx_id, "\", true]}");
 
   std::string response = net::https::Post("http://127.0.0.1:18332/", headers, post_data,
                                           net::https::WriteType::TO_STRING, "", "anan", "anan");
@@ -109,14 +115,22 @@ int main(int argc, char** argv) {
   json::value val = json::parse(response, &mr, opts);
 
   std::cout << response << std::endl;
-  std::cout << "TXID: " << val.as_object()["result"].as_object()["txid"].as_string().c_str()
-            << std::endl;
+  // json::array outputs;
+  // outputs = val.as_object()["result"].as_object()["vout"].as_array();
+  // std::cout << "here 1" << std::endl;
+  // std::string output_addr =
+  //     outputs[0].as_object()["scriptPubKey"].as_object()["address"].as_string().c_str();
+  // std::cout << "output address: " << output_addr << std::endl;
 
-  std::cout << "before parsing" << std::endl;
+  // std::cout << "TXID: " << val.as_object()["result"].as_object()["txid"].as_string().c_str()
+  //           << std::endl;
+
   Transaction* tx = bitcoin::tx::ParseTransaction(val.as_object()["result"]);
-  std::cout << "after parsing" << std::endl;
 
-  std::cout << tx->hex() << std::endl;
+  std::vector<Address> input_addresses = tx->GetInputAddresses();
+  for (Address a : input_addresses) {
+    std::cout << a.GetStr() << std::endl;
+  }
 
   // zmq::context_t ctx(4);
 

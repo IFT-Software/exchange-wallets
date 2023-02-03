@@ -5,10 +5,13 @@
 #include <cmath>
 #include <cstdint>
 #include <iostream>
+#include <map>
 #include <string>
 #include <vector>
 
+#include "absl/strings/str_join.h"
 #include "bitcoin/transaction.h"
+#include "net/https.h"
 #include "scriptpubkey.h"
 #include "util/util.h"
 
@@ -41,10 +44,11 @@ Input* ParseInput(json::object& input) {
 
 Output* ParseOutput(json::object& output) {
   double value_btc = output["value"].as_double();
-  std::cout << "value double: " << value_btc << std::endl;
+  // std::cout << "value double: " << value_btc << std::endl;
 
   // TODO: not really sure what's going on here, can't cast double to int properly
   uint64_t value = (uint64_t)(value_btc * pow(10.0, 9.0)) / 10;
+  std::string address = output["scriptPubKey"].as_object()["address"].as_string().c_str();
 
   std::string script_pubkey = output["scriptPubKey"].as_object()["hex"].as_string().c_str();
   std::string out_type_str = output["scriptPubKey"].as_object()["type"].as_string().c_str();
@@ -55,7 +59,7 @@ Output* ParseOutput(json::object& output) {
   } else if (out_type_str == "pubkeyhash") {
     out_type = OutputType::P2PKH;
   } else if (out_type_str == "scripthash") {
-    out_type = OutputType::P2PSH;
+    out_type = OutputType::P2SH;
   } else if (out_type_str == "multisig") {
     out_type = OutputType::MULTISIG;
   } else if (out_type_str == "witness_v0_keyhash") {
@@ -68,7 +72,7 @@ Output* ParseOutput(json::object& output) {
     out_type = OutputType::UNKNOWN;
   }
 
-  Output* res = new Output(out_type, value, script_pubkey);
+  Output* res = new Output(out_type, address, value, script_pubkey);
   return res;
 }
 

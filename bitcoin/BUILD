@@ -31,7 +31,8 @@ cc_library(
     "@com_google_absl//absl/strings",
     "@boost//:multiprecision",
     "//third_party/cppzmq",
-    "//third_party/gmpxx"
+    "//third_party/gmpxx",
+    "//net"
   ],
   visibility = ["//visibility:public"],
 )

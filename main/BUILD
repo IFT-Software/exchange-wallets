@@ -12,5 +12,7 @@ cc_binary(
     "@boost//:multiprecision",
     "@libpqxx",
     "@com_google_absl//absl/strings",
-  ]
+  ],
+  visibility = ["//visibility:public"],
+
 )

@@ -6,7 +6,8 @@
 #include <string>
 #include <vector>
 
-#include "scriptpubkey.h"
+#include "bitcoin/address.h"
+#include "bitcoin/scriptpubkey.h"
 #include "util/util.h"
 
 enum HashType {
@@ -49,21 +50,33 @@ class Input {
    * @return std::string
    */
   std::string GetWitnessHex();
+
+  /**
+   * @brief Connects to the bitcoind and extracts the address from the @param index th output of the
+   * transaction @param tx_id.
+   * @param tx_id
+   * @param index
+   * @return Address*
+   */
+  Address* ExtractAddress();
 };
 
 class Output {
  private:
   OutputType out_type_;
+  std::string address_;
 
   uint64_t value_;
   std::vector<uint8_t> script_pubkey_size_;
   std::string script_pubkey_;
 
  public:
-  Output(OutputType out_type, uint64_t value, std::string script_pubkey);
+  Output(OutputType out_type, std::string address, uint64_t value, std::string script_pubkey);
 
   std::string hex();
   std::string json();
+
+  Address* ExtractAddress();
 };
 
 class RawTransaction {
@@ -102,6 +115,9 @@ class Transaction {
   std::vector<Output> outputs_;
   std::array<uint8_t, 4> lock_time_;
 
+  std::vector<Address> input_addresses_;
+  std::vector<Address> output_addresses_;
+
   /**
    * @brief indicates if this is a segwit transaction. if this is true, that means
    * transaction data has a flag, marker, and witness. note that if a transaction has
@@ -130,8 +146,8 @@ class Transaction {
    * @param is_segwit
    */
   Transaction(std::string& tx_id, uint32_t& version, uint32_t input_count,
-              std::vector<Input> inputs, uint32_t output_count, std::vector<Output> outputs,
-              std::array<uint8_t, 4> lock_time, bool is_segwit);
+              std::vector<Input>& inputs, uint32_t output_count, std::vector<Output>& outputs,
+              std::array<uint8_t, 4>& lock_time, bool is_segwit);
 
   std::string hex();
   std::string json();
@@ -158,6 +174,12 @@ class Transaction {
    *
    */
   void SetConfirmed();
+
+  std::vector<Address> GetOutputAddresses();
+  std::vector<Address> GetInputAddresses();
+
+  // bool IsInputAddress(Address& addr);
+  // bool IsOutputAddress(Address& addr);
 };
 
 #endif

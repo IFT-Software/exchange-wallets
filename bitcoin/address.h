@@ -10,9 +10,6 @@
 
 class Script;
 
-// notes: can have LEGACY for P2PKH and P2SH
-enum class AddrType : uint16_t { P2PKH, P2SH };
-
 class Address {
  private:
   OutputType out_type_;
@@ -25,6 +22,7 @@ class Address {
   bool IsValid(std::string& addr, OutputType& out_type);
 
   OutputType GetOutputType();
+  std::string GetStr();
 };
 
 #endif
