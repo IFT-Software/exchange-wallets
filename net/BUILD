@@ -9,9 +9,11 @@ cc_library(
     "https.h"
   ],
   deps = [
+    "@curl",
     "//util",
     "//third_party/cppzmq",
-    "@curl"
+    "//bitcoin"
   ],
+  linkstatic = True,
   visibility = ["//visibility:public"],
 )

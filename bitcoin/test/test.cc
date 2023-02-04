@@ -3,11 +3,11 @@
 #include <string>
 
 #include "absl/strings/str_join.h"
+#include "gtest/gtest.h"
 #include "net/https.h"
 
 #include "bitcoin/transaction.h"
 #include "bitcoin/tx.h"
-#include "gtest/gtest.h"
 
 // using namespace boost;
 
@@ -40,7 +40,8 @@ TEST(Transaction, InputTest) {
   std::cout << "hey 2" << std::endl;
 
   // std::string response = net::https::Post("http://127.0.0.1:18332/", headers, post_data,
-  //                                         net::https::WriteType::TO_STRING, "", "anan", "anan");
+  //                                         net::https::WriteType::TO_STRING, "", "anan",
+  // "anan");
 
   std::cout << "hey 3" << std::endl;
 
