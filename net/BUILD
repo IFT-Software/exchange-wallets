@@ -12,7 +12,7 @@ cc_library(
     "@curl",
     "@curl",
     "//util",
-    "//third_party/cppzmq",
+    "//third_party/cppzmq"
   ],
   linkstatic = True,
   visibility = ["//visibility:public"],
