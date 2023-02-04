@@ -45,7 +45,8 @@ cmake(
     linkopts = select({
         "@platforms//os:linux": [
             "-lpthread",
-            "-lidn2"
+            "-lidn2",
+            "-lnet"
         ],
         "//conditions:default": [],
     }),

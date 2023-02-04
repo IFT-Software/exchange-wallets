@@ -6,9 +6,10 @@
 #include <string>
 #include <vector>
 
+#include "bitcoin/scriptpubkey.h"
+
 class PubKey;
 class Script;
-enum class AddrType : uint16_t;
 
 namespace bitcoin {
 namespace crypto {
@@ -50,15 +51,15 @@ template <size_t N>
                                          std::array<uint8_t, 20>& res);
 
 // // used for p2pkh
-[[maybe_unused]] std::string GenerateAddressFromPubkey(PubKey& pub_key, AddrType& addr_type);
+[[maybe_unused]] std::string GenerateAddressFromPubkey(PubKey& pub_key, OutputType& addr_type);
 
 // TODO:
-[[maybe_unused]] std::string GenerateAddressFromPubkey(std::array<uint8_t, 33>& pub_key);
-[[maybe_unused]] std::string GenerateAddressFromPubkey(std::array<uint8_t, 65>& pub_key);
+// [[maybe_unused]] std::string GenerateAddressFromPubkey(std::array<uint8_t, 33>& pub_key);
+// [[maybe_unused]] std::string GenerateAddressFromPubkey(std::array<uint8_t, 65>& pub_key);
 
 // used for p2sh
 // TODO:
-[[maybe_unused]] std::string GenerateAddressFromScript(Script& script);
+// [[maybe_unused]] std::string GenerateAddressFromScript(Script& script);
 
 }  // namespace crypto
 }  // namespace bitcoin

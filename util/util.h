@@ -58,7 +58,7 @@ template <std::size_t N, std::size_t M>
 
 [[maybe_unused]] void UInt32ToBytes(const uint32_t uint32, uint8_t* bytes);
 [[maybe_unused]] void UInt32ToBytes(const uint32_t uint32, std::array<uint8_t, 4>& bytes);
-[[maybe_unused]] void UInt32ToBytes(const uint32_t uint32, std::vector<uint8_t>& bytes);
+[[maybe_unused]] void UInt32ToBytes(uint32_t uint32, std::vector<uint8_t>& bytes);
 
 [[maybe_unused]] void UInt64ToBytes(const uint64_t uint64, uint8_t* bytes);
 [[maybe_unused]] void UInt64ToBytes(const uint64_t uint64, std::array<uint8_t, 8>& bytes);

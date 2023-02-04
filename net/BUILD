@@ -9,9 +9,9 @@ cc_library(
     "https.h"
   ],
   deps = [
+    "@curl",
     "//util",
     "//third_party/cppzmq",
-    "@curl"
   ],
   visibility = ["//visibility:public"],
 )

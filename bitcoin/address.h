@@ -21,7 +21,7 @@ class Address {
 
   bool IsValid(std::string& addr, OutputType& out_type);
 
-  OutputType GetOutputType();
+  // OutputType GetOutputType();
   std::string GetStr();
 };
 
