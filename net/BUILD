@@ -10,7 +10,6 @@ cc_library(
   ],
   deps = [
     "@curl",
-    "@curl",
     "//util",
     "//third_party/cppzmq"
   ],
