@@ -4,8 +4,6 @@
 #include <map>
 #include <string>
 
-#include "curl/curl.h"
-
 namespace net {
 namespace https {
 

@@ -254,6 +254,28 @@ namespace util {
     absl::StrAppend(&res, value.get_int64());
   } else if (value.is_uint64()) {
     absl::StrAppend(&res, value.get_uint64());
+  } else if (value.is_array()) {
+    absl::StrAppend(&res, "ARRAY[");
+
+    if (value.get_array().size()) {
+      for (json::value array_value : value.get_array()) {
+        absl::StrAppend(&res, JsonValueToSQLFormattedStr(array_value), ",");
+      }
+      res.pop_back();
+    }
+
+    absl::StrAppend(&res, "]");
+  } else if (value.is_object()) {
+    absl::StrAppend(&res, "(");
+
+    if (value.get_object().size()) {
+      for (auto obj_elem : value.get_object()) {
+        absl::StrAppend(&res, JsonValueToSQLFormattedStr(obj_elem.value()), ",");
+      }
+      res.pop_back();
+    }
+
+    absl::StrAppend(&res, ")");
   }
   return res;
 }

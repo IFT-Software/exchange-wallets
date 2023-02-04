@@ -1,3 +1,14 @@
+CREATE TYPE Input AS (
+  txid VARCHAR(255),
+  vout INTEGER,
+  address VARCHAR(255)
+);
+
+CREATE TYPE Output AS (
+  address VARCHAR(255),
+  value INTEGER
+);
+
 CREATE TABLE Wallet (
   id SERIAL PRIMARY KEY,
   name VARCHAR(255),
@@ -14,3 +25,40 @@ CREATE TABLE Address (
   pub_key VARCHAR(255),
   wallet_id INTEGER REFERENCES Wallet(id)
 );
+
+CREATE TABLE Transaction (
+  txid VARCHAR(255) PRIMARY KEY,
+  version INTEGER,
+  inputs Input[],
+  outputs Output[],
+  lock_time INTEGER
+);
+
+
+{
+  "txid": "blablabla",
+  "version": 0,
+  "inputs": [
+    {
+      "txid": "blablabla",
+      "vout": 3,
+      "address": "abc"
+    },
+    {
+      "txid": "blabla",
+      "vout": 2,
+      "address": "def"
+    }
+  ],
+  "outputs": [
+    {
+      "address": "abc",
+      "value": 1
+    },
+    {,
+      "address": "def",
+      "value": 2
+    }
+  ],
+  "lock_time": 20
+}

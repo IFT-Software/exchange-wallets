@@ -5,6 +5,7 @@ cc_library(
     "manager.cc", 
     "postgresql.cc",
     "managers/address_manager.cc",
+    "managers/transaction_manager.cc",
     "managers/wallet_manager.cc",
     # "objects/address.cc",
     # "objects/wallet.cc"
@@ -14,6 +15,7 @@ cc_library(
     "manager.h", 
     "postgresql.h",
     "managers/address_manager.h",
+    "managers/transaction_manager.h",
     "managers/wallet_manager.h",
     # "objects/address.h",
     # "objects/wallet.h"
