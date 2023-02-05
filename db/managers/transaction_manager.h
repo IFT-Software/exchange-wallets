@@ -3,10 +3,14 @@
 
 #include "db/manager.h"
 
+#include "absl/strings/str_join.h"
 #include "boost/json.hpp"
+#include "util/util.h"
 
 class DbTransactionManager : public DbManager {
  private:
+  json::object GetUniqueSelectQueryResult(json::object& obj, const pqxx::result& pq_res);
+
  public:
   DbTransactionManager(Db* db);
 
@@ -15,6 +19,11 @@ class DbTransactionManager : public DbManager {
   json::object Update(json::object obj) override;
   json::object Delete(json::object obj) override;
   json::array Select(json::object obj) override;
+
+  std::string BuildInsertQuery(json::object obj, std::string& table_name) override;
+  // std::string BuildUpdateQuery(json::object obj, std::string& table_name) override;
+  // std::string BuildDeleteQuery(json::object obj, std::string& table_name) override;
+  // std::string BuildSelectQuery(json::object obj, std::string& table_name) override;
 };
 
 #endif

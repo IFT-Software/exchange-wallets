@@ -43,15 +43,57 @@ int main(int argc, char** argv) {
     db_address_mgr->CreateTable();
     db_transaction_mgr->CreateTable();
 
+    // clang-format off
     json::object res = db_transaction_mgr->Insert(
-        {{"data",
-          {{"txid", "blablabla"},
-           {"version", 0},
-           {"inputs",
-            {{{"txid", "blablabla"}, {"vout", 3}, {"address", "abc"}},
-             {{"txid", "blabla"}, {"vout", 2}, {"address", "def"}}}},
-           {"outputs", {{{"address", "abc"}, {"value", 1}}, {{"address", "def"}, {"value", 2}}}},
-           {"lock_time", 20}}}});
+      {
+        {"data",
+          {
+            {"txid", "blablabla13"},
+            {"version", 0},
+            {"inputs",
+              {
+                {
+                  {"txid", "blablabla"}, 
+                  {"vout", 3}, 
+                  {"address", "abc"}
+                },
+                {
+                  {"txid", "blabla"},
+                  {"vout", 2}, 
+                  {"address", "def"}
+                }
+              }
+            },
+            {"outputs", 
+              {
+                {
+                  {"address", "abc"}, 
+                  {"value", 1}
+                }, 
+                {
+                  {"address", "def"},
+                  {"value", 2}
+                }
+              }
+            },
+            {"lock_time", 20}
+          }
+        },
+        {"select", 
+          {
+            {"txid", true}, 
+            {"version", true}, 
+            {"inputs", true}, 
+            {"outputs", true},
+            {"lock_time", true}
+          }
+        }
+      }
+    );
+
+    std::cout << json::serialize(res) << std::endl;
+
+    // clang-format on
 
     // json::object res = db_wallet_mgr->Insert(
     //     {{"data",
