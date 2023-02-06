@@ -17,10 +17,10 @@ class DbManager {
 
   DbManager(Db* db, std::string table_name);
 
-  std::string BuildSetSubQuery(json::object obj);
-  std::string BuildWhereSubQuery(json::object obj);
-  std::string BuildReturningSubQuery(json::object obj);
-  std::string BuildSelectSubQuery(json::object obj);
+  virtual std::string BuildSetSubQuery(json::object obj);
+  virtual std::string BuildWhereSubQuery(json::object obj);
+  virtual std::string BuildReturningSubQuery(json::object obj);
+  virtual std::string BuildSelectSubQuery(json::object obj);
 
  public:
   virtual ~DbManager() = default;

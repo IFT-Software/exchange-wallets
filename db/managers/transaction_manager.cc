@@ -13,6 +13,34 @@ namespace json = boost::json;
 
 DbTransactionManager::DbTransactionManager(Db* db) : DbManager(db, "Transaction") {}
 
+std::string DbTransactionManager::BuildSetSubQuery(json::object obj) {
+  std::vector<std::string> keys_values;
+  for (auto value : obj) {
+    std::string key_value = absl::StrCat(value.key_c_str(), " = ");
+
+    if (value.key() == "txid") {
+      absl::StrAppend(&key_value, util::JsonValueToSQLFormattedStr(value.value()));
+    } else if (value.key() == "version") {
+      absl::StrAppend(&key_value, util::JsonValueToSQLFormattedStr(value.value()));
+    } else if (value.key() == "inputs") {
+      absl::StrAppend(&key_value, util::JsonValueToSQLFormattedStr(value.value()));
+      absl::StrAppend(&key_value, "::input[]");
+    } else if (value.key() == "outputs") {
+      absl::StrAppend(&key_value, util::JsonValueToSQLFormattedStr(value.value()));
+      absl::StrAppend(&key_value, "::output[]");
+    } else if (value.key() == "lock_time") {
+      absl::StrAppend(&key_value, util::JsonValueToSQLFormattedStr(value.value()));
+    } else {
+      std::string error_msg =
+          absl::StrCat("Invalid field '", value.key_c_str(), "' at json object.");
+      throw std::invalid_argument(error_msg);
+    }
+
+    keys_values.push_back(key_value);
+  }
+  return absl::StrCat("SET ", absl::StrJoin(keys_values, ","));
+}
+
 std::string DbTransactionManager::BuildInsertQuery(json::object obj, std::string& table_name) {
   if (obj["data"].is_null()) {
     throw std::invalid_argument("Insertion Error: query object should have 'data' field");
@@ -62,18 +90,41 @@ std::string DbTransactionManager::BuildInsertQuery(json::object obj, std::string
   return query;
 }
 
+std::string DbTransactionManager::BuildUpdateQuery(json::object obj, std::string& table_name) {
+  if (obj["data"].is_null()) {
+    throw std::invalid_argument("Update Error: query object should have 'data' field");
+  }
+
+  if (obj["where"].is_null()) {
+    throw std::invalid_argument("Update Error: query object should have 'where' field");
+  }
+
+  std::string set_sub_query = BuildSetSubQuery(obj["data"].as_object());
+  std::string where_sub_query = BuildWhereSubQuery(obj["where"].as_object());
+
+  std::string query = absl::StrCat("UPDATE ", table_name, " ", set_sub_query, " ", where_sub_query);
+
+  // TODO: Here is just made for postgresql but this should be applicable for all supported dbs.
+  if (!obj["select"].is_null()) {
+    absl::StrAppend(&query, " ", BuildReturningSubQuery(obj["select"].as_object()));
+  }
+
+  absl::StrAppend(&query, ";");
+  return query;
+}
+
 json::object DbTransactionManager::GetUniqueSelectQueryResult(json::object& obj,
-                                                              const pqxx::result& pq_res) {
+                                                              const pqxx::row& pq_res_row) {
   json::object res_obj;
   for (auto value : obj["select"].as_object()) {
     if (value.value().as_bool()) {
-      if (!pq_res[0][value.key_c_str()].is_null()) {
+      if (!pq_res_row[value.key_c_str()].is_null()) {
         if (value.key() == "txid") {
-          res_obj[value.key_c_str()] = pq_res[0][value.key_c_str()].as<std::string>();
+          res_obj[value.key_c_str()] = pq_res_row[value.key_c_str()].as<std::string>();
         } else if (value.key() == "version") {
-          res_obj[value.key_c_str()] = pq_res[0][value.key_c_str()].as<uint32_t>();
+          res_obj[value.key_c_str()] = pq_res_row[value.key_c_str()].as<uint32_t>();
         } else if (value.key() == "inputs") {
-          auto arr = pq_res[0][value.key_c_str()].as_array();
+          auto arr = pq_res_row[value.key_c_str()].as_array();
           std::pair<pqxx::array_parser::juncture, std::string> elem = arr.get_next();
 
           json::array input_json_arr;
@@ -90,7 +141,7 @@ json::object DbTransactionManager::GetUniqueSelectQueryResult(json::object& obj,
 
           res_obj[value.key_c_str()] = input_json_arr;
         } else if (value.key() == "outputs") {
-          auto arr = pq_res[0][value.key_c_str()].as_array();
+          auto arr = pq_res_row[value.key_c_str()].as_array();
           std::pair<pqxx::array_parser::juncture, std::string> elem = arr.get_next();
 
           json::array output_json_arr;
@@ -106,7 +157,7 @@ json::object DbTransactionManager::GetUniqueSelectQueryResult(json::object& obj,
 
           res_obj[value.key_c_str()] = output_json_arr;
         } else if (value.key() == "lock_time") {
-          res_obj[value.key_c_str()] = pq_res[0][value.key_c_str()].as<uint32_t>();
+          res_obj[value.key_c_str()] = pq_res_row[value.key_c_str()].as<uint32_t>();
         }
 
       } else {
@@ -140,7 +191,7 @@ json::object DbTransactionManager::Insert(json::object obj) {
     pqxx::result pq_res = std::any_cast<pqxx::result>(res);
 
     if (pq_res.size() > 0) {
-      res_obj = GetUniqueSelectQueryResult(obj, pq_res);
+      res_obj = GetUniqueSelectQueryResult(obj, pq_res[0]);
     }
   }
   return res_obj;
@@ -152,26 +203,18 @@ json::object DbTransactionManager::Update(json::object obj) {
   std::cout << "DEBUG(query): " << query << std::endl;
 
   json::object res_obj;
-  // if (obj["select"].is_null()) {
-  //   db_->Execute(query);
-  // } else {
-  //   std::any res;
-  //   db_->ExecuteWithResult(query, res);
+  if (obj["select"].is_null()) {
+    db_->Execute(query);
+  } else {
+    std::any res;
+    db_->ExecuteWithResult(query, res);
 
-  //   pqxx::result pq_res = std::any_cast<pqxx::result>(res);
+    pqxx::result pq_res = std::any_cast<pqxx::result>(res);
 
-  //   if (pq_res.size() > 0) {
-  //     for (auto value : obj["select"].as_object()) {
-  //       if (value.value().as_bool()) {
-  //         if (!pq_res[0][value.key_c_str()].is_null()) {
-  //           res_obj[value.key_c_str()] = pq_res[0][value.key_c_str()].c_str();
-  //         } else {
-  //           res_obj[value.key_c_str()] = nullptr;
-  //         }
-  //       }
-  //     }
-  //   }
-  // }
+    if (pq_res.size() > 0) {
+      res_obj = GetUniqueSelectQueryResult(obj, pq_res[0]);
+    }
+  }
   return res_obj;
 }
 
@@ -181,26 +224,18 @@ json::object DbTransactionManager::Delete(json::object obj) {
   std::cout << "DEBUG(query): " << query << std::endl;
 
   json::object res_obj;
-  // if (obj["select"].is_null()) {
-  //   db_->Execute(query);
-  // } else {
-  //   std::any res;
-  //   db_->ExecuteWithResult(query, res);
+  if (obj["select"].is_null()) {
+    db_->Execute(query);
+  } else {
+    std::any res;
+    db_->ExecuteWithResult(query, res);
 
-  //   pqxx::result pq_res = std::any_cast<pqxx::result>(res);
+    pqxx::result pq_res = std::any_cast<pqxx::result>(res);
 
-  //   if (pq_res.size() > 0) {
-  //     for (auto value : obj["select"].as_object()) {
-  //       if (value.value().as_bool()) {
-  //         if (!pq_res[0][value.key_c_str()].is_null()) {
-  //           res_obj[value.key_c_str()] = pq_res[0][value.key_c_str()].c_str();
-  //         } else {
-  //           res_obj[value.key_c_str()] = nullptr;
-  //         }
-  //       }
-  //     }
-  //   }
-  // }
+    if (pq_res.size() > 0) {
+      res_obj = GetUniqueSelectQueryResult(obj, pq_res[0]);
+    }
+  }
   return res_obj;
 }
 
@@ -209,28 +244,19 @@ json::array DbTransactionManager::Select(json::object obj) {
 
   std::cout << "DEBUG(query): " << query << std::endl;
 
-  // std::any res;
-  // db_->ExecuteWithResult(query, res);
+  std::any res;
+  db_->ExecuteWithResult(query, res);
 
-  // pqxx::result pq_res = std::any_cast<pqxx::result>(res);
+  pqxx::result pq_res = std::any_cast<pqxx::result>(res);
 
   json::array res_arr;
 
-  // if (pq_res.size() > 0) {
-  //   for (auto pq_res_elem : pq_res) {
-  //     json::object obj_elem;
-  //     for (auto value : obj["select"].as_object()) {
-  //       if (value.value().as_bool()) {
-  //         if (!pq_res_elem[value.key_c_str()].is_null()) {
-  //           obj_elem[value.key_c_str()] = pq_res_elem[value.key_c_str()].c_str();
-  //         } else {
-  //           obj_elem[value.key_c_str()] = nullptr;
-  //         }
-  //       }
-  //     }
-  //     res_arr.emplace_back(obj_elem);
-  //   }
-  // }
+  if (pq_res.size() > 0) {
+    for (pqxx::row pq_res_row : pq_res) {
+      json::object obj_elem = GetUniqueSelectQueryResult(obj, pq_res_row);
+      res_arr.emplace_back(obj_elem);
+    }
+  }
 
   return res_arr;
 }

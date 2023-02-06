@@ -9,7 +9,9 @@
 
 class DbTransactionManager : public DbManager {
  private:
-  json::object GetUniqueSelectQueryResult(json::object& obj, const pqxx::result& pq_res);
+  json::object GetUniqueSelectQueryResult(json::object& obj, const pqxx::row& pq_res_row);
+
+  std::string BuildSetSubQuery(json::object obj) override;
 
  public:
   DbTransactionManager(Db* db);
@@ -21,7 +23,7 @@ class DbTransactionManager : public DbManager {
   json::array Select(json::object obj) override;
 
   std::string BuildInsertQuery(json::object obj, std::string& table_name) override;
-  // std::string BuildUpdateQuery(json::object obj, std::string& table_name) override;
+  std::string BuildUpdateQuery(json::object obj, std::string& table_name) override;
   // std::string BuildDeleteQuery(json::object obj, std::string& table_name) override;
   // std::string BuildSelectQuery(json::object obj, std::string& table_name) override;
 };

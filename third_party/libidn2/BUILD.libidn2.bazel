@@ -1,4 +1,4 @@
-load("@rules_foreign_cc//foreign_cc:defs.bzl", "cmake")
+load("@rules_foreign_cc//foreign_cc:defs.bzl", "configure_make")
 
 filegroup(
     name = "all_srcs",
@@ -8,14 +8,12 @@ filegroup(
     ),
 )
 
-LIB_NAME = "libzmq"
+LIB_NAME = "libidn2"
 
-cmake(
-    name = "libzmq",
+configure_make(
+    name = "libidn2",
+    configure_in_place = True,
     lib_name = LIB_NAME,
     lib_source = ":all_srcs",
-    # out_shared_libs = [
-    #     "libzmq.so",
-    # ],
     visibility = ["//visibility:public"],
 )

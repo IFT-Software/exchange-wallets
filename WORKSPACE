@@ -25,6 +25,9 @@ openssl_setup()
 load("//third_party/zlib:zlib_repositories.bzl", "zlib_repositories")
 zlib_repositories()
 
+load("//third_party/libidn2:libidn2_repositories.bzl", "libidn2_repositories")
+libidn2_repositories()
+
 load("//third_party/libssh2:libssh2_repositories.bzl", "libssh2_repositories")
 libssh2_repositories()
 

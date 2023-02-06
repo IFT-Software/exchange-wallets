@@ -44,9 +44,7 @@ cmake(
     lib_source = ":all_srcs",
     linkopts = select({
         "@platforms//os:linux": [
-            "-lpthread",
-            "-lidn2",
-            "-lnet"
+            "-lpthread"
         ],
         "//conditions:default": [],
     }),
@@ -57,6 +55,7 @@ cmake(
     visibility = ["//visibility:public"],
     deps = [
         "@openssl",
+        "@libidn2",
         "@libssh2",
         "@zlib",
     ],

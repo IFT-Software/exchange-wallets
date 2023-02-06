@@ -31,7 +31,7 @@
 #include "util/util.h"
 
 int main(int argc, char** argv) {
-  Postgresql* db = new Postgresql("postgres", "localhost", 5432, "postgres", "");
+  Postgresql* db = new Postgresql("postgres", "localhost", 5432, "postgres", "postgres");
 
   DbWalletManager* db_wallet_mgr = new DbWalletManager(db);
   DbAddressManager* db_address_mgr = new DbAddressManager(db);
@@ -44,38 +44,106 @@ int main(int argc, char** argv) {
     db_transaction_mgr->CreateTable();
 
     // clang-format off
-    json::object res = db_transaction_mgr->Insert(
+    // json::object res = db_transaction_mgr->Insert(
+    //   {
+    //     {"data",
+    //       {
+    //         {"txid", "blablabla2"},
+    //         {"version", 0},
+    //         {"inputs",
+    //           {
+    //             {
+    //               {"txid", "blablabla"}, 
+    //               {"vout", 3}, 
+    //               {"address", "abc"}
+    //             },
+    //             {
+    //               {"txid", "blabla"},
+    //               {"vout", 2}, 
+    //               {"address", "def"}
+    //             }
+    //           }
+    //         },
+    //         {"outputs", 
+    //           {
+    //             {
+    //               {"address", "abc"}, 
+    //               {"value", 1}
+    //             }, 
+    //             {
+    //               {"address", "def"},
+    //               {"value", 2}
+    //             }
+    //           }
+    //         },
+    //         {"lock_time", 20}
+    //       }
+    //     },
+    //     {"select", 
+    //       {
+    //         {"txid", true}, 
+    //         {"version", true}, 
+    //         {"inputs", true}, 
+    //         {"outputs", true},
+    //         {"lock_time", true}
+    //       }
+    //     }
+    //   }
+    // );
+
+    // json::object res = db_transaction_mgr->Update(
+    //   {
+    //     {"data",
+    //       {
+    //         {"inputs",
+    //           {
+    //             {
+    //               {"txid", "blabla1"}, 
+    //               {"vout", 1}, 
+    //               {"address", "abc"}
+    //             },
+    //             {
+    //               {"txid", "blabla2"},
+    //               {"vout", 2}, 
+    //               {"address", "def"}
+    //             }
+    //           }
+    //         },
+    //         {"outputs", 
+    //           {
+    //             {
+    //               {"address", "abc"}, 
+    //               {"value", 1}
+    //             }, 
+    //             {
+    //               {"address", "def"},
+    //               {"value", 2}
+    //             }
+    //           }
+    //         }
+    //       }
+    //     },
+    //     {"where", 
+    //       {
+    //         {"txid", "blablabla1"}
+    //       }
+    //     },
+    //     {"select", 
+    //       {
+    //         {"txid", true}, 
+    //         {"version", true}, 
+    //         {"inputs", true}, 
+    //         {"outputs", true},
+    //         {"lock_time", true}
+    //       }
+    //     }
+    //   }
+    // );
+
+    json::array res = db_transaction_mgr->Select(
       {
-        {"data",
+        {"where", 
           {
-            {"txid", "blablabla13"},
-            {"version", 0},
-            {"inputs",
-              {
-                {
-                  {"txid", "blablabla"}, 
-                  {"vout", 3}, 
-                  {"address", "abc"}
-                },
-                {
-                  {"txid", "blabla"},
-                  {"vout", 2}, 
-                  {"address", "def"}
-                }
-              }
-            },
-            {"outputs", 
-              {
-                {
-                  {"address", "abc"}, 
-                  {"value", 1}
-                }, 
-                {
-                  {"address", "def"},
-                  {"value", 2}
-                }
-              }
-            },
             {"lock_time", 20}
           }
         },
