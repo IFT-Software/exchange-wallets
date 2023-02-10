@@ -11,17 +11,16 @@
 namespace json = boost::json;
 
 class DbManager {
- private:
-  std::string BuildSetSubQuery(json::object obj);
-  std::string BuildWhereSubQuery(json::object obj);
-  std::string BuildReturningSubQuery(json::object obj);
-  std::string BuildSelectSubQuery(json::object obj);
-
  protected:
   Db* db_;
   std::string table_name_;
 
   DbManager(Db* db, std::string table_name);
+
+  virtual std::string BuildSetSubQuery(json::object obj);
+  virtual std::string BuildWhereSubQuery(json::object obj);
+  virtual std::string BuildReturningSubQuery(json::object obj);
+  virtual std::string BuildSelectSubQuery(json::object obj);
 
  public:
   virtual ~DbManager() = default;
@@ -31,10 +30,10 @@ class DbManager {
   virtual json::object Delete(json::object obj) = 0;
   virtual json::array Select(json::object obj) = 0;
 
-  std::string BuildInsertQuery(json::object obj, std::string& table_name);
-  std::string BuildUpdateQuery(json::object obj, std::string& table_name);
-  std::string BuildDeleteQuery(json::object obj, std::string& table_name);
-  std::string BuildSelectQuery(json::object obj, std::string& table_name);
+  virtual std::string BuildInsertQuery(json::object obj, std::string& table_name);
+  virtual std::string BuildUpdateQuery(json::object obj, std::string& table_name);
+  virtual std::string BuildDeleteQuery(json::object obj, std::string& table_name);
+  virtual std::string BuildSelectQuery(json::object obj, std::string& table_name);
 };
 
 #endif
