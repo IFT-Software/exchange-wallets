@@ -1,0 +1,7 @@
+std::vector<std::string> getmempooltxs()
+
+RpcTx getrawtransaction(std::string): gets string, returns RpcTx
+
+a function that will go through the mempool transactions returned by getmempooltxs()
+and returns a std::vector<RpcTx>. then to save this to the database, we are going to
+call ParseTransaction on RpcTx objects. 

@@ -9,8 +9,9 @@ cc_library(
     "script.cc", 
     "scriptpubkey.cc", 
     "signature.cc",
-    "tx.cc",
-    "transaction.cc"
+    "rpc_tx.cc",
+    "transaction.cc",
+    "json_rpc.cc"
   ],
   hdrs = [
     "address.h", 
@@ -21,8 +22,9 @@ cc_library(
     "script.h", 
     "scriptpubkey.h", 
     "signature.h",
-    "tx.h",
-    "transaction.h"
+    "rpc_tx.h",
+    "transaction.h",
+    "json_rpc.h"
   ],
   data = ["wordlist.txt"],
   deps = [
@@ -32,7 +34,8 @@ cc_library(
     "@boost//:multiprecision",
     "//third_party/cppzmq",
     "//third_party/gmpxx",
-    "//net"
+    "//net",
+    "@boost//:json"
   ],
   visibility = ["//visibility:public"],
 )

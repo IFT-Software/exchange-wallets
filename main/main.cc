@@ -17,6 +17,7 @@
 #include "bitcoin/address.h"
 #include "bitcoin/bip39.h"
 #include "bitcoin/crypto.h"
+#include "bitcoin/json_rpc.h"
 #include "bitcoin/privkey.h"
 #include "bitcoin/pubkey.h"
 #include "bitcoin/script.h"
@@ -31,61 +32,64 @@
 #include "util/util.h"
 
 int main(int argc, char** argv) {
-  Postgresql* db = new Postgresql("postgres", "localhost", 5432, "postgres", "");
+  // Postgresql* db = new Postgresql("postgres", "localhost", 5432, "postgres", "");
 
-  DbWalletManager* db_wallet_mgr = new DbWalletManager(db);
-  DbAddressManager* db_address_mgr = new DbAddressManager(db);
-  DbTransactionManager* db_transaction_mgr = new DbTransactionManager(db);
+  // DbWalletManager* db_wallet_mgr = new DbWalletManager(db);
+  // DbAddressManager* db_address_mgr = new DbAddressManager(db);
+  // DbTransactionManager* db_transaction_mgr = new DbTransactionManager(db);
 
-  if (db->IsConnected()) {
-    std::cout << "Db Connected" << std::endl;
-    db_wallet_mgr->CreateTable();
-    db_address_mgr->CreateTable();
-    db_transaction_mgr->CreateTable();
+  // std::cout << "here -1" << std::endl;
 
-    json::object res = db_transaction_mgr->Insert(
-        {{"data",
-          {{"txid", "blablabla"},
-           {"version", 0},
-           {"inputs",
-            {{{"txid", "blablabla"}, {"vout", 3}, {"address", "abc"}},
-             {{"txid", "blabla"}, {"vout", 2}, {"address", "def"}}}},
-           {"outputs", {{{"address", "abc"}, {"value", 1}}, {{"address", "def"}, {"value", 2}}}},
-           {"lock_time", 20}}}});
+  // if (db->IsConnected()) {
+  //   std::cout << "Db Connected" << std::endl;
+  //   db_wallet_mgr->CreateTable();
+  //   db_address_mgr->CreateTable();
+  //   db_transaction_mgr->CreateTable();
 
-    // json::object res = db_wallet_mgr->Insert(
-    //     {{"data",
-    //       {{"name", "Alkim BTC2"},
-    //        {"seed",
-    //         "43076aea18722554d3993bde416cf3cd43f08bcb04715f7e43b9130898af7d5b0312db488ebd"
-    //         "6e8a14604da8c98eb8dbab792d3a1005d4c2b6d654d3598cd6c5"},
-    //        {"coin", "BTC"}}},
-    //      {"select", {{"id", true}, {"name", true}, {"seed", true}, {"coin", true}}}});
+  //   json::object res = db_transaction_mgr->Insert(
+  //       {{"data",
+  //         {{"txid", "blablabla"},
+  //          {"version", 0},
+  //          {"inputs",
+  //           {{{"txid", "blablabla"}, {"vout", 3}, {"address", "abc"}},
+  //            {{"txid", "blabla"}, {"vout", 2}, {"address", "def"}}}},
+  //          {"outputs", {{{"address", "abc"}, {"value", 1}}, {{"address", "def"}, {"value", 2}}}},
+  //          {"lock_time", 20}}}});
+  // }
 
-    // std::cout << json::serialize(res) << std::endl;
+  // json::object res = db_wallet_mgr->Insert(
+  //     {{"data",
+  //       {{"name", "Alkim BTC2"},
+  //        {"seed",
+  //         "43076aea18722554d3993bde416cf3cd43f08bcb04715f7e43b9130898af7d5b0312db488ebd"
+  //         "6e8a14604da8c98eb8dbab792d3a1005d4c2b6d654d3598cd6c5"},
+  //        {"coin", "BTC"}}},
+  //      {"select", {{"id", true}, {"name", true}, {"seed", true}, {"coin", true}}}});
 
-    // json::object update_res = db_wallet_mgr->Update(
-    //     {{"data",
-    //       {{"seed",
-    //         "24d5e9febf08a91daa5243a25b2d4ec0f09549b195539c188bcabacd7aeec689c933c942a55e4e0eec6524"
-    //         "e017c8b31e5cd9ea3f87b29aea126202b2a25055d3"}}},
-    //      {"where", {{"id", 20}}},
-    //      {"select", {{"id", true}, {"name", true}, {"seed", true}, {"coin", true}}}});
+  // std::cout << json::serialize(res) << std::endl;
 
-    // std::cout << json::serialize(update_res) << std::endl;
+  // json::object update_res = db_wallet_mgr->Update(
+  //     {{"data",
+  //       {{"seed",
+  //         "24d5e9febf08a91daa5243a25b2d4ec0f09549b195539c188bcabacd7aeec689c933c942a55e4e0eec6524"
+  //         "e017c8b31e5cd9ea3f87b29aea126202b2a25055d3"}}},
+  //      {"where", {{"id", 20}}},
+  //      {"select", {{"id", true}, {"name", true}, {"seed", true}, {"coin", true}}}});
 
-    // json::object delete_res = db_wallet_mgr->Delete(
-    //     {{"where", {{"id", 21}}},
-    //      {"select", {{"id", true}, {"name", true}, {"seed", true}, {"coin", true}}}});
+  // std::cout << json::serialize(update_res) << std::endl;
 
-    // std::cout << json::serialize(delete_res) << std::endl;
+  // json::object delete_res = db_wallet_mgr->Delete(
+  //     {{"where", {{"id", 21}}},
+  //      {"select", {{"id", true}, {"name", true}, {"seed", true}, {"coin", true}}}});
 
-    // json::array select_res = db_wallet_mgr->Select(
-    //     {{"where", {{"id", 4}}},
-    //      {"select", {{"id", true}, {"name", true}, {"seed", true}, {"coin", true}}}});
+  // std::cout << json::serialize(delete_res) << std::endl;
 
-    // std::cout << json::serialize(select_res) << std::endl;
-  }
+  // json::array select_res = db_wallet_mgr->Select(
+  //     {{"where", {{"id", 4}}},
+  //      {"select", {{"id", true}, {"name", true}, {"seed", true}, {"coin", true}}}});
+
+  // std::cout << json::serialize(select_res) << std::endl;
+
   // std::map<std::string, std::string> headers;
   // headers["Content-Type"] = "text/plain";
 
@@ -102,40 +106,42 @@ int main(int argc, char** argv) {
   //     "{\"jsonrpc\": \"1.0\", \"id\": \"curltest\", \"method\": \"decoderawtransaction\", "
   //     "\"params\": [\"",
   //     rawtx_str, "\"]}");
+
   std::string tx_id = "9f4f6b3dc1e92d07fd40e82ad6e618b0d508d698d10905ca53ee82afbd9e3a1f";
+  std::string tx_hex =
+      "020000000001011f3a9ebdaf82ee53ca0509d198d608d5b018e6d62ae840fd072de9c13d6b4f9f00000000000000"
+      "000001f73c000000000000160014b946dedde9ca6f0e5e5566afe14da7a5aab2005a03483045022100ec5e018521"
+      "4f517d4286036f1344ebf080666472e14eeff33a612de6d45127c4022009c0e40fff4f87fbf363aabd6e059fbb8e"
+      "d0d4f5c2eba67280e231166e064a0f01483045022100c6c53c9d3cf978952bfc3b147c4522b8ed3aaba6dc5562d9"
+      "9a628fc95bcd1a7a02207886e73e533ba01312d01bcf71d5c84abe21ae802f925f9851520497731affb801462103"
+      "7f566f1c950ee71e5075a8358db812023f10af2c2ea11a3a623cda7c9fbcc07aad21024325de7661ea0de64ef0bc"
+      "bd0dd9d2e4d9b5fe3b44423aac32c658682f26890dac00000000";
 
-  // std::string post_data = absl::StrCat(
-  //     "{\"jsonrpc\": \"1.0\", \"id\": \"curltest\", \"method\": \"decoderawtransaction\", "
-  //     "\"params\": [\"",
-  //     rawtx_str, "\"]}");
+  RpcTx res_tx;
+  bitcoin::rpc::GetRawTransaction(tx_id, res_tx);
 
-  std::string post_data = absl::StrCat(
-      "{\"jsonrpc\": \"1.0\", \"id\": \"curltest\", \"method\": \"getrawtransaction\", "
-      "\"params\": [\"",
-      tx_id, "\", true]}");
+  json::value data = res_tx.GetData();
+  try {
+    std::cout << "here" << std::endl;
+    data.as_object()["txid_"].as_object();
+  } catch (const std::exception& e) {
+    std::cout << "error while parsing in main" << std::endl;
+    std::cout << e.what() << std::endl;
+  }
 
-  // std::string response = net::https::Post("http://127.0.0.1:18332/", headers, post_data,
-  //                                         net::https::WriteType::TO_STRING, "", "anan",
-  //                                         "anan");
+  std::cout << "getrawtransaction: \n" << res_tx.GetHex() << std::endl;
 
-  // uint8_t buf[4096];
-  // json::static_resource mr(buf);
-  // // Create a parse_options object
-  // json::parse_options opts;
+  RpcTx res_hex;
+  bitcoin::rpc::DecodeRawTransaction(tx_hex, res_hex);
+  // std::cout << "decoderawtransaction: \n" << res_hex.GetHex() << std::endl;
 
-  // // Enable the allow_comments option
-  // opts.allow_comments = true;
+  std::string coinbase = "d4cb98935358e22c4acc800e7078f2a954a8d48e9d885db95830f76c1f50ca78";
 
-  // // Enable the allow_trailing_commas option
-  // opts.allow_trailing_commas = true;
+  // json::array outputss;
+  // res_tx.as_object()["result"].as_object()["vout"].as_array();
 
-  // // Parse the JSON string with the custom options
-  // json::value val = json::parse(response, &mr, opts);
+  // outputs = res_tx.as_object()["result"].as_object()["vout"].as_array();
 
-  // std::cout << response << std::endl;
-  // json::array outputs;
-  // outputs = val.as_object()["result"].as_object()["vout"].as_array();
-  // std::cout << "here 1" << std::endl;
   // std::string output_addr =
   //     outputs[0].as_object()["scriptPubKey"].as_object()["address"].as_string().c_str();
   // std::cout << "output address: " << output_addr << std::endl;

@@ -12,11 +12,11 @@ namespace https {
 
 namespace {
 void SetHeaders(CURL* curl, const std::map<std::string, std::string>& headers) {
-  // struct curl_slist* list = nullptr;
-  // for (const auto& [name, value] : headers) {
-  //   list = curl_slist_append(list, (name + ": " + value).c_str());
-  // }
-  // curl_easy_setopt(curl, CURLOPT_HTTPHEADER, list);
+  struct curl_slist* list = nullptr;
+  for (const auto& [name, value] : headers) {
+    list = curl_slist_append(list, (name + ": " + value).c_str());
+  }
+  curl_easy_setopt(curl, CURLOPT_HTTPHEADER, list);
 }
 
 // Callback function to handle response data

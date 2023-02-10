@@ -1,68 +1,83 @@
 {
-  "result": {
-    "txid": "d61c7cda6057c828a1a54e3dd8002e8a529c19201837bd036a8201df77813b14",
-    "hash": "5ecbc19f73f61aaa89c3f0379f54c23dad6915b2817bce797eaa4484d84e8a62",
-    "version": 2,
-    "size": 370,
-    "vsize": 208,
-    "weight": 832,
-    "locktime": 2416586,
-    "vin": [
-      {
-        "txid": "957cea341fc008af476c8d224e10c767594625962f4d8fcc3d46e6dfe6ce21f4",
-        "vout": 0,
-        "scriptSig": {
-          "asm": "",
-          "hex": ""
-        },
-        "txinwitness": [
-          "304402202bdef0b5da94d35da3a3ead7e8f1a1d1fe7908006dc47895f229ded1888d41f20220125b04d6fb6ebfb48896a5f7aa98ce0a522c8df91b076560223764a7976b882c01",
-          "028ec616d49bee6c38c1c3779022e171f53b7306dd98f5d78af4e824299faedcd8"
-        ],
-        "sequence": 4294967294
+  "txid": "9f4f6b3dc1e92d07fd40e82ad6e618b0d508d698d10905ca53ee82afbd9e3a1f",
+  "hash": "55f316b35312a7dc5c7d37e477b1a511071222e123a63fdcaeaa0a01eca2c573",
+  "version": 2,
+  "size": 204,
+  "vsize": 122,
+  "weight": 486,
+  "locktime": 0,
+  "vin": [
+    {
+      "txid": "d61c7cda6057c828a1a54e3dd8002e8a529c19201837bd036a8201df77813b14",
+      "vout": 0,
+      "scriptSig": {
+        "asm": "",
+        "hex": ""
       },
-      {
-        "txid": "5c7e5a769f987ca2d4cc7133ca4220dde11ea9b685ff7f5782bf5572458d46c6",
-        "vout": 1,
-        "scriptSig": {
-          "asm": "",
-          "hex": ""
-        },
-        "txinwitness": [
-          "304402204cfb40ba09494eeb0095c9519711659c1b8497f3603ed4950ec638bd441a3c6e022010b5fe28ed613e2c71c80bf72df73f0781828c94f33feddb81c0382c8d5c784f01",
-          "032989a75dc1b88147297c67b33a558cb7550bfbedd84b04c0fe89b68daaf52605"
-        ],
-        "sequence": 4294967294
+      "txinwitness": [
+        "3045022100b54919c33b535d86f649b1457c96851a0be9cc2fb8850804ed2e740d2459348c022039b6a9f88c06d007efcaae55dc64bf630f22eb118fc180ea351f5b0d706b450f01",
+        "02b4a1a95b4778ca23e49ee1477fea0cae222cf3de9781a93c2dcfa6459120261c"
+      ],
+      "sequence": 2147483648
+    }
+  ],
+  "vout": [
+    {
+      "value": 0.00015755,
+      "n": 0,
+      "scriptPubKey": {
+        "asm": "0 c83e024e40fd6162897e3e7e50c9b49a5d671abb844b6dd376ad6032dd61cc6c",
+        "hex": "0020c83e024e40fd6162897e3e7e50c9b49a5d671abb844b6dd376ad6032dd61cc6c",
+        "address": "tb1qeqlqynjql4sk9zt78el9pjd5nfwkwx4ms39km5mk44sr9htpe3kq5g75he",
+        "type": "witness_v0_scripthash"
       }
-    ],
-    "vout": [
-      {
-        "value": 0.00015878,
-        "n": 0,
-        "scriptPubKey": {
-          "asm": "0 038fb7532da3a7d683600ed79923cbf7a3bf3b47",
-          "hex": "0014038fb7532da3a7d683600ed79923cbf7a3bf3b47",
-          "address": "tb1qqw8mw5ed5wnadqmqpmtejg7t773m7w68hyh2l6",
-          "type": "witness_v0_keyhash"
-        }
-      },
-      {
-        "value": 0.02733885,
-        "n": 1,
-        "scriptPubKey": {
-          "asm": "0 8ebfc405fcfeadea3c877d0e94d7e6b8ad9e89a4",
-          "hex": "00148ebfc405fcfeadea3c877d0e94d7e6b8ad9e89a4",
-          "address": "tb1q36lugp0ul6k750y8058ff4lxhzkeazdy6men6n",
-          "type": "witness_v0_keyhash"
-        }
-      }
-    ],
-    "hex": "02000000000102f421cee6dfe6463dcc8f4d2f9625465967c7104e228d6c47af08c01f34ea7c950000000000feffffffc6468d457255bf82577fff85b6a91ee1dd2042ca3371ccd4a27c989f765a7e5c0100000000feffffff02063e000000000000160014038fb7532da3a7d683600ed79923cbf7a3bf3b473db72900000000001600148ebfc405fcfeadea3c877d0e94d7e6b8ad9e89a40247304402202bdef0b5da94d35da3a3ead7e8f1a1d1fe7908006dc47895f229ded1888d41f20220125b04d6fb6ebfb48896a5f7aa98ce0a522c8df91b076560223764a7976b882c0121028ec616d49bee6c38c1c3779022e171f53b7306dd98f5d78af4e824299faedcd80247304402204cfb40ba09494eeb0095c9519711659c1b8497f3603ed4950ec638bd441a3c6e022010b5fe28ed613e2c71c80bf72df73f0781828c94f33feddb81c0382c8d5c784f0121032989a75dc1b88147297c67b33a558cb7550bfbedd84b04c0fe89b68daaf52605cadf2400",
-    "blockhash": "000000000000002321dac244115df543363a224e98be50d06acee1c3a4f06c82",
-    "confirmations": 2202,
-    "time": 1673864526,
-    "blocktime": 1673864526
-  },
-  "error": null,
-  "id": "curltest"
+    }
+  ],
+  "hex": "02000000000101143b8177df01826a03bd371820199c528a2e00d83d4ea5a128c85760da7c1cd6000000000000000080018b3d000000000000220020c83e024e40fd6162897e3e7e50c9b49a5d671abb844b6dd376ad6032dd61cc6c02483045022100b54919c33b535d86f649b1457c96851a0be9cc2fb8850804ed2e740d2459348c022039b6a9f88c06d007efcaae55dc64bf630f22eb118fc180ea351f5b0d706b450f012102b4a1a95b4778ca23e49ee1477fea0cae222cf3de9781a93c2dcfa6459120261c00000000",
+  "blockhash": "000000000000002321dac244115df543363a224e98be50d06acee1c3a4f06c82",
+  "confirmations": 2327,
+  "time": 1673864526,
+  "blocktime": 1673864526
 }
+
+
+{
+  "txid": "a72e6630a50a703ab6c383018cd194d596b84742db6c5c3d1d6eddbeac0de32d",
+  "hash": "dbcae57ab863dd1b904bf33a5e31238c0a256d9e28326ae43925af7b88836356",
+  "version": 2,
+  "size": 302,
+  "vsize": 137,
+  "weight": 548,
+  "locktime": 0,
+  "vin": [
+    {
+      "txid": "9f4f6b3dc1e92d07fd40e82ad6e618b0d508d698d10905ca53ee82afbd9e3a1f",
+      "vout": 0,
+      "scriptSig": {
+        "asm": "",
+        "hex": ""
+      },
+      "txinwitness": [
+        "3045022100ec5e0185214f517d4286036f1344ebf080666472e14eeff33a612de6d45127c4022009c0e40fff4f87fbf363aabd6e059fbb8ed0d4f5c2eba67280e231166e064a0f01",
+        "3045022100c6c53c9d3cf978952bfc3b147c4522b8ed3aaba6dc5562d99a628fc95bcd1a7a02207886e73e533ba01312d01bcf71d5c84abe21ae802f925f9851520497731affb801",
+        "21037f566f1c950ee71e5075a8358db812023f10af2c2ea11a3a623cda7c9fbcc07aad21024325de7661ea0de64ef0bcbd0dd9d2e4d9b5fe3b44423aac32c658682f26890dac"
+      ],
+      "sequence": 0
+    }
+  ],
+  "vout": [
+    {
+      "value": 0.00015607,
+      "n": 0,
+      "scriptPubKey": {
+        "asm": "0 b946dedde9ca6f0e5e5566afe14da7a5aab2005a",
+        "hex": "0014b946dedde9ca6f0e5e5566afe14da7a5aab2005a",
+        "address": "tb1qh9rdah0fefhsuhj4v6h7znd85k4tyqz6vmrl56",
+        "type": "witness_v0_keyhash"
+      }
+    }
+  ]
+}
+
+
+010000000001010000000000000000000000000000000000000000000000000000000000000000ffffffff520338ea244c4c5c207465727261706f6f6c2e696f20626c6f636b206d696e656420627920636c65616e20656e657267792076322e36382e30205c00000000b18985c3bcf66c00000521800001ce0000000000ffffffff02c59a260000000000160014988568d5632eb2d863296f5e512a135d416025bc0000000000000000266a24aa21a9ed5d9e1d1e535b5710fb2c7d7a4c47c8b56407672a86781c688e44fbc1ce6372b20120000000000000000000000000000000000000000000000000000000000000000000000000

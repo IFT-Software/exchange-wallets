@@ -13,51 +13,51 @@
 #include "util/util.h"
 
 Input::Input(std::string tx_id, uint32_t vout, std::string sig, std::vector<std::string> witness,
-             std::array<uint8_t, 4> sequence)
-    : tx_id_(tx_id), vout_(vout), sig_(sig), witness_(witness), sequence_(sequence) {
-  util::UInt32ToBytes(sig.size() / 2, sig_size_);
-
-  if (witness.size() != 0 && witness[0] != "") {
-    is_segwit_ = true;
+             std::string coinbase, std::array<uint8_t, 4> sequence)
+    : tx_id_(tx_id),
+      vout_(vout),
+      sig_(sig),
+      sequence_(sequence),
+      witness_(witness),
+      coinbase_(coinbase) {
+  // Initialize is_witness_.
+  (witness.size() != 0 && witness[0] != "" && witness[0] != "0x00") ? is_segwit_ = true
+                                                                    : is_segwit_ = false;
+  // Initialize is_coinbase_ and sig_size_. If this is a coinbase transaction, set the other
+  // fields accordingly.
+  if (coinbase == "") {
+    is_coinbase_ = false;
+    util::UInt32ToBytes(sig.size() / 2, sig_size_);
   } else {
-    is_segwit_ = false;
+    is_coinbase_ = true;
+    util::UInt32ToBytes(coinbase.size() / 2, sig_size_);
+    sig = "";
+    tx_id = "";
+    vout_ = -1;
   }
 }
 
 std::string Input::hex() {
-  std::string tx_id_reversed = util::SwapEndian(tx_id_);
+  std::string outpoint;
+  if (!is_coinbase_) {
+    std::string tx_id_reversed = util::SwapEndian(tx_id_);
 
-  std::array<uint8_t, 4> vout_bytes;
-  util::UInt32ToBytes(vout_, vout_bytes);
-  std::array<uint8_t, 4> vout_bytes_reversed;
-  util::SwapEndian(vout_bytes, vout_bytes_reversed);
-  const std::string vout_str = util::BytesToHex(vout_bytes_reversed);
+    std::array<uint8_t, 4> vout_bytes;
+    util::UInt32ToBytes(vout_, vout_bytes);
+    const std::string vout_str = util::SwapEndian(util::BytesToHex(vout_bytes));
+    outpoint = tx_id_reversed + vout_str;
+  } else {
+    std::string null(64, '0');
+    std::string vout(8, 'f');
+    outpoint = null + vout;
+  }
 
   std::string sig_size_str = util::BytesToHex(sig_size_);
-  const std::string sequence_str = util::BytesToHex(sequence_);
+  std::string script = (!is_coinbase_) ? sig_ : coinbase_;
 
-  return tx_id_reversed + vout_str + sig_size_str + sig_ + sequence_str;
-}
+  const std::string sequence_str = util::SwapEndian(util::BytesToHex(sequence_));
 
-std::string Input::json() {
-  std::string json = "";
-
-  json += "txid: " + tx_id_ + "\n";
-
-  json += "vout: " + std::to_string(vout_);
-
-  uint64_t script_size = util::BytesToUInt64(sig_size_);
-  json += "script size: " + std::to_string(script_size) + "\n";
-
-  json += "script sig: " + sig_ + "\n";
-
-  std::string witness_str = "";
-  for (std::string w : witness_) {
-    witness_str += w + "\n";
-  }
-  json += "witness: " + witness_str;
-  json += "sequence: " + util::BytesToHex(sequence_) + "\n";
-  return json;
+  return outpoint + sig_size_str + script + sequence_str;
 }
 
 std::string Input::GetWitnessHex() {
@@ -135,9 +135,17 @@ Address* Input::ExtractAddress() {
   return res;
 }
 
+Output::Output(OutputType out_type, uint64_t value, std::string script_pubkey)
+    : out_type_(out_type), value_(value), script_pubkey_(script_pubkey) {
+  util::UInt32ToBytes(script_pubkey.size() / 2, script_pubkey_size_);
+  address_ = "";
+  is_spendable_ = false;
+};
+
 Output::Output(OutputType out_type, std::string address, uint64_t value, std::string script_pubkey)
     : out_type_(out_type), address_(address), value_(value), script_pubkey_(script_pubkey) {
   util::UInt32ToBytes(script_pubkey.size() / 2, script_pubkey_size_);
+  is_spendable_ = true;
 };
 
 std::string Output::hex() {
@@ -152,22 +160,9 @@ std::string Output::hex() {
   return value_str + script_pubkey_size_str + script_pubkey_;
 }
 
-std::string Output::json() {
-  std::string json = "";
-
-  std::array<uint8_t, 4> value_bytes;
-  util::UInt32ToBytes(value_, value_bytes);
-  json += "value: " + util::BytesToHex(value_bytes) + "\n";
-
-  uint64_t script_pubkey_size = util::BytesToUInt64(script_pubkey_size_);
-  json += "script pubkey size: " + std::to_string(script_pubkey_size) + "\n";
-
-  json += "script pubkey: " + script_pubkey_ + "\n";
-  return json;
-}
-
 Address* Output::ExtractAddress() {
   Address* res = new Address(address_, out_type_);
+  std::cout << "extracting output addresses" << std::endl;
   return res;
 }
 
@@ -186,11 +181,15 @@ Transaction::Transaction(std::string& tx_id, uint32_t& version, uint32_t input_c
   is_confirmed_ = false;
 
   for (Input i : inputs) {
-    input_addresses_.push_back(*i.ExtractAddress());
+    if (!i.IsCoinbase()) {
+      input_addresses_.push_back(*i.ExtractAddress());
+    }
   }
 
   for (Output o : outputs) {
-    output_addresses_.push_back(*o.ExtractAddress());
+    if (o.IsSpendable()) {
+      output_addresses_.push_back(*o.ExtractAddress());
+    }
   }
 };
 
@@ -234,31 +233,6 @@ std::string Transaction::hex() {
 
   return version_reversed + marker_flag + input_count_str + inputs + output_count_str + outputs +
          witness + lock_time_str;
-}
-
-std::string Transaction::json() {
-  std::string json = "";
-  json += "\nversion: " + std::to_string(version_) + "\n";
-
-  std::string input_count = std::to_string(input_count_);
-  json += "input count: " + input_count + "\n";
-
-  for (int i = 0; i < input_count_; i++) {
-    json += "input " + std::to_string(i) + ":\n";
-    json += inputs_[i].json();
-  }
-
-  std::string output_count = std::to_string(output_count_);
-  json += "output count: " + output_count + "\n";
-
-  for (int i = 0; i < output_count_; i++) {
-    json += "output " + std::to_string(i) + ":\n";
-    json += outputs_[i].json();
-  }
-
-  json += "locktime: " + util::BytesToHex(lock_time_) + "\n";
-  json += "is segwit: " + std::to_string(is_segwit_);
-  return json;
 }
 
 std::vector<Address> Transaction::GetInputAddresses() { return input_addresses_; }
