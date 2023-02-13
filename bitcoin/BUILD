@@ -27,15 +27,17 @@ cc_library(
     "json_rpc.h"
   ],
   data = ["wordlist.txt"],
+  linkopts = ["-lstdc++"],
   deps = [
     "//util",
     "@libsecp256k1",
     "@com_google_absl//absl/strings",
+    "@boost//:json",
     "@boost//:multiprecision",
+    "@boost//:property_tree",
     "//third_party/cppzmq",
     "//third_party/gmpxx",
     "//net",
-    "@boost//:json"
   ],
   visibility = ["//visibility:public"],
 )

@@ -3,11 +3,15 @@
 
 // functions that make json-rpc calls to bitcoind
 
+#include <boost/property_tree/json_parser.hpp>
+#include <boost/property_tree/ptree.hpp>
+#include <stdexcept>
 #include "absl/strings/str_join.h"
 #include "boost/json.hpp"
 #include "net/https.h"
 
 namespace json = boost::json;
+namespace pt = boost::property_tree;
 
 class RpcTx;
 
@@ -37,12 +41,15 @@ bool DecodeRawTransaction(std::string tx_hex, RpcTx& res);
 bool GetRawTransaction(std::string tx_id, RpcTx& res);
 
 /**
- * @brief Returns the mempool transactions
+ * @brief makes the call "getrawmempool true" to bitcoind, and writes the transaction ids that are
+ * in the returned mempool to @param res. If the call is unsuccessfull, nothing is written to the
+ * result vector, and the function returns false.
  *
+ * @param res
  * @return true
  * @return false
  */
-bool GetMempoolTxs();
+bool GetMempoolTxs(std::vector<RpcTx>& res);
 
 }  // namespace rpc
 }  // namespace bitcoin

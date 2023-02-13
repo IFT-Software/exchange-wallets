@@ -14,6 +14,7 @@
 #include "absl/strings/str_join.h"
 #include "bitcoin/json_rpc.h"
 #include "bitcoin/transaction.h"
+#include "json_rpc.h"
 #include "net/https.h"
 #include "scriptpubkey.h"
 #include "transaction.h"
@@ -26,6 +27,8 @@ RpcTx::RpcTx(json::value& val, bool has_hex) : val_(val), has_hex_(has_hex) {}
 json::value RpcTx::GetData() { return val_; }
 
 bool RpcTx::IsValid() { return (val_.is_null() ? false : true); }
+
+std::string RpcTx::GetTxID() { return val_.as_object()["txid"].as_string().c_str(); }
 
 std::string RpcTx::GetHex() {
   if (!IsValid()) {
@@ -53,13 +56,18 @@ uint32_t RpcTx::GetConfirmations() {
   }
 
   if (has_hex_) {
-    return (uint32_t)val_.as_object()["confirmations"].as_int64();
+    try {
+      return (uint32_t)val_.as_object()["confirmations"].as_int64();
+    } catch (std::exception& e) {
+      // if no "confirmations" field, then the transaction is still in mempool, i.e. not confirmed
+      return 0;
+    }
   }
-
-  std::string tx_id = val_.as_object()["tx_id"].as_string().c_str();
+  std::string tx_id = val_.as_object()["txid"].as_string().c_str();
 
   RpcTx res;
   bitcoin::rpc::GetRawTransaction(tx_id, res);
+
   return res.GetConfirmations();
 }
 

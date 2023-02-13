@@ -20,9 +20,9 @@
 #include "bitcoin/json_rpc.h"
 #include "bitcoin/privkey.h"
 #include "bitcoin/pubkey.h"
+#include "bitcoin/rpc_tx.h"
 #include "bitcoin/script.h"
 #include "bitcoin/scriptpubkey.h"
-#include "bitcoin/tx.h"
 #include "db/managers/address_manager.h"
 #include "db/managers/transaction_manager.h"
 #include "db/managers/wallet_manager.h"
@@ -33,8 +33,6 @@
 
 int main(int argc, char** argv) {
   Postgresql* db = new Postgresql("postgres", "localhost", 5432, "postgres", "postgres");
-
-  // std::cout << "here -1" << std::endl;
 
   // if (db->IsConnected()) {
   //   std::cout << "Db Connected" << std::endl;
@@ -139,26 +137,26 @@ int main(int argc, char** argv) {
     //   }
     // );
 
-    json::array res = db_transaction_mgr->Select(
-      {
-        {"where", 
-          {
-            {"lock_time", 20}
-          }
-        },
-        {"select", 
-          {
-            {"txid", true}, 
-            {"version", true}, 
-            {"inputs", true}, 
-            {"outputs", true},
-            {"lock_time", true}
-          }
-        }
-      }
-    );
+    // json::array res = db_transaction_mgr->Select(
+    //   {
+    //     {"where", 
+    //       {
+    //         {"lock_time", 20}
+    //       }
+    //     },
+    //     {"select", 
+    //       {
+    //         {"txid", true}, 
+    //         {"version", true}, 
+    //         {"inputs", true}, 
+    //         {"outputs", true},
+    //         {"lock_time", true}
+    //       }
+    //     }
+    //   }
+    // );
 
-    std::cout << json::serialize(res) << std::endl;
+    // std::cout << json::serialize(res) << std::endl;
 
   // clang-format on
 
@@ -194,94 +192,16 @@ int main(int argc, char** argv) {
   //      {"select", {{"id", true}, {"name", true}, {"seed", true}, {"coin", true}}}});
 
   // std::cout << json::serialize(select_res) << std::endl;
-
-  // std::map<std::string, std::string> headers;
-  // headers["Content-Type"] = "text/plain";
-
-  // std::string rawtx_str =
-  //     "020000000001011f3a9ebdaf82ee53ca0509d198d608d5b018e6d62ae840fd072de9c13d6b4f9f00000000000000"
-  //     "000001f73c000000000000160014b946dedde9ca6f0e5e5566afe14da7a5aab2005a03483045022100ec5e018521"
-  //     "4f517d4286036f1344ebf080666472e14eeff33a612de6d45127c4022009c0e40fff4f87fbf363aabd6e059fbb8e"
-  //     "d0d4f5c2eba67280e231166e064a0f01483045022100c6c53c9d3cf978952bfc3b147c4522b8ed3aaba6dc5562d9"
-  //     "9a628fc95bcd1a7a02207886e73e533ba01312d01bcf71d5c84abe21ae802f925f9851520497731affb801462103"
-  //     "7f566f1c950ee71e5075a8358db812023f10af2c2ea11a3a623cda7c9fbcc07aad21024325de7661ea0de64ef0bc"
-  //     "bd0dd9d2e4d9b5fe3b44423aac32c658682f26890dac00000000";
-
-  // std::string post_data = absl::StrCat(
-  //     "{\"jsonrpc\": \"1.0\", \"id\": \"curltest\", \"method\": \"decoderawtransaction\", "
-  //     "\"params\": [\"",
   //     rawtx_str, "\"]}");
 
-  std::string tx_id = "9f4f6b3dc1e92d07fd40e82ad6e618b0d508d698d10905ca53ee82afbd9e3a1f";
-  std::string tx_hex =
-      "020000000001011f3a9ebdaf82ee53ca0509d198d608d5b018e6d62ae840fd072de9c13d6b4f9f00000000000000"
-      "000001f73c000000000000160014b946dedde9ca6f0e5e5566afe14da7a5aab2005a03483045022100ec5e018521"
-      "4f517d4286036f1344ebf080666472e14eeff33a612de6d45127c4022009c0e40fff4f87fbf363aabd6e059fbb8e"
-      "d0d4f5c2eba67280e231166e064a0f01483045022100c6c53c9d3cf978952bfc3b147c4522b8ed3aaba6dc5562d9"
-      "9a628fc95bcd1a7a02207886e73e533ba01312d01bcf71d5c84abe21ae802f925f9851520497731affb801462103"
-      "7f566f1c950ee71e5075a8358db812023f10af2c2ea11a3a623cda7c9fbcc07aad21024325de7661ea0de64ef0bc"
-      "bd0dd9d2e4d9b5fe3b44423aac32c658682f26890dac00000000";
+  std::vector<RpcTx> res;
 
-  RpcTx res_tx;
-  bitcoin::rpc::GetRawTransaction(tx_id, res_tx);
+  bool b = bitcoin::rpc::GetMempoolTxs(res);
 
-  json::value data = res_tx.GetData();
-  try {
-    std::cout << "here" << std::endl;
-    data.as_object()["txid_"].as_object();
-  } catch (const std::exception& e) {
-    std::cout << "error while parsing in main" << std::endl;
-    std::cout << e.what() << std::endl;
+  for (RpcTx tx : res) {
+    // these are mempool transactions, thus their confirmations should be 0
+    std::cout << tx.GetTxID() << ": " << tx.GetConfirmations() << std::endl;
   }
-
-  std::cout << "getrawtransaction: \n" << res_tx.GetHex() << std::endl;
-
-  RpcTx res_hex;
-  bitcoin::rpc::DecodeRawTransaction(tx_hex, res_hex);
-  // std::cout << "decoderawtransaction: \n" << res_hex.GetHex() << std::endl;
-
-  std::string coinbase = "d4cb98935358e22c4acc800e7078f2a954a8d48e9d885db95830f76c1f50ca78";
-
-  // json::array outputss;
-  // res_tx.as_object()["result"].as_object()["vout"].as_array();
-
-  // outputs = res_tx.as_object()["result"].as_object()["vout"].as_array();
-
-  // std::string output_addr =
-  //     outputs[0].as_object()["scriptPubKey"].as_object()["address"].as_string().c_str();
-  // std::cout << "output address: " << output_addr << std::endl;
-
-  // std::cout << "TXID: " << val.as_object()["result"].as_object()["txid"].as_string().c_str()
-  //           << std::endl;
-
-  // std::cout << "before parsing" << std::endl;
-  // Transaction* tx = bitcoin::tx::ParseTransaction(val.as_object()["result"]);
-  // std::cout << "after parsing" << std::endl;
-  // Transaction* tx = bitcoin::tx::ParseTransaction(val.as_object()["result"]);
-
-  // std::cout << tx->hex() << std::endl;
-  // std::vector<Address> input_addresses = tx->GetInputAddresses();
-  // for (Address a : input_addresses) {
-  //   std::cout << a.GetStr() << std::endl;
-  // }
-
-  // zmq::context_t ctx(4);
-
-  // comms::SubscriberThread(&ctx);
-  // auto thread = std::async(std::launch::async, &(comms::SubscriberThread), &ctx);
-  // thread.wait();
-
-  // std::string tx =
-  // "010000000152828d67d748482ca6f71cf9f3555643cfa223eed411fb6084531b8a02bebc67010000006a47304402"
-  // "202d6aebf16023528228fa79e00a62eae5f325b59ef2e713b2dc0bd67e0d4688cb02201e654a6e81b8d111e8fff6"
-  // "e3f4fff17f3c438d09e4e1cba999ebcd7d795785870121037f78faffffefd89a886fc6871efb33a63f8ee4510244"
-  // "a8b5ea56887856459502ffffffff02f8350000000000001976a9140cb643567f4950c454476c58501b194bc6901a"
-  // "f988acd0200000000000001976a914a5bbd9e5314e0867c2081af2c52aee6dc1743e0d88ac00000000";
-
-  // std::array<uint8_t, 225> res;
-  // util::BinToBytes(std::bitset<225 * 8>(util::HexToBin(tx)), res);
-
-  // Transaction* transaction = bitcoin::tx::ParseTransaction(res.begin());
 
   // pqxx::connection C("postgresql://postgres@localhost:5432");
 

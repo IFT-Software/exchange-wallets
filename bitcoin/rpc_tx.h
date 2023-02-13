@@ -24,6 +24,13 @@ class RpcTx {
   bool IsValid();
 
   /**
+   * @brief Returns the txid of the transaction this object represents.
+   *
+   * @return std::string
+   */
+  std::string GetTxID();
+
+  /**
    * @brief Returns the json value that this object represents.
    *
    * @return json::value
@@ -40,7 +47,8 @@ class RpcTx {
 
   /**
    * @brief Returns the number of confirmations that this transaction has. If this is an invalid
-   * RpcTx object, then returns 0.
+   * RpcTx object, then returns 0. This function makes a call to bitcoind when called because the
+   * number of confirmations will change.
    *
    * @return uint32_t
    */

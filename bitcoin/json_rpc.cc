@@ -2,13 +2,16 @@
 
 #include <iostream>
 #include <map>
+#include <new>
 #include <stdexcept>
 #include <type_traits>
 
 #include "absl/strings/str_join.h"
 #include "bitcoin/rpc_tx.h"
 #include "boost/json.hpp"
+#include "json_rpc.h"
 #include "net/https.h"
+#include "rpc_tx.h"
 
 namespace bitcoin {
 namespace rpc {
@@ -85,6 +88,56 @@ bool GetRawTransaction(std::string tx_id, RpcTx& res) {
     res = RpcTx(val.as_object()["result"], true);
     return true;
   }
+}
+
+bool GetMempoolTxs(std::vector<RpcTx>& res) {
+  std::map<std::string, std::string> headers;
+  headers["Content-Type"] = "text/plain";
+
+  std::string post_data = absl::StrCat(
+      "{\"jsonrpc\": \"1.0\", \"id\": \"curltest\", \"method\": \"getrawmempool\", "
+      "\"params\": [true]}");
+
+  std::string response = net::https::Post("http://127.0.0.1:18332/", headers, post_data,
+                                          net::https::WriteType::TO_STRING, "", "anan", "anan");
+
+  json::parse_options opts;
+  opts.allow_comments = true;
+  opts.allow_trailing_commas = true;
+
+  // std::cout << response << std::endl;
+
+  // TODO: how to determine this size? This seems like a temporary solution.
+  // Parse the JSON string with the custom options. Use a bigger buffer if parsing throws an
+  // exception because of buffer size.
+
+  json::value val;
+  try {
+    uint8_t buf[4096];
+    json::static_resource mr(buf);
+    val = json::parse(response, &mr, opts);
+  } catch (std::bad_alloc) {
+    uint8_t buf[400096];
+    json::static_resource mr(buf);
+    val = json::parse(response, &mr, opts);
+  }
+
+  std::string s = json::serialize(val.as_object()["result"].as_object());
+
+  std::stringstream ss;
+  ss << s;
+
+  pt::ptree root;
+  pt::read_json(ss, root);
+
+  for (const auto& t : root) {
+    // std::cout << t.first << std::endl;
+    RpcTx rpc_res;
+    GetRawTransaction(t.first, rpc_res);
+    res.push_back(rpc_res);
+  }
+
+  return true;
 }
 
 }  // namespace rpc
