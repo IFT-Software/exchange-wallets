@@ -1,4 +1,5 @@
 #include "db/managers/transaction_manager.h"
+#include <exception>
 #include <iostream>
 #include <stdexcept>
 #include <tuple>
@@ -186,8 +187,11 @@ json::object DbTransactionManager::Insert(json::object obj) {
     db_->Execute(query);
   } else {
     std::any res;
-    db_->ExecuteWithResult(query, res);
-
+    try {
+      db_->ExecuteWithResult(query, res);
+    } catch (const pqxx::unique_violation& e) {
+      throw e;
+    }
     pqxx::result pq_res = std::any_cast<pqxx::result>(res);
 
     if (pq_res.size() > 0) {

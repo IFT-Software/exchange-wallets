@@ -57,9 +57,11 @@ bool Postgresql::ExecuteWithResult(std::string& query, std::any& res) {
     pqxx::result result = work.exec(query);
     res = result;
     return true;
+
+  } catch (const pqxx::unique_violation& e) {
+    throw e;
   } catch (const std::exception& e) {
-    std::cerr << e.what() << std::endl;
-    return false;
+    throw e;
   }
 }
 

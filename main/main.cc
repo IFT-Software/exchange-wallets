@@ -34,6 +34,10 @@
 int main(int argc, char** argv) {
   Postgresql* db = new Postgresql("postgres", "localhost", 5432, "postgres", "postgres");
 
+  DbWalletManager* db_wallet_mgr = new DbWalletManager(db);
+  DbAddressManager* db_address_mgr = new DbAddressManager(db);
+  DbTransactionManager* db_transaction_mgr = new DbTransactionManager(db);
+
   // if (db->IsConnected()) {
   //   std::cout << "Db Connected" << std::endl;
   //   db_wallet_mgr->CreateTable();
@@ -41,52 +45,52 @@ int main(int argc, char** argv) {
   //   db_transaction_mgr->CreateTable();
 
   // clang-format off
-    // json::object res = db_transaction_mgr->Insert(
-    //   {
-    //     {"data",
-    //       {
-    //         {"txid", "blablabla2"},
-    //         {"version", 0},
-    //         {"inputs",
-    //           {
-    //             {
-    //               {"txid", "blablabla"}, 
-    //               {"vout", 3}, 
-    //               {"address", "abc"}
-    //             },
-    //             {
-    //               {"txid", "blabla"},
-    //               {"vout", 2}, 
-    //               {"address", "def"}
-    //             }
-    //           }
-    //         },
-    //         {"outputs", 
-    //           {
-    //             {
-    //               {"address", "abc"}, 
-    //               {"value", 1}
-    //             }, 
-    //             {
-    //               {"address", "def"},
-    //               {"value", 2}
-    //             }
-    //           }
-    //         },
-    //         {"lock_time", 20}
-    //       }
-    //     },
-    //     {"select", 
-    //       {
-    //         {"txid", true}, 
-    //         {"version", true}, 
-    //         {"inputs", true}, 
-    //         {"outputs", true},
-    //         {"lock_time", true}
-    //       }
-    //     }
-    //   }
-    // );
+    json::object res = db_transaction_mgr->Insert(
+      {
+        {"data",
+          {
+            {"txid", "blablabla2"},
+            {"version", 0},
+            {"inputs",
+              {
+                {
+                  {"txid", "blablabla"}, 
+                  {"vout", 3}, 
+                  {"address", "abc"}
+                },
+                {
+                  {"txid", "blabla"},
+                  {"vout", 2}, 
+                  {"address", "def"}
+                }
+              }
+            },
+            {"outputs", 
+              {
+                {
+                  {"address", "abc"}, 
+                  {"value", 1}
+                }, 
+                {
+                  {"address", "def"},
+                  {"value", 2}
+                }
+              }
+            },
+            {"lock_time", 20}
+          }
+        },
+        {"select", 
+          {
+            {"txid", true}, 
+            {"version", true}, 
+            {"inputs", true}, 
+            {"outputs", true},
+            {"lock_time", true}
+          }
+        }
+      }
+    );
 
     // json::object res = db_transaction_mgr->Update(
     //   {
@@ -156,7 +160,7 @@ int main(int argc, char** argv) {
     //   }
     // );
 
-    // std::cout << json::serialize(res) << std::endl;
+    std::cout << json::serialize(res) << std::endl;
 
   // clang-format on
 
@@ -194,14 +198,14 @@ int main(int argc, char** argv) {
   // std::cout << json::serialize(select_res) << std::endl;
   //     rawtx_str, "\"]}");
 
-  std::vector<RpcTx> res;
+  // std::vector<RpcTx> res;
 
-  bool b = bitcoin::rpc::GetMempoolTxs(res);
+  // bool b = bitcoin::rpc::GetMempoolTxs(res);
 
-  for (RpcTx tx : res) {
-    // these are mempool transactions, thus their confirmations should be 0
-    std::cout << tx.GetTxID() << ": " << tx.GetConfirmations() << std::endl;
-  }
+  // for (RpcTx tx : res) {
+  //   // these are mempool transactions, thus their confirmations should be 0
+  //   std::cout << tx.GetTxID() << ": " << tx.GetConfirmations() << std::endl;
+  // }
 
   // pqxx::connection C("postgresql://postgres@localhost:5432");
 

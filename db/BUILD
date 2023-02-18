@@ -7,6 +7,8 @@ cc_library(
     "managers/address_manager.cc",
     "managers/transaction_manager.cc",
     "managers/wallet_manager.cc",
+    # "exceptions/execute_with_result.cc",
+    # "exceptions/insert_error.cc"
     # "objects/address.cc",
     # "objects/wallet.cc"
   ],
@@ -17,6 +19,8 @@ cc_library(
     "managers/address_manager.h",
     "managers/transaction_manager.h",
     "managers/wallet_manager.h",
+    # "exceptions/execute_with_result.h",
+    # "exceptions/insert_error.h"
     # "objects/address.h",
     # "objects/wallet.h"
 
