@@ -177,8 +177,10 @@ void DbTransactionManager::CreateTable() {
 }
 
 json::object DbTransactionManager::Insert(json::object obj) {
+  std::cout << "here 1" << std::endl;
   std::string query = BuildInsertQuery(obj, table_name_);
 
+  std::cout << "here 1" << std::endl;
   std::cout << "DEBUG(query): " << query << std::endl;
 
   json::object res_obj;
@@ -187,9 +189,7 @@ json::object DbTransactionManager::Insert(json::object obj) {
   } else {
     std::any res;
     db_->ExecuteWithResult(query, res);
-
     pqxx::result pq_res = std::any_cast<pqxx::result>(res);
-
     if (pq_res.size() > 0) {
       res_obj = GetUniqueSelectQueryResult(obj, pq_res[0]);
     }

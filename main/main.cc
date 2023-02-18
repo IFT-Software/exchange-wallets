@@ -34,133 +34,72 @@
 int main(int argc, char** argv) {
   Postgresql* db = new Postgresql("postgres", "localhost", 5432, "postgres", "postgres");
 
-  // if (db->IsConnected()) {
-  //   std::cout << "Db Connected" << std::endl;
-  //   db_wallet_mgr->CreateTable();
-  //   db_address_mgr->CreateTable();
-  //   db_transaction_mgr->CreateTable();
+  DbWalletManager* db_wallet_mgr = new DbWalletManager(db);
+  DbAddressManager* db_address_mgr = new DbAddressManager(db);
+  DbTransactionManager* db_transaction_mgr = new DbTransactionManager(db);
 
-  // clang-format off
-    // json::object res = db_transaction_mgr->Insert(
-    //   {
-    //     {"data",
-    //       {
-    //         {"txid", "blablabla2"},
-    //         {"version", 0},
-    //         {"inputs",
-    //           {
-    //             {
-    //               {"txid", "blablabla"}, 
-    //               {"vout", 3}, 
-    //               {"address", "abc"}
-    //             },
-    //             {
-    //               {"txid", "blabla"},
-    //               {"vout", 2}, 
-    //               {"address", "def"}
-    //             }
-    //           }
-    //         },
-    //         {"outputs", 
-    //           {
-    //             {
-    //               {"address", "abc"}, 
-    //               {"value", 1}
-    //             }, 
-    //             {
-    //               {"address", "def"},
-    //               {"value", 2}
-    //             }
-    //           }
-    //         },
-    //         {"lock_time", 20}
-    //       }
-    //     },
-    //     {"select", 
-    //       {
-    //         {"txid", true}, 
-    //         {"version", true}, 
-    //         {"inputs", true}, 
-    //         {"outputs", true},
-    //         {"lock_time", true}
-    //       }
-    //     }
-    //   }
-    // );
+  if (db->IsConnected()) {
+    std::cout << "Db Connected" << std::endl;
+    db_wallet_mgr->CreateTable();
+    db_address_mgr->CreateTable();
+    db_transaction_mgr->CreateTable();
 
-    // json::object res = db_transaction_mgr->Update(
-    //   {
-    //     {"data",
-    //       {
-    //         {"inputs",
-    //           {
-    //             {
-    //               {"txid", "blabla1"}, 
-    //               {"vout", 1}, 
-    //               {"address", "abc"}
-    //             },
-    //             {
-    //               {"txid", "blabla2"},
-    //               {"vout", 2}, 
-    //               {"address", "def"}
-    //             }
-    //           }
-    //         },
-    //         {"outputs", 
-    //           {
-    //             {
-    //               {"address", "abc"}, 
-    //               {"value", 1}
-    //             }, 
-    //             {
-    //               {"address", "def"},
-    //               {"value", 2}
-    //             }
-    //           }
-    //         }
-    //       }
-    //     },
-    //     {"where", 
-    //       {
-    //         {"txid", "blablabla1"}
-    //       }
-    //     },
-    //     {"select", 
-    //       {
-    //         {"txid", true}, 
-    //         {"version", true}, 
-    //         {"inputs", true}, 
-    //         {"outputs", true},
-    //         {"lock_time", true}
-    //       }
-    //     }
-    //   }
-    // );
+    std::vector<RpcTx> mempool_txs;
+    if (!bitcoin::rpc::GetMempoolTxs(mempool_txs)) {
+      std::cerr << "couldn't retrieve mempool transactions" << std::endl;
+    } else {
+      for (RpcTx rpc_tx : mempool_txs) {
+        Transaction* tx = rpc_tx.ParseTransaction();
+      }
+    }
 
-    // json::array res = db_transaction_mgr->Select(
-    //   {
-    //     {"where", 
-    //       {
-    //         {"lock_time", 20}
-    //       }
-    //     },
-    //     {"select", 
-    //       {
-    //         {"txid", true}, 
-    //         {"version", true}, 
-    //         {"inputs", true}, 
-    //         {"outputs", true},
-    //         {"lock_time", true}
-    //       }
-    //     }
-    //   }
-    // );
+    // clang - format off
+    json::object res = db_transaction_mgr->Insert(
+        {{"data",
+          {{"txid", "blablabla500"},
+           {"version", 0},
+           {"inputs",
+            {{{"txid", "blablabla"}, {"vout", 3}, {"address", "abc"}},
+             {{"txid", "blabla"}, {"vout", 2}, {"address", "def"}}}},
+           {"outputs", {{{"address", "abc"}, {"value", 1}}, {{"address", "def"}, {"value", 2}}}},
+           {"lock_time", 20}}},
+         {"select",
+          {{"txid", true},
+           {"version", true},
+           {"inputs", true},
+           {"outputs", true},
+           {"lock_time", true}}}});
 
-    // std::cout << json::serialize(res) << std::endl;
+    // std::cout << "result: " << res << std::endl;
+  }
 
-  // clang-format on
+  // json::object res = db_transaction_mgr->Update(
+  //     {{"data",
+  //       {{"inputs",
+  //         {{{"txid", "blabla1"}, {"vout", 1}, {"address", "abc"}},
+  //          {{"txid", "blabla2"}, {"vout", 2}, {"address", "def"}}}},
+  //        {"outputs", {{{"address", "abc"}, {"value", 1}}, {{"address", "def"}, {"value", 2}}}}}},
+  //      {"where", {{"txid", "blablabla1"}}},
+  //      {"select",
+  //       {{"txid", true},
+  //        {"version", true},
+  //        {"inputs", true},
+  //        {"outputs", true},
+  //        {"lock_time", true}}}});
 
-  // json::object res = db_wallet_mgr->Insert(
+  // json::array res = db_transaction_mgr->Select({{"where", {{"lock_time", 20}}},
+  //                                               {"select",
+  //                                                {{"txid", true},
+  //                                                 {"version", true},
+  //                                                 {"inputs", true},
+  //                                                 {"outputs", true},
+  //                                                 {"lock_time", true}}}});
+
+  // std::cout << json::serialize(res) << std::endl;
+
+  // clang - format on
+
+  //             json::object res = db_wallet_mgr->Insert(
   //     {{"data",
   //       {{"name", "Alkim BTC2"},
   //        {"seed",

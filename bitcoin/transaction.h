@@ -88,6 +88,10 @@ class Input {
    * @return Address*
    */
   Address* ExtractAddress();
+
+  // Getter functions. These functions will be primarily used to communicate the data to the
+  // database in the correct format.
+  // std::string Get
 };
 
 /**

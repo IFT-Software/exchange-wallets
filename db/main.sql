@@ -34,31 +34,3 @@ CREATE TABLE Transaction (
   lock_time INTEGER
 );
 
-
-{
-  "txid": "blablabla",
-  "version": 0,
-  "inputs": [
-    {
-      "txid": "blablabla",
-      "vout": 3,
-      "address": "abc"
-    },
-    {
-      "txid": "blabla",
-      "vout": 2,
-      "address": "def"
-    }
-  ],
-  "outputs": [
-    {
-      "address": "abc",
-      "value": 1
-    },
-    {,
-      "address": "def",
-      "value": 2
-    }
-  ],
-  "lock_time": 20
-}

@@ -89,6 +89,7 @@ Input* ParseInput(json::object& input) {
   std::vector<std::string> witness;
 
   try {
+    // it might be a coinbase transaction
     try {
       coinbase = input["coinbase"].as_string().c_str();
     } catch (std::exception& e) {
@@ -97,10 +98,14 @@ Input* ParseInput(json::object& input) {
       script_sig = input["scriptSig"].as_object()["hex"].as_string().c_str();
     }
 
-    json::array wit_arr;
-    wit_arr = input["txinwitness"].as_array();
-    for (json::value wit : wit_arr) {
-      witness.push_back(wit.as_string().c_str());
+    // fill witness vector only if the input is a segwit input.
+    try {
+      json::array wit_arr;
+      wit_arr = input["txinwitness"].as_array();
+      for (json::value wit : wit_arr) {
+        witness.push_back(wit.as_string().c_str());
+      }
+    } catch (std::exception& r) {
     }
 
     seq = (uint32_t)input["sequence"].as_int64();
