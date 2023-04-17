@@ -54,6 +54,7 @@ bool Postgresql::Execute(std::string& query) {
 bool Postgresql::ExecuteWithResult(std::string& query, std::any& res) {
   try {
     pqxx::nontransaction work(*connection_);
+    
     pqxx::result result = work.exec(query);
     res = result;
     return true;

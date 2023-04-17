@@ -178,11 +178,9 @@ void DbTransactionManager::CreateTable() {
 }
 
 json::object DbTransactionManager::Insert(json::object obj) {
-  std::cout << "here 1" << std::endl;
   std::string query = BuildInsertQuery(obj, table_name_);
 
-  std::cout << "here 1" << std::endl;
-  std::cout << "DEBUG(query): " << query << std::endl;
+  // std::cout << "DEBUG(query): " << query << std::endl;
 
   json::object res_obj;
   if (obj["select"].is_null()) {
@@ -192,6 +190,7 @@ json::object DbTransactionManager::Insert(json::object obj) {
     try {
       db_->ExecuteWithResult(query, res);
     } catch (const pqxx::unique_violation& e) {
+      std::cerr << e.what() << std::endl;
       throw e;
     }
     pqxx::result pq_res = std::any_cast<pqxx::result>(res);
@@ -199,6 +198,7 @@ json::object DbTransactionManager::Insert(json::object obj) {
       res_obj = GetUniqueSelectQueryResult(obj, pq_res[0]);
     }
   }
+  // std::cout << "returning wout exp" << std::endl;
   return res_obj;
 }
 
@@ -247,7 +247,7 @@ json::object DbTransactionManager::Delete(json::object obj) {
 json::array DbTransactionManager::Select(json::object obj) {
   std::string query = BuildSelectQuery(obj, table_name_);
 
-  std::cout << "DEBUG(query): " << query << std::endl;
+  // std::cout << "DEBUG(query): " << query << std::endl;
 
   std::any res;
   db_->ExecuteWithResult(query, res);

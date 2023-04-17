@@ -36,7 +36,6 @@ std::string RpcTx::GetHex() {
     return "";
   }
 
-  std::cout << val_ << std::endl;
 
   if (has_hex_) {
     return val_.as_object()["hex"].as_string().c_str();
@@ -132,17 +131,13 @@ Output* ParseOutput(json::object& output) {
 
   try {
     value_btc = output["value"].as_double();
-    std::cout << "here 1" << std::endl;
 
     // TODO: not really sure what's going on here, can't cast double to int properly
     value = (uint64_t)(value_btc * pow(10.0, 9.0)) / 10;
 
     std::string script_asm = output["scriptPubKey"].as_object()["asm"].as_string().c_str();
-    std::cout << "here 2" << std::endl;
 
     script_pubkey = output["scriptPubKey"].as_object()["hex"].as_string().c_str();
-    std::cout << "here 3" << std::endl;
-
     out_type_str = output["scriptPubKey"].as_object()["type"].as_string().c_str();
 
     try {
@@ -182,7 +177,6 @@ Output* ParseOutput(json::object& output) {
 
   Output* res = (is_spendable) ? new Output(out_type, address, value, script_pubkey)
                                : new Output(out_type, value, script_pubkey);
-  std::cout << "finished parsing output" << std::endl;
   return res;
 }
 
@@ -193,7 +187,7 @@ Transaction* RpcTx::ParseTransaction() {
   json::array output_arr;
   uint32_t locktime;
 
-  std::cout << "val_ is: " << val_ << std::endl;
+  //std::cout << "val_ is: " << val_ << std::endl;
 
   try {
     tx_id = val_.as_object()["txid"].as_string().c_str();
@@ -221,15 +215,15 @@ Transaction* RpcTx::ParseTransaction() {
     outputs.push_back(*output);
   }
 
-  std::cout << "finished outputs" << std::endl;
+  //std::cout << "finished outputs" << std::endl;
   std::array<uint8_t, 4> locktime_bytes;
   util::UInt32ToBytes(locktime, locktime_bytes);
 
-  std::cout << "finished outputs" << std::endl;
+  //std::cout << "finished outputs" << std::endl;
 
   Transaction* res = new Transaction(tx_id, version, input_count, inputs, output_count, outputs,
                                      locktime_bytes, true);
 
-  std::cout << "finished parsing" << std::endl;
+  //std::cout << "finished parsing" << std::endl;
   return res;
 };

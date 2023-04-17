@@ -123,18 +123,18 @@ std::string Post(const std::string& url, const std::map<std::string, std::string
   SetHeaders(curl, headers);
 
   CURLcode res = curl_easy_perform(curl);
-  if (res != CURLE_OK) {
-    std::cerr << "curl_easy_perform() failed: " << curl_easy_strerror(res) << std::endl;
-    // throw std::runtime_error("Failed to make POST request: " +
-    //                          std::string(curl_easy_strerror(res)));
-  }
 
   curl_easy_cleanup(curl);
-
   if (write_type == WriteType::TO_FILE) {
     file_stream.close();
   }
 
+  if (res != CURLE_OK) {
+    std::cerr << "curl_easy_perform() failed: " << curl_easy_strerror(res) << std::endl;
+    throw std::runtime_error("Failed to make POST request: " +
+                            std::string(curl_easy_strerror(res)));
+  }
+  
   return response;
 }
 

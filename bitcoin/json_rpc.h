@@ -38,7 +38,7 @@ bool DecodeRawTransaction(std::string tx_hex, RpcTx& res);
  * @param res RpcTx object
  * @return bool
  */
-bool GetRawTransaction(std::string tx_id, RpcTx& res);
+void GetRawTransaction(std::string tx_id, RpcTx& res);
 
 /**
  * @brief makes the call "getrawmempool true" to bitcoind, and writes the transaction ids that are
@@ -49,7 +49,7 @@ bool GetRawTransaction(std::string tx_id, RpcTx& res);
  * @return true
  * @return false
  */
-bool GetMempoolTxs(std::vector<RpcTx>& res);
+void GetMempoolTxs(std::vector<RpcTx>& res);
 
 }  // namespace rpc
 }  // namespace bitcoin

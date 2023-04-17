@@ -1,6 +1,6 @@
 cc_binary(
   name = "main",
-  srcs = ["main.cc"],
+  srcs = ["main.cc", "global_vars.h", "thread_sync.h", "mempool_threads.h", "mempool_threads.cc"],
   linkopts = [
     "-lpq"
   ],

@@ -20,6 +20,8 @@ enum HashType {
   SIGHASH_ANYONECANPAY_SINGLE = 0x83
 };
 
+namespace json = boost::json;
+
 /**
  * @brief The Input class can represent three types of inputs:
  * 1-Regular Non-Segwit Input
@@ -39,6 +41,8 @@ class Input {
   std::vector<uint8_t> sig_size_;
   std::string sig_;
   std::array<uint8_t, 4> sequence_;
+  // This field is set after the first call to ExtractAddress(). This field should be accesses directly, instead use ExtractAddress().
+  //Address* address_ = nullptr;
 
   // This is a zero-sized vector or a vector that contains empty/0x00 string if this inputs is not a
   // segwit input
@@ -70,6 +74,8 @@ class Input {
 
   std::string hex();
 
+  json::value json();
+
   bool IsSegwit() { return is_segwit_; }
   bool IsCoinbase() { return is_coinbase_; }
 
@@ -89,9 +95,10 @@ class Input {
    */
   Address* ExtractAddress();
 
-  // Getter functions. These functions will be primarily used to communicate the data to the
-  // database in the correct format.
-  // std::string Get
+  // Some Justifications:
+  // -why are we not extracting addresses in the constructor and a seperate call to ExtractAddress() is necessary?
+  // +because we don't want to make calls to bitcoind while parsing the transactions (this has potential to block
+  // the thread parsing is being done)
 };
 
 /**
@@ -122,6 +129,8 @@ class Output {
   Output(OutputType out_type, std::string address, uint64_t value, std::string script_pubkey);
 
   std::string hex();
+
+  json::value json();
 
   bool IsSpendable() { return is_spendable_; }
 
@@ -174,6 +183,10 @@ class Transaction {
               std::array<uint8_t, 4>& lock_time, bool is_segwit);
 
   std::string hex();
+
+  //the primary purpose of his function should be to recording the transaction to the database
+  json::value json();
+
   // TODO: other class functions
 
   /**
@@ -193,13 +206,14 @@ class Transaction {
   bool IsSegwit();
 
   /**
-   * @brief Makes this Transaction confirmed.
+   * @brief Sets this Transaction as confirmed.
    *
    */
   void SetConfirmed();
 
   std::vector<Address> GetOutputAddresses();
   std::vector<Address> GetInputAddresses();
+  std::string GetTxID();
 
   // bool IsInputAddress(Address& addr);
   // bool IsOutputAddress(Address& addr);

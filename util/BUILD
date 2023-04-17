@@ -1,7 +1,7 @@
 cc_library(
   name = "util",
   srcs = ["crypto.cc", "util.cc" ],
-  hdrs = ["crypto.h", "util.h"],
+  hdrs = ["crypto.h", "util.h", "exceptions.h"],
   deps = [
     "@openssl",
     "//third_party/gmpxx",
