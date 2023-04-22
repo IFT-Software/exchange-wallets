@@ -1,7 +1,7 @@
 cc_library(
     name = "wallet",
-    srcs = ["wallet.cc"],
-    hdrs = ["wallet.h"],
+    srcs = ["BTCwallet.cc"],
+    hdrs = ["BTCwallet.h"],
     deps = [],
     visibility = ["//visibility:public"]
 )

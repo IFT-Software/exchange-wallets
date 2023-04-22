@@ -9,7 +9,7 @@ class WalletAddress : public Address {
   std::string pub_key_;
 
  public:
-  WalletAddress(std::string& addr, AddrType& addr_type, std::string derivation_path);
+  // WalletAddress(std::string& addr, AddrType& addr_type, std::string derivation_path);
   WalletAddress(Address address, std::string derivation_path);
 
   std::string GetDerivationPath();
